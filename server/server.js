@@ -13,38 +13,38 @@ app.use(express.json());
 
 // Реєстрація нового користувача
 app.post('/register', (req, res) => {
-  const { username, password } = req.body;
-  const hashedPassword = bcrypt.hashSync(password, 10);
+    const { username, password } = req.body;
+    const hashedPassword = bcrypt.hashSync(password, 10);
 
-  connection.query(
-    'INSERT INTO users (username, password) VALUES (?, ?)',
-    [username, hashedPassword],
-    (err, result) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: '✅ Реєстрація успішна' });
-    }
-  );
+    connection.query(
+        'INSERT INTO users (username, password) VALUES (?, ?)',
+        [username, hashedPassword],
+        (err, result) => {
+            if (err) return res.status(500).json({ error: err.message });
+            res.json({ message: '✅ Реєстрація успішна' });
+        }
+    );
 });
 
 // Логін користувача
 app.post('/login', (req, res) => {
-  const { username, password } = req.body;
+    const { username, password } = req.body;
 
-  connection.query(
-    'SELECT * FROM users WHERE username = ?',
-    [username],
-    (err, results) => {
-      if (err || results.length === 0) return res.status(401).json({ error: '❌ Невірні дані' });
+    connection.query(
+        'SELECT * FROM users WHERE username = ?',
+        [username],
+        (err, results) => {
+            if (err || results.length === 0) return res.status(401).json({ error: '❌ Невірні дані' });
 
-      const user = results[0];
-      if (bcrypt.compareSync(password, user.password)) {
-        const token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
-        res.json({ token });
-      } else {
-        res.status(401).json({ error: '❌ Невірний пароль' });
-      }
-    }
-  );
+            const user = results[0];
+            if (bcrypt.compareSync(password, user.password)) {
+                const token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
+                res.json({ token });
+            } else {
+                res.status(401).json({ error: '❌ Невірний пароль' });
+            }
+        }
+    );
 });
 
 // Запуск сервера
@@ -59,14 +59,22 @@ const createTable = async () => {
         password TEXT NOT NULL
       );
     `;
-  
+
     try {
-      await client.query(query);
-      console.log("✅ Таблиця 'users' створена або вже існує.");
+        await client.query(query);
+        console.log("✅ Таблиця 'users' створена або вже існує.");
     } catch (err) {
-      console.error("❌ Помилка при створенні таблиці:", err);
+        console.error("❌ Помилка при створенні таблиці:", err);
     }
-  };
-  
-  createTable();
-  
+};
+
+createTable();
+
+app.get('/users', async (req, res) => {
+    try {
+        const result = await client.query("SELECT * FROM users;");
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
