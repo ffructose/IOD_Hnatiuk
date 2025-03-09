@@ -21,7 +21,8 @@ app.post("/register", async (req, res) => {
     if (!username || !password) {
         return res.status(400).json({ message: "Всі поля обов'язкові!" });
     }
-
+  
+    
     try {
         const hashedPassword = bcrypt.hashSync(password, 10);
         const result = await client.query(
@@ -33,7 +34,7 @@ app.post("/register", async (req, res) => {
         console.error("❌ Помилка реєстрації:", err);
         res.status(500).json({ error: err.message });
     }
-});
+});   
 
 // Вхід
 app.post('/login', async (req, res) => {
