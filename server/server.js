@@ -47,9 +47,6 @@ app.post("/register", async (req, res) => {
 });
 
 
-// Вхід
-const jwt = require("jsonwebtoken"); // Додай бібліотеку JWT
-
 app.post("/login", async (req, res) => {
     try {
         console.log("🔹 Отримано запит на вхід:", req.body);
