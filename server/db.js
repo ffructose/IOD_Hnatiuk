@@ -1,19 +1,17 @@
-const mysql = require('mysql2');
+const { Client } = require('pg');
 require('dotenv').config();
 
-const connection = mysql.createConnection({
+const client = new Client({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
+  port: 5432,  // Стандартний порт PostgreSQL
+  ssl: { rejectUnauthorized: false }  // Для підключення до Render
 });
 
-connection.connect((err) => {
-  if (err) {
-    console.error('❌ Помилка підключення до БД:', err);
-  } else {
-    console.log('✅ Підключено до MySQL');
-  }
-});
+client.connect()
+  .then(() => console.log('✅ Підключено до PostgreSQL'))
+  .catch(err => console.error('❌ Помилка підключення:', err));
 
-module.exports = connection;
+module.exports = client;
