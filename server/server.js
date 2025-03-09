@@ -92,3 +92,8 @@ app.get('/users', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/public/index.html");
+});
+
