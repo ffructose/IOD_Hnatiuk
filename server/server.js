@@ -48,30 +48,63 @@ app.post("/register", async (req, res) => {
 
 
 // Вхід
-app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    const user = await client.query('SELECT * FROM users WHERE username = $1', [username]);
+const jwt = require("jsonwebtoken"); // Додай бібліотеку JWT
 
-    if (user.rows.length === 0 || !bcrypt.compareSync(password, user.rows[0].password)) {
-        return res.status(401).json({ message: "❌ Неправильний логін або пароль" });
+app.post("/login", async (req, res) => {
+    try {
+        console.log("🔹 Отримано запит на вхід:", req.body);
+
+        const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ message: "❌ Всі поля обов'язкові!" });
+        }
+
+        // Перевірка чи існує користувач
+        const user = await client.query("SELECT * FROM users WHERE username = $1", [username]);
+        if (user.rows.length === 0) {
+            return res.status(400).json({ message: "❌ Невірний логін або пароль" });
+        }
+
+        // Перевірка пароля
+        const isValidPassword = bcrypt.compareSync(password, user.rows[0].password);
+        if (!isValidPassword) {
+            return res.status(400).json({ message: "❌ Невірний логін або пароль" });
+        }
+
+        // Генеруємо JWT-токен
+        const token = jwt.sign({ username: user.rows[0].username }, "your_secret_key", { expiresIn: "1h" });
+
+        console.log("✅ Вхід успішний для:", username);
+        
+        // Відправляємо токен та редиректимо
+        res.json({ message: "✅ Вхід успішний!", token });
+
+    } catch (err) {
+        console.error("❌ Помилка входу:", err);
+        res.status(500).json({ error: "❌ Внутрішня помилка сервера" });
     }
-
-    res.json({ message: `✅ Вітаю, ${username}! Вхід успішний.` });
 });
+
 
 // Запуск сервера
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Сервер працює на порту ${PORT}`));
 
 
-app.get('/users', async (req, res) => {
+app.get("/user", (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ message: "❌ Не авторизовано" });
+    }
+
     try {
-        const result = await client.query("SELECT * FROM users;");
-        res.json(result.rows);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+        const decoded = jwt.verify(token, "your_secret_key");
+        res.json({ username: decoded.username });
+    } catch (error) {
+        res.status(401).json({ message: "❌ Недійсний токен" });
     }
 });
+
 
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/public/index.html");

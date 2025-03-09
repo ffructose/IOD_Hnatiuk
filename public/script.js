@@ -37,3 +37,27 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+document.getElementById("loginForm").addEventListener("submit", async function (event) {
+    event.preventDefault(); // Запобігаємо перезавантаженню сторінки
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    const response = await fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        localStorage.setItem("token", data.token); // Зберігаємо JWT-токен
+        alert("✅ Вхід успішний! Перенаправлення на головну...");
+        window.location.href = "/"; // Редирект на головну сторінку
+    } else {
+        alert("❌ " + data.message);
+    }
+});
+

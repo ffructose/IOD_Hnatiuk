@@ -3,20 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вхід</title>
+    <title>Головна</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h2>Вхід</h2>
-        <form id="loginForm">
-            <input type="text" id="loginUsername" placeholder="Логін" required>
-            <input type="password" id="loginPassword" placeholder="Пароль" required>
-            <button type="submit">Увійти</button>
-        </form>
-        <p>Ще не маєте акаунту? <a href="register.html">Реєстрація</a></p>
-        <p id="loginMessage"></p>
+        <h2>Вітаємо на сайті!</h2>
+        <p id="welcomeMessage">Завантаження...</p>
+        <button id="logoutButton">Вийти</button>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = localStorage.getItem("token");
+            const welcomeMessage = document.getElementById("welcomeMessage");
+            const logoutButton = document.getElementById("logoutButton");
+
+            if (!token) {
+                window.location.href = "login.html"; // Якщо немає токена, перенаправити на логін
+            } else {
+                // Отримання імені користувача (розкодування JWT або запит до сервера)
+                fetch("/user", {
+                    method: "GET",
+                    headers: { "Authorization": `Bearer ${token}` }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.username) {
+                        welcomeMessage.textContent = `Привіт, ${data.username}!`;
+                    } else {
+                        localStorage.removeItem("token"); // Якщо помилка, видалити токен
+                        window.location.href = "login.html";
+                    }
+                })
+                .catch(() => {
+                    localStorage.removeItem("token");
+                    window.location.href = "login.html";
+                });
+            }
+
+            // Вихід з аккаунту
+            logoutButton.addEventListener("click", function () {
+                localStorage.removeItem("token"); // Видалити токен
+                window.location.href = "login.html"; // Перенаправити на сторінку входу
+            });
+        });
+    </script>
 </body>
 </html>
