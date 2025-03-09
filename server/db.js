@@ -15,3 +15,22 @@ client.connect()
   .catch(err => console.error('❌ Помилка підключення:', err));
 
 module.exports = client;
+
+const createTable = async () => {
+    const query = `
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password TEXT NOT NULL
+      );
+    `;
+
+    try {
+        await client.query(query);
+        console.log("✅ Таблиця 'users' створена або вже існує.");
+    } catch (err) {
+        console.error("❌ Помилка при створенні таблиці:", err);
+    }
+};
+
+createTable();
