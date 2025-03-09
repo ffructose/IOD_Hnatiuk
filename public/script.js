@@ -7,14 +7,25 @@ document.addEventListener("DOMContentLoaded", () => {
             const username = document.getElementById("loginUsername").value;
             const password = document.getElementById("loginPassword").value;
 
-            const res = await fetch("/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            });
+            try {
+                const res = await fetch("/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
 
-            const data = await res.json();
-            document.getElementById("loginMessage").textContent = data.message || "Помилка входу";
+                const data = await res.json();
+                if (res.ok) {
+                    localStorage.setItem("token", data.token); // Зберігаємо токен
+                    alert("✅ Вхід успішний! Перенаправлення...");
+                    window.location.href = "/"; // Перекидає на головну
+                } else {
+                    document.getElementById("loginMessage").textContent = "❌ " + data.message;
+                }
+            } catch (error) {
+                console.error("Помилка запиту:", error);
+                document.getElementById("loginMessage").textContent = "❌ Помилка сервера";
+            }
         });
     }
 
@@ -26,38 +37,24 @@ document.addEventListener("DOMContentLoaded", () => {
             const username = document.getElementById("registerUsername").value;
             const password = document.getElementById("registerPassword").value;
 
-            const res = await fetch("/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            });
+            try {
+                const res = await fetch("/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
 
-            const data = await res.json();
-            document.getElementById("registerMessage").textContent = data.message || "Помилка реєстрації";
+                const data = await res.json();
+                if (res.ok) {
+                    alert("✅ Реєстрація успішна! Тепер увійдіть.");
+                    window.location.href = "login.html";
+                } else {
+                    document.getElementById("registerMessage").textContent = "❌ " + data.message;
+                }
+            } catch (error) {
+                console.error("Помилка реєстрації:", error);
+                document.getElementById("registerMessage").textContent = "❌ Помилка сервера";
+            }
         });
     }
 });
-
-document.getElementById("loginForm").addEventListener("submit", async function (event) {
-    event.preventDefault(); // Запобігаємо перезавантаженню сторінки
-
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    const response = await fetch("/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-        localStorage.setItem("token", data.token); // Зберігаємо JWT-токен
-        alert("✅ Вхід успішний! Перенаправлення на головну...");
-        window.location.href = "/"; // Редирект на головну сторінку
-    } else {
-        alert("❌ " + data.message);
-    }
-});
-
