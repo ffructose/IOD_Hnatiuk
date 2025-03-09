@@ -50,3 +50,23 @@ app.post('/login', (req, res) => {
 // Запуск сервера
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`✅ Сервер працює на порту ${PORT}`));
+
+const createTable = async () => {
+    const query = `
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password TEXT NOT NULL
+      );
+    `;
+  
+    try {
+      await client.query(query);
+      console.log("✅ Таблиця 'users' створена або вже існує.");
+    } catch (err) {
+      console.error("❌ Помилка при створенні таблиці:", err);
+    }
+  };
+  
+  createTable();
+  
