@@ -14,27 +14,38 @@ app.use(express.json());
 app.use(express.static('public')); // Віддає файли з папки public
 
 
-// Маршрут реєстрації
 app.post("/register", async (req, res) => {
-    const { username, password } = req.body;
-    
-    if (!username || !password) {
-        return res.status(400).json({ message: "Всі поля обов'язкові!" });
-    }
-  
-    
     try {
+        console.log("🔹 Отримано запит на реєстрацію:", req.body);
+
+        const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ message: "❌ Всі поля обов'язкові!" });
+        }
+
+        // Перевіряємо, чи є користувач
+        const userExists = await client.query("SELECT * FROM users WHERE username = $1", [username]);
+        if (userExists.rows.length > 0) {
+            return res.status(400).json({ message: "❌ Користувач з таким іменем вже існує!" });
+        }
+
+        // Хешуємо пароль
         const hashedPassword = bcrypt.hashSync(password, 10);
+
+        // Вставляємо користувача (SQL-формат для PostgreSQL)
         const result = await client.query(
             "INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username",
             [username, hashedPassword]
         );
+
+        console.log("✅ Користувач зареєстрований:", result.rows[0]);
         res.json({ message: "✅ Реєстрація успішна!", user: result.rows[0] });
     } catch (err) {
         console.error("❌ Помилка реєстрації:", err);
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: "❌ Внутрішня помилка сервера" });
     }
-});   
+});
+
 
 // Вхід
 app.post('/login', async (req, res) => {
