@@ -14,6 +14,24 @@
         <h2>Ваш акаунт</h2>
         <p>Ваш рівень доступу: <strong id="userLevel">Завантаження...</strong></p>
         <button id="logoutButton">Вийти</button>
+
+        <!-- Блок для відображення історії дій, лише для адмінів і вчителів -->
+        <div id="protocolContainer" style="display: none;">
+            <h3>Історія дій користувачів</h3>
+            <table id="protocolTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>ID Користувача</th>
+                        <th>Дія</th>
+                        <th>Час</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Тут буде вставлено дані з `Protocol` -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>
