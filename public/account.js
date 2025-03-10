@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutButton = document.getElementById("logoutButton");
     const protocolContainer = document.getElementById("protocolContainer");
     const protocolTableBody = document.querySelector("#protocolTable tbody");
+    const songsPollContainer = document.getElementById("songsPoll");
+    const songsPollTableBody = document.querySelector("#songsPollTable tbody");
 
     if (!token) {
         alert("❌ Ви не авторизовані!");
@@ -41,7 +43,30 @@ document.addEventListener("DOMContentLoaded", () => {
                         protocolTableBody.appendChild(tr);
                     });
                 })
-                .catch(err => console.error("Помилка завантаження протоколу:", err));
+                .catch(err => console.error("❌ Помилка завантаження протоколу:", err));
+
+                // 🔹 Завантажуємо `songsPoll`
+                songsPollContainer.style.display = "block"; // Показуємо контейнер
+
+                fetch("/user/songs-poll", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                })
+                .then(res => res.json())
+                .then(songsData => {
+                    songsPollTableBody.innerHTML = ""; // Очищаємо перед оновленням
+                    songsData.forEach(row => {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td>${row.user_id}</td>
+                            <td>${row.username}</td>
+                            <td>${row.first_place || "❌ Немає даних"}</td>
+                            <td>${row.second_place || "❌ Немає даних"}</td>
+                            <td>${row.third_place || "❌ Немає даних"}</td>
+                        `;
+                        songsPollTableBody.appendChild(tr);
+                    });
+                })
+                .catch(err => console.error("❌ Помилка завантаження голосування:", err));
             }
         } else {
             logout();
@@ -53,8 +78,3 @@ document.addEventListener("DOMContentLoaded", () => {
     logoutButton.addEventListener("click", logout);
 });
 
-function logout() {
-    localStorage.removeItem("token");
-    alert("❌ Ви вийшли з акаунту!");
-    window.location.href = "index.html";
-}
