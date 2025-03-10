@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("saveButton").addEventListener("click", async function () {
-        const userId = localStorage.getItem("user_id"); // Отримуємо ID користувача
+        const userId = localStorage.getItem("user_id");
         if (!userId) {
             alert("Необхідно увійти в систему!");
             return;
@@ -28,18 +28,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const data = await response.json();
         if (data.message) {
-            alert("Успішно збережено!");
+            alert("✅ Успішно збережено!");
+
+            // Логування дії користувача
+            await logUserAction(userId, "Користувач зберіг свій вибір пісень.");
         } else {
-            alert("Помилка збереження.");
+            alert("❌ Помилка збереження.");
         }
     });
 });
 
+// Логування дій користувача
+async function logUserAction(userId, actionText) {
+    await fetch("/main/log-action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, action: actionText })
+    });
+}
+
+// Перевірка авторизації перед завантаженням сторінки
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-        // Якщо немає токена, перенаправляємо на сторінку логіну
         alert("❌ Ви не увійшли в систему! Вас буде перенаправлено на сторінку логіну.");
         window.location.href = "login.html";
     }

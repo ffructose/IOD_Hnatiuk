@@ -24,12 +24,12 @@ function initDragAndDrop() {
             const songId = event.dataTransfer.getData("text/plain");
             const draggedSong = document.querySelector(`.song[data-id='${songId}']`);
 
+            if (!draggedSong) return;
+
             if (zone.children.length === 0) { // Не давати можливості ставити кілька пісень на одне місце
                 zone.appendChild(draggedSong);
 
-                // Отримуємо user_id (наприклад, з localStorage або змінної сесії)
                 const userId = localStorage.getItem("user_id");
-
                 if (userId) {
                     await logUserAction(userId, `Користувач поставив пісню ID ${songId} на місце ${zone.dataset.rank}`);
                 }
@@ -41,33 +41,36 @@ function initDragAndDrop() {
         event.preventDefault();
     });
 
-    songsContainer.addEventListener("drop", (event) => {
+    songsContainer.addEventListener("drop", async (event) => {
         event.preventDefault();
         const songId = event.dataTransfer.getData("text/plain");
         const draggedSong = document.querySelector(`.song[data-id='${songId}']`);
 
-        if (draggedSong) {
-            const songsArray = Array.from(songsContainer.children).map(song => ({
-                id: parseInt(song.getAttribute("data-id")),
-                element: song
-            }));
+        if (!draggedSong) return;
 
-            songsArray.push({
-                id: parseInt(draggedSong.getAttribute("data-id")),
-                element: draggedSong
-            });
+        songsContainer.appendChild(draggedSong);
 
-            songsArray.sort((a, b) => a.id - b.id);
-
-            songsContainer.innerHTML = "";
-            songsArray.forEach(songObj => songsContainer.appendChild(songObj.element));
+        const userId = localStorage.getItem("user_id");
+        if (userId) {
+            await logUserAction(userId, `Користувач повернув пісню ID ${songId} назад у список`);
         }
+
+        // Сортування після повернення
+        const songsArray = Array.from(songsContainer.children).map(song => ({
+            id: parseInt(song.getAttribute("data-id")),
+            element: song
+        }));
+
+        songsArray.sort((a, b) => a.id - b.id);
+
+        songsContainer.innerHTML = "";
+        songsArray.forEach(songObj => songsContainer.appendChild(songObj.element));
     });
 }
 
 // Логування дій користувача в базу
 async function logUserAction(userId, actionText) {
-    await fetch("/log-action", {
+    await fetch("/main/log-action", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: userId, action: actionText })

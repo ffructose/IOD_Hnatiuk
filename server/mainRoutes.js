@@ -36,12 +36,13 @@ router.post("/save-places", async (req, res) => {
     }
 });
 
-// Логування дій користувача
+
+// Логування дій користувача у `Protocol`
 router.post("/log-action", async (req, res) => {
     const { user_id, action } = req.body;
 
     if (!user_id || !action) {
-        return res.status(400).json({ error: "Неправильні дані" });
+        return res.status(400).json({ error: "❌ Неправильні дані" });
     }
 
     try {
@@ -49,10 +50,10 @@ router.post("/log-action", async (req, res) => {
             "INSERT INTO Protocol (user_id, action, time) VALUES ($1, $2, NOW())",
             [user_id, action]
         );
-        res.json({ message: "Дія записана у протокол" });
+        res.json({ message: "✅ Дія записана у протокол" });
     } catch (error) {
-        console.error("Помилка логування дії:", error);
-        res.status(500).json({ error: "Помилка сервера" });
+        console.error("❌ Помилка логування дії:", error);
+        res.status(500).json({ error: "❌ Помилка сервера" });
     }
 });
 
