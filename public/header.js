@@ -18,11 +18,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             loginBtn.style.display = "none";
             registerBtn.style.display = "none";
             logoutBtn.style.display = "inline-block"; // Показуємо "Вийти"
+            accBtn.style.display = "inline-block"; // Показуємо "кабінет"
         } else {
             // Якщо користувач не залогований, показуємо кнопки "Увійти" і "Реєстрація"
             loginBtn.style.display = "inline-block";
             registerBtn.style.display = "inline-block";
             logoutBtn.style.display = "none"; // Приховуємо "Вийти"
+            accBtn.style.display = "none"; // Приховуємо "кабінет"
+
         }
 
         // Функція виходу з акаунта
