@@ -11,8 +11,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             throw new Error("Сервер повернув неправильний формат даних.");
         }
 
-        // Сортуємо пісні за song_id
-        songs.sort((a, b) => a.song_id - b.song_id);
+        // Сортуємо пісні за алфавітом за назвою пісні (song_name)
+        songs.sort((a, b) => a.song_name.localeCompare(b.song_name));
+
 
         if (songs.length === 0) {
             songsContainer.innerHTML = "<p>Список пісень порожній.</p>";
