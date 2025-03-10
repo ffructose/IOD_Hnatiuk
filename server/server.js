@@ -3,7 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./authRoutes');
 const userRoutes = require('./userRoutes');
-const userRoutes = require('./songsRoutes');
+const songsRoutes = require('./songsRoutes');
 
 dotenv.config();
 const app = express();
