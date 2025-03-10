@@ -36,15 +36,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (registerForm) {
         registerForm.addEventListener("submit", async (e) => {
             e.preventDefault();
+            const full_name = document.getElementById("registerFullName").value;
             const username = document.getElementById("registerUsername").value;
             const password = document.getElementById("registerPassword").value;
-            const full_name = document.getElementById("registerFullName").value;
 
             try {
                 const res = await fetch("/auth/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password, full_name })
+                    body: JSON.stringify({ full_name, username, password })
                 });
 
                 const data = await res.json();
@@ -60,4 +60,5 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
 });

@@ -18,10 +18,14 @@ module.exports = client;
 
 const createTable = async () => {
   const query = `
+      DROP TABLE IF EXISTS users CASCADE;
+
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
+        full_name VARCHAR(255) NOT NULL,
         username VARCHAR(50) UNIQUE NOT NULL,
-        password TEXT NOT NULL
+        password TEXT NOT NULL,
+        level VARCHAR(50) NOT NULL DEFAULT 'user'
       );
 
       CREATE TABLE IF NOT EXISTS SongPlace (

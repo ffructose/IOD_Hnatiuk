@@ -6,13 +6,13 @@ const client = require('./db');
 const router = express.Router();
 const SECRET_KEY = process.env.SECRET_KEY;
 
-// 🔹 Реєстрація з логуванням у Protocol
+// 🔹 Реєстрація з іменем користувача та логуванням у Protocol
 router.post("/register", async (req, res) => {
     try {
         console.log("🔹 Отримано запит на реєстрацію:", req.body);
-        const { username, password, full_name } = req.body;
+        const { full_name, username, password } = req.body;
 
-        if (!username || !password || !full_name) {
+        if (!full_name || !username || !password) {
             return res.status(400).json({ message: "❌ Всі поля обов'язкові!" });
         }
 
@@ -22,16 +22,15 @@ router.post("/register", async (req, res) => {
         }
 
         const hashedPassword = bcrypt.hashSync(password, 10);
-        const hashedFullName = bcrypt.hashSync(full_name, 10); // Шифруємо ПІБ
 
         const result = await client.query(
-            "INSERT INTO users (username, password, full_name, level) VALUES ($1, $2, $3, $4) RETURNING id, username, level",
-            [username, hashedPassword, hashedFullName, "user"]
+            "INSERT INTO users (full_name, username, password, level) VALUES ($1, $2, $3, $4) RETURNING id, username, level",
+            [full_name, username, hashedPassword, "user"]
         );
 
         const user_id = result.rows[0].id;
 
-        // Логування реєстрації у Protocol
+        // 🔹 Логування реєстрації у Protocol
         await client.query(
             "INSERT INTO Protocol (user_id, action, time) VALUES ($1, $2, NOW())",
             [user_id, `Реєстрація нового користувача, логін: ${username}`]
