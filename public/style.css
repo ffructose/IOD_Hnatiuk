@@ -126,5 +126,8 @@ th {
     table {
         font-size: 14px;
     }
+    p{
+        display: block;
+    }
 }
 
