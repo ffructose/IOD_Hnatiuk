@@ -1,4 +1,4 @@
-/* Вирівнюємо основний контейнер */
+/* Загальний стиль сторінки */
 .accBody {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -11,24 +11,23 @@
     background-color: #f4f4f4;
 }
 
-/* Контейнер акаунта */
+/* Центруємо текст у заголовку */
 .accCont {
     text-align: center;
     margin-bottom: 20px;
 }
 
-/* Контейнер для розташування таблиць */
-.tables-container {
-    display: flex;
-    justify-content: space-between;
+/* Контейнер для грід-системи */
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Дві рівні колонки */
+    gap: 20px; /* Відстань між колонками */
     width: 80%;
     max-width: 1200px;
-    gap: 20px;
 }
 
 /* Стилі для таблиць */
 #songsPoll, #protocolContainer {
-    width: 50%;
     background: white;
     padding: 15px;
     border-radius: 8px;
@@ -36,7 +35,7 @@
     text-align: center;
 }
 
-/* Стилі для заголовків */
+/* Оформлення заголовків */
 h2 {
     font-size: 24px;
     margin-bottom: 10px;
@@ -63,4 +62,12 @@ th, td {
 th {
     background-color: #007bff;
     color: white;
+}
+
+/* Адаптація для мобільних пристроїв */
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: 1fr; /* Один стовпець на вузьких екранах */
+        width: 90%;
+    }
 }
