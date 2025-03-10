@@ -57,3 +57,40 @@ h3{
     margin: 0 0 0 0;
     font-size: 18px;
 }
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    #placesContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .drop-zone {
+        width: 90%;
+        max-width: 250px;
+        height: 90px;
+        font-size: 16px;
+        padding: 15px;
+    }
+
+    .song {
+        width: 90%;
+        max-width: 220px;
+        font-size: 14px;
+        padding: 5px;
+    }
+
+    h3 {
+        font-size: 18px;
+    }
+
+    #saveButton {
+        font-size: 16px;
+        padding: 12px 25px;
+    }
+}

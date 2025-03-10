@@ -67,10 +67,37 @@ th {
     color: white;
 }
 
-/* Адаптація для мобільних пристроїв */
+/* Загальний стиль сторінки */
 @media (max-width: 768px) {
     .grid-container {
-        grid-template-columns: 1fr; /* Один стовпець на вузьких екранах */
-        width: 90%;
+        grid-template-columns: 1fr; /* Один стовпець */
+        width: 95%;
+    }
+
+    #songsPoll, #protocolContainer {
+        width: 100%;
+        grid-column: 1 / -1; /* В один ряд */
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    th, td {
+        padding: 6px;
+        font-size: 13px;
+    }
+
+    table {
+        font-size: 14px;
     }
 }
+
