@@ -6,7 +6,7 @@ const client = require('./db');
 const router = express.Router();
 const SECRET_KEY = process.env.SECRET_KEY;
 
-// 🔹 Реєстрація з шифруванням ПІБ
+// 🔹 Реєстрація з логуванням у Protocol
 router.post("/register", async (req, res) => {
     try {
         console.log("🔹 Отримано запит на реєстрацію:", req.body);
@@ -29,6 +29,14 @@ router.post("/register", async (req, res) => {
             [username, hashedPassword, hashedFullName, "user"]
         );
 
+        const user_id = result.rows[0].id;
+
+        // Логування реєстрації у Protocol
+        await client.query(
+            "INSERT INTO Protocol (user_id, action, time) VALUES ($1, $2, NOW())",
+            [user_id, `Реєстрація нового користувача, логін: ${username}`]
+        );
+
         console.log("✅ Користувач зареєстрований:", result.rows[0]);
         res.json({ message: "✅ Реєстрація успішна!", user: result.rows[0] });
     } catch (err) {
@@ -37,7 +45,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// 🔹 Логін
+// 🔹 Логін з логуванням у Protocol
 router.post("/login", async (req, res) => {
     try {
         console.log("🔹 Отримано запит на вхід:", req.body);
@@ -58,13 +66,19 @@ router.post("/login", async (req, res) => {
         }
 
         const token = jwt.sign(
-            { username: user.rows[0].username, level: user.rows[0].level },
+            { user_id: user.rows[0].id, username: user.rows[0].username, level: user.rows[0].level },
             SECRET_KEY,
             { expiresIn: "1h" }
         );
 
+        // Логування входу користувача у Protocol
+        await client.query(
+            "INSERT INTO Protocol (user_id, action, time) VALUES ($1, $2, NOW())",
+            [user.rows[0].id, `Логування користувача, логін: ${username}`]
+        );
+
         console.log("✅ Вхід успішний для:", username);
-        res.json({ message: "✅ Вхід успішний!", token });
+        res.json({ message: "✅ Вхід успішний!", token, user_id: user.rows[0].id });
 
     } catch (err) {
         console.error("❌ Помилка входу:", err);

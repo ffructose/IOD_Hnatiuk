@@ -17,9 +17,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await res.json();
                 if (res.ok) {
                     localStorage.setItem("token", data.token); // Зберігаємо токен
+                    localStorage.setItem("user_id", data.user_id); // Зберігаємо user_id
+
                     alert("✅ Вхід успішний! Перенаправлення...");
                     window.location.href = "/account.html";
-
                 } else {
                     document.getElementById("loginMessage").textContent = "❌ " + data.message;
                 }
@@ -37,12 +38,13 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
             const username = document.getElementById("registerUsername").value;
             const password = document.getElementById("registerPassword").value;
+            const full_name = document.getElementById("registerFullName").value;
 
             try {
                 const res = await fetch("/auth/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ username, password, full_name })
                 });
 
                 const data = await res.json();
