@@ -13,7 +13,25 @@
     <div class="container">
         <h2>Ваш акаунт</h2>
         <p>Ваш рівень доступу: <strong id="userLevel">Завантаження...</strong></p>
-        <button id="logoutButton">Вийти</button>
+
+        <!-- Блок для відображення рейтингу пісень, лише для адмінів і вчителів -->
+        <div id="songsPoll" style="display: none;">
+            <h3>Голосування користувачів</h3>
+            <table id="songsPollTable">
+                <thead>
+                    <tr>
+                        <th>ID Користувача</th>
+                        <th>Логін</th>
+                        <th>1 місце</th>
+                        <th>2 місце</th>
+                        <th>3 місце</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Тут будуть дані -->
+                </tbody>
+            </table>
+        </div>
 
         <!-- Блок для відображення історії дій, лише для адмінів і вчителів -->
         <div id="protocolContainer" style="display: none;">
@@ -28,7 +46,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Тут буде вставлено дані з `Protocol` -->
+                    <!-- Тут будуть дані -->
                 </tbody>
             </table>
         </div>
