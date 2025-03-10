@@ -1,34 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
     const token = localStorage.getItem("token");
-    const loginBtn = document.getElementById("loginBtn");
-    const registerBtn = document.getElementById("registerBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const welcomeMessage = document.getElementById("welcomeMessage");
+    const userLevelSpan = document.getElementById("userLevel");
 
-    if (token) {
-        // Користувач залогований
-        loginBtn.style.display = "none";
-        registerBtn.style.display = "none";
-        logoutBtn.style.display = "block";
-
-        // Отримати ім'я користувача
-        fetch("/user", {
-            headers: { "Authorization": `Bearer ${token}` }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.username) {
-                welcomeMessage.textContent = `Вітаємо, ${data.username}!`;
-            } else {
-                logout(); // Якщо токен недійсний
-            }
-        })
-        .catch(() => logout());
-    } else {
-        // Користувач не залогований
-        loginBtn.style.display = "inline-block";
-        registerBtn.style.display = "inline-block";
-        logoutBtn.style.display = "none";
+    if (userLevelSpan) {
+        if (!token) {
+            alert("❌ Ви не авторизовані!");
+            window.location.href = "login.html";
+        } else {
+            fetch("/user/info", {
+                headers: { "Authorization": `Bearer ${token}` }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.username) {
+                    userLevelSpan.textContent = data.level;
+                } else {
+                    logout(); // Якщо токен недійсний
+                }
+            })
+            .catch(() => logout());
+        }
     }
 });
 
