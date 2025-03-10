@@ -46,6 +46,7 @@ router.post("/register", async (req, res) => {
 });
 
 // 🔹 Логін з логуванням у Protocol
+// 🔹 Логін користувача з додаванням токена в sessions
 router.post("/login", async (req, res) => {
     try {
         console.log("🔹 Отримано запит на вхід:", req.body);
@@ -71,11 +72,11 @@ router.post("/login", async (req, res) => {
             { expiresIn: "1h" }
         );
 
-        // Логування входу користувача у Protocol
-        await client.query(
-            "INSERT INTO Protocol (user_id, action, time) VALUES ($1, $2, NOW())",
-            [user.rows[0].id, `Логування користувача, логін: ${username}`]
-        );
+        // 🔹 Видаляємо старий токен користувача (якщо він є)
+        await client.query("DELETE FROM sessions WHERE user_id = $1", [user.rows[0].id]);
+
+        // 🔹 Зберігаємо новий токен в sessions
+        await client.query("INSERT INTO sessions (user_id, token) VALUES ($1, $2)", [user.rows[0].id, token]);
 
         console.log("✅ Вхід успішний для:", username);
         res.json({ message: "✅ Вхід успішний!", token, user_id: user.rows[0].id });
@@ -85,5 +86,6 @@ router.post("/login", async (req, res) => {
         res.status(500).json({ error: "❌ Внутрішня помилка сервера" });
     }
 });
+
 
 module.exports = router;

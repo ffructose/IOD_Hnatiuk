@@ -40,6 +40,15 @@ const createTable = async () => {
         time TIMESTAMP DEFAULT NOW(),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
+
+      CREATE TABLE IF NOT EXISTS sessions (
+        session_id SERIAL PRIMARY KEY,
+        user_id INT NOT NULL,
+        token TEXT NOT NULL UNIQUE,
+        created_at TIMESTAMP DEFAULT NOW(),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+
     `;
 
   try {
