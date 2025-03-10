@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const songsList = document.getElementById("songsList");
 
     try {
-        const response = await fetch("/songs/songs");
+        const response = await fetch("/songs");
         const songs = await response.json();
 
         if (songs.length === 0) {
