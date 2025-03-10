@@ -18,11 +18,13 @@ module.exports = client;
 
 const createTable = async () => {
     const query = `
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        username VARCHAR(50) UNIQUE NOT NULL,
-        password TEXT NOT NULL
+      CREATE TABLE IF NOT EXISTS EuroSongs (
+        song_id INT AUTO_INCREMENT PRIMARY KEY,
+        song_name VARCHAR(255) NOT NULL,
+        author VARCHAR(255) NOT NULL,
+        country VARCHAR(255) NOT NULL
       );
+
     `;
 
     try {
