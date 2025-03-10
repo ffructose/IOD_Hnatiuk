@@ -1,7 +1,5 @@
 /* Вирівнюємо основний контейнер */
-.accCont{
-    text-align: center;
-    margin-bottom: 20px;
+body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -11,6 +9,12 @@
     justify-content: center;
     height: 100vh;
     background-color: #f4f4f4;
+}
+
+/* Контейнер акаунта */
+.accCont {
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 /* Контейнер для розташування таблиць */
@@ -59,16 +63,4 @@ th, td {
 th {
     background-color: #007bff;
     color: white;
-}
-
-/* Адаптація для мобільних пристроїв */
-@media (max-width: 768px) {
-    .tables-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    #songsPoll, #protocolContainer {
-        width: 100%;
-    }
 }

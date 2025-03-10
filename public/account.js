@@ -74,7 +74,5 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(() => logout());
 
-    // Вихід з аккаунта
-    logoutButton.addEventListener("click", logout);
 });
 
