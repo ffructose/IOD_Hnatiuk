@@ -94,6 +94,10 @@ th {
     color: white;
 }
 
+.notee{
+    display: block;
+}
+
 /* Загальний стиль сторінки */
 @media (max-width: 768px) {
     .grid-container {
@@ -126,8 +130,6 @@ th {
     table {
         font-size: 14px;
     }
-    p{
-        display: block;
-    }
+
 }
 
