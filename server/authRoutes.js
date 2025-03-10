@@ -6,7 +6,7 @@ const client = require('../db');
 const router = express.Router();
 const SECRET_KEY = process.env.SECRET_KEY;
 
-// 🔹 Реєстрація
+// 🔹 Реєстрація з шифруванням ПІБ
 router.post("/register", async (req, res) => {
     try {
         console.log("🔹 Отримано запит на реєстрацію:", req.body);
@@ -57,7 +57,11 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "❌ Невірний логін або пароль" });
         }
 
-        const token = jwt.sign({ username: user.rows[0].username, level: user.rows[0].level }, SECRET_KEY, { expiresIn: "1h" });
+        const token = jwt.sign(
+            { username: user.rows[0].username, level: user.rows[0].level },
+            SECRET_KEY,
+            { expiresIn: "1h" }
+        );
 
         console.log("✅ Вхід успішний для:", username);
         res.json({ message: "✅ Вхід успішний!", token });
