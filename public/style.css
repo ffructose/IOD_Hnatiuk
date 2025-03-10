@@ -133,9 +133,6 @@ th {
 
 /* Загальний стиль сторінки */
 @media (max-width: 768px) {
-    .accCont {
-        grid-template-columns: 1fr; /* Один стовпець */
-    }
 
     #songsPoll, #protocolContainer {
         grid-column: 1 / -1; /* Займають весь рядок */
