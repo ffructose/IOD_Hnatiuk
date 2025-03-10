@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const password = document.getElementById("loginPassword").value;
 
             try {
-                const res = await fetch("/login", {
+                const res = await fetch("/auth/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ username, password })
@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (res.ok) {
                     localStorage.setItem("token", data.token); // Зберігаємо токен
                     alert("✅ Вхід успішний! Перенаправлення...");
-                    window.location.href = "/"; // Перекидає на головну
+                    window.location.href = "/account.html";
+
                 } else {
                     document.getElementById("loginMessage").textContent = "❌ " + data.message;
                 }
@@ -38,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const password = document.getElementById("registerPassword").value;
 
             try {
-                const res = await fetch("/register", {
+                const res = await fetch("/auth/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ username, password })
