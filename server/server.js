@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const authRoutes = require('./authRoutes');
 const userRoutes = require('./userRoutes');
 const songsRoutes = require('./songsRoutes');
+const mainRoutes = require('./mainRoutes');
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.static('public'));
 app.use('/auth', authRoutes);  // Рути авторизації
 app.use('/user', userRoutes);  // Рути роботи з користувачем
 app.use('/songs', songsRoutes);  // Рути роботи з списком пісень
+app.use('/main', mainRoutes);  // Рути роботи з головною сторінкою
 
 // Запуск сервера
 const PORT = process.env.PORT || 3000;

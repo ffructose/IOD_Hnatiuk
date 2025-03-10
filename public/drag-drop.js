@@ -19,13 +19,20 @@ function initDragAndDrop() {
             event.preventDefault();
         });
 
-        zone.addEventListener("drop", (event) => {
+        zone.addEventListener("drop", async (event) => {
             event.preventDefault();
             const songId = event.dataTransfer.getData("text/plain");
             const draggedSong = document.querySelector(`.song[data-id='${songId}']`);
 
-            if (zone.children.length === 0) { // Переконуємося, що місце не зайняте
+            if (zone.children.length === 0) { // Не давати можливості ставити кілька пісень на одне місце
                 zone.appendChild(draggedSong);
+
+                // Отримуємо user_id (наприклад, з localStorage або змінної сесії)
+                const userId = localStorage.getItem("user_id");
+
+                if (userId) {
+                    await logUserAction(userId, `Користувач поставив пісню ID ${songId} на місце ${zone.dataset.rank}`);
+                }
             }
         });
     });
@@ -45,19 +52,25 @@ function initDragAndDrop() {
                 element: song
             }));
 
-            // Додаємо повернену пісню в список
             songsArray.push({
                 id: parseInt(draggedSong.getAttribute("data-id")),
                 element: draggedSong
             });
 
-            // Сортуємо за ID
             songsArray.sort((a, b) => a.id - b.id);
 
-            // Очищаємо контейнер і додаємо пісні у правильному порядку
             songsContainer.innerHTML = "";
             songsArray.forEach(songObj => songsContainer.appendChild(songObj.element));
         }
+    });
+}
+
+// Логування дій користувача в базу
+async function logUserAction(userId, actionText) {
+    await fetch("/log-action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, action: actionText })
     });
 }
 
