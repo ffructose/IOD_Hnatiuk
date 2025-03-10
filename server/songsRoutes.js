@@ -6,7 +6,7 @@ const client = require('./db');
 const router = express.Router();
 const SECRET_KEY = process.env.SECRET_KEY;
 
-app.get("/songs", (req, res) => {
+router.get("/songs", (req, res) => {
     db.query("SELECT * FROM EuroSongs", (err, results) => {
         if (err) {
             console.error("Помилка запиту:", err);
