@@ -18,31 +18,25 @@
 }
 
 
-/* Стилі для таблиць */
-#songsPoll {
+/* Спільний стиль для контейнерів */
+#protocolContainer,
+#songsPoll,
+#adminBlock {
     background: white;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    grid-column: 1 / 2;
-}
-
-#protocolContainer {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    grid-column: 2 / 3;
-    height: 400px; /* Фіксована висота контейнера */
+    height: 400px; /* Фіксована висота */
     overflow: hidden; /* Ховає зайвий контент */
     display: flex;
     flex-direction: column;
 }
 
-/* Додаємо прокрутку для таблиці */
-#protocolTable {
+/* Додаємо прокрутку для таблиць всередині контейнерів */
+#protocolTable,
+#songsPollTable,
+#usersTable {
     flex-grow: 1;
     overflow-y: auto;
     display: block;
@@ -50,16 +44,22 @@
 }
 
 /* Стилізація прокрутки (для Chrome, Edge) */
-#protocolTable::-webkit-scrollbar {
+#protocolTable::-webkit-scrollbar,
+#songsPollTable::-webkit-scrollbar,
+#usersTable::-webkit-scrollbar {
     width: 8px;
 }
 
-#protocolTable::-webkit-scrollbar-thumb {
+#protocolTable::-webkit-scrollbar-thumb,
+#songsPollTable::-webkit-scrollbar-thumb,
+#usersTable::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 4px;
 }
 
-#protocolTable::-webkit-scrollbar-thumb:hover {
+#protocolTable::-webkit-scrollbar-thumb:hover,
+#songsPollTable::-webkit-scrollbar-thumb:hover,
+#usersTable::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
 
