@@ -7,10 +7,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <header>
         <h1>Ласкаво просимо!</h1>
-        <p>Ви успішно увійшли.</p>
-    </div>
+        <div class="auth-buttons">
+            <button id="loginBtn" onclick="window.location.href='login.html'">Увійти</button>
+            <button id="registerBtn" onclick="window.location.href='register.html'">Реєстрація</button>
+            <button id="logoutBtn" style="display: none;" onclick="logout()">Вийти</button>
+        </div>
+    </header>
+
+    <main>
+        <p id="welcomeMessage">Ви успішно увійшли.</p>
+    </main>
+
+    <script src="auth.js"></script>
 </body>
 </html>
-  
