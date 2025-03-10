@@ -73,7 +73,42 @@
 
             <h3>Очищення протоколу</h3>
             <button id="clearProtocolButton">Очистити протокол</button>
+
+            <h3>Керування піснями</h3>
+
+            <!-- Форма для додавання пісні -->
+            <h4>Додати пісню</h4>
+            <form id="addSongForm">
+                <input type="text" id="songName" placeholder="Назва пісні" required>
+                <input type="text" id="author" placeholder="Автор" required>
+                <input type="text" id="country" placeholder="Країна" required>
+                <button type="submit">Додати пісню</button>
+            </form>
+
+            <!-- Форма для видалення пісні -->
+            <h4>Видалити пісню</h4>
+            <form id="deleteSongForm">
+                <input type="number" id="songIdToDelete" placeholder="ID пісні" required>
+                <button type="submit">Видалити пісню</button>
+            </form>
+
+            <h3>Список пісень</h3>
+            <table id="songsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Назва</th>
+                        <th>Автор</th>
+                        <th>Країна</th>
+                        <th>Дія</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Тут будуть дані -->
+                </tbody>
+            </table>
         </div>
+
 
     </div>
 </body>

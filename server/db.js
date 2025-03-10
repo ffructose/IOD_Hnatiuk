@@ -18,11 +18,6 @@ module.exports = client;
 
 const createTable = async () => {
   const query = `
-      UPDATE users
-      SET level = 'admin'
-      WHERE username = 'ffructose';
-
-
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         full_name VARCHAR(255) NOT NULL,
