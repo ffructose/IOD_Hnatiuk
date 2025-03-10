@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+    border: 2px solid #ddd;
+    min-height: 200px;
+}
+
+.song {
+    width: 150px;
+    padding: 10px;
+    border: 1px solid #aaa;
+    background: #f4f4f4;
+    text-align: center;
+    cursor: grab;
+}
+
+.song small {
+    font-size: 12px;
+    color: #666;
+}
+
+.drop-zone {
+    width: 160px;
+    height: 80px;
+    margin: 10px;
+    padding: 10px;
+    border: 2px dashed #888;
+    background: #e0e0e0;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#placesContainer {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+#saveButton {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#saveButton:hover {
+    background: #0056b3;
+}

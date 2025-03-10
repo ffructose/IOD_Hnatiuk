@@ -1,22 +1,42 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    const songsList = document.getElementById("songsList");
+    const songsContainer = document.getElementById("songsContainer");
 
     try {
         const response = await fetch("/songs");
-        const songs = await response.json();
+        let songs = await response.json();
+
+        console.log("Отримані пісні:", songs);
+
+        if (!Array.isArray(songs)) {
+            throw new Error("Сервер повернув неправильний формат даних.");
+        }
+
+        // Сортуємо пісні за song_id
+        songs.sort((a, b) => a.song_id - b.song_id);
 
         if (songs.length === 0) {
-            songsList.innerHTML = "<li>Список пісень порожній.</li>";
+            songsContainer.innerHTML = "<p>Список пісень порожній.</p>";
             return;
         }
 
+        // Додаємо кожну пісню до контейнера
         songs.forEach(song => {
-            const li = document.createElement("li");
-            li.textContent = `${song.song_name} - ${song.author} (${song.country})`;
-            songsList.appendChild(li);
+            const songDiv = document.createElement("div");
+            songDiv.classList.add("song");
+            songDiv.setAttribute("draggable", "true");
+            songDiv.setAttribute("data-id", song.song_id);
+            songDiv.innerHTML = `
+                <small>${song.country}</small>
+                <h3>${song.song_name}</h3>
+                <small>${song.author}</small>
+            `;
+            songsContainer.appendChild(songDiv);
         });
+
+        initDragAndDrop(); // Ініціалізація подій перетягування
+
     } catch (error) {
         console.error("Помилка завантаження пісень:", error);
-        songsList.innerHTML = "<li>Не вдалося завантажити список пісень.</li>";
+        songsContainer.innerHTML = "<p>Не вдалося завантажити список пісень.</p>";
     }
 });
