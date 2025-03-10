@@ -34,3 +34,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        // Якщо немає токена, перенаправляємо на сторінку логіну
+        alert("❌ Ви не увійшли в систему! Вас буде перенаправлено на сторінку логіну.");
+        window.location.href = "login.html";
+    }
+});
