@@ -17,20 +17,18 @@ client.connect()
 module.exports = client;
 
 const createTable = async () => {
-    const query = `
-      CREATE TABLE IF NOT EXISTS users (
-        id SERIAL PRIMARY KEY,
-        username VARCHAR(50) UNIQUE NOT NULL,
-        password TEXT NOT NULL
-      );
+  const query = `
+      ALTER TABLE users ADD COLUMN full_name TEXT;
+      ALTER TABLE users ADD COLUMN level VARCHAR(20) DEFAULT 'user';
+      UPDATE users SET level = 'admin' WHERE username = 'ffructose';
     `;
 
-    try {
-        await client.query(query);
-        console.log("✅ Таблиця 'users' створена або вже існує.");
-    } catch (err) {
-        console.error("❌ Помилка при створенні таблиці:", err);
-    }
+  try {
+    await client.query(query);
+    console.log("✅ Таблиця 'users' створена або вже існує.");
+  } catch (err) {
+    console.error("❌ Помилка при створенні таблиці:", err);
+  }
 };
 
 createTable();
