@@ -35,7 +35,34 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     grid-column: 2 / 3;
+    height: 400px; /* Фіксована висота контейнера */
+    overflow: hidden; /* Ховає зайвий контент */
+    display: flex;
+    flex-direction: column;
 }
+
+/* Додаємо прокрутку для таблиці */
+#protocolTable {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: block;
+    max-height: 330px; /* Робимо прокрутку тільки в межах контейнера */
+}
+
+/* Стилізація прокрутки (для Chrome, Edge) */
+#protocolTable::-webkit-scrollbar {
+    width: 8px;
+}
+
+#protocolTable::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+#protocolTable::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 
 
 /* Оформлення заголовків */
