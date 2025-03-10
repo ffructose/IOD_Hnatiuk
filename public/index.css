@@ -60,14 +60,13 @@ h3{
 
 @media (max-width: 768px) {
     .container {
-        flex-direction: column;
         align-items: center;
-        gap: 15px;
+        gap: 2px;
     }
 
     #placesContainer {
-        flex-direction: column;
         align-items: center;
+        padding: 0;
     }
 
     .drop-zone {
@@ -79,18 +78,32 @@ h3{
     }
 
     .song {
-        width: 90%;
+        width: 15%;
         max-width: 220px;
         font-size: 14px;
         padding: 5px;
     }
 
     h3 {
+        font-size: 11px;
+    }
+
+    h2 {
         font-size: 18px;
+        margin: 0;
     }
 
     #saveButton {
         font-size: 16px;
         padding: 12px 25px;
+    }
+
+    .song small {
+        font-size: 9px;
+        color: #353535;
+    }
+
+    p{
+       display: none; 
     }
 }
