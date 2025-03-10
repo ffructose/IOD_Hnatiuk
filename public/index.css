@@ -9,8 +9,9 @@
 
 .song {
     width: 150px;
-    padding: 10px;
+    padding: 2px;
     border: 1px solid #aaa;
+    border-radius: 5%;
     background: #f4f4f4;
     text-align: center;
     cursor: grab;
@@ -54,4 +55,5 @@
 
 h3{
     margin: 0 0 0 0;
+    font-size: 18px;
 }
