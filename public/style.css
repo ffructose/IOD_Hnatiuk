@@ -33,8 +33,10 @@
     grid-column: span 2; /* Займає обидва стовпці */
     width: 100%;
     min-height: 200px; /* Мінімальна висота */
-    height: auto;
+    height: max-content;
 }
+
+
 
 
 /* Спільний стиль для контейнерів */
@@ -46,7 +48,6 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    height: 400px; /* Фіксована висота */
     overflow: hidden; /* Ховає зайвий контент */
     display: flex;
     flex-direction: column;
