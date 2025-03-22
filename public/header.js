@@ -13,19 +13,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         const registerBtn = document.getElementById("registerBtn");
         const logoutBtn = document.getElementById("logoutBtn");
 
+
         if (token) {
             // Якщо користувач залогувався, приховуємо кнопки "Увійти" і "Реєстрація"
             loginBtn.style.display = "none";
             registerBtn.style.display = "none";
             logoutBtn.style.display = "inline-block"; // Показуємо "Вийти"
             accBtn.style.display = "inline-block"; // Показуємо "кабінет"
+            evrBtn.style.display = "inline-block"; // Приховуємо "кабінет"
         } else {
             // Якщо користувач не залогований, показуємо кнопки "Увійти" і "Реєстрація"
             loginBtn.style.display = "inline-block";
             registerBtn.style.display = "inline-block";
             logoutBtn.style.display = "none"; // Приховуємо "Вийти"
             accBtn.style.display = "none"; // Приховуємо "кабінет"
-
+            evrBtn.style.display = "none"; // Приховуємо "кабінет"
         }
 
         // Функція виходу з акаунта
