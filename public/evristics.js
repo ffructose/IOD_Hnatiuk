@@ -180,6 +180,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         bestSongsTableBody.innerHTML = "<tr><td colspan='5'>Не вдалося завантажити пісні.</td></tr>";
     }
 });
+
+
 document.addEventListener("DOMContentLoaded", async function () {
     const evristicTableBody = document.querySelector("#evristicTable tbody");
 
@@ -218,8 +220,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 });
 
+
+
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
-    const evrSongTable = document.getElementById("evrSongTable").querySelector("tbody");
+    const evrSongTable = document.querySelector("#evrSongTable tbody");
     const heuristicColumn = document.getElementById("heuristicColumn");
     let originalData = []; // Початкові дані пісень
     let appliedHeuristics = {}; // Активні евристики
@@ -250,9 +259,9 @@ document.addEventListener("DOMContentLoaded", function () {
         row.innerHTML = `
             <td>${song.song_id}</td>
             <td>${song.song_name}</td>
-            <td class="place-cell" data-place="1">${song.first_place}</td>
-            <td class="place-cell" data-place="2">${song.second_place}</td>
-            <td class="place-cell" data-place="3">${song.third_place}</td>
+            <td class="place-cell" data-place="1">${song.first_place_count || 0}</td>
+            <td class="place-cell" data-place="2">${song.second_place_count || 0}</td>
+            <td class="place-cell" data-place="3">${song.third_place_count || 0}</td>
             <td class="heuristic-result" style="display: none;"></td>
         `;
         evrSongTable.appendChild(row);
@@ -280,6 +289,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (thirdPlace > 0 && firstPlace === 0 && secondPlace === 0) {
                         remove = true;
                         row.children[4].style.backgroundColor = "red"; // 🔴 Виділення червоним
+                        heuristicCell.textContent = "🚫 Видалено через евристику 1";
                     }
                     break;
 
@@ -295,7 +305,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!remove) {
                 filteredSongs.push({
                     song_id: songId,
-                    song_name: row.children[1].textContent
+                    song_name: row.children[1].textContent,
+                    first_place_count: firstPlace,
+                    second_place_count: secondPlace,
+                    third_place_count: thirdPlace
                 });
                 heuristicCell.textContent = "✅ Пройшло евристику";
             } else {
@@ -316,6 +329,9 @@ document.addEventListener("DOMContentLoaded", function () {
             row.innerHTML = `
                 <td>${song.song_id}</td>
                 <td>${song.song_name}</td>
+                <td>${song.first_place_count || 0}</td>
+                <td>${song.second_place_count || 0}</td>
+                <td>${song.third_place_count || 0}</td>
                 <td>✅ Пройшло евристику</td>
             `;
             finalTable.appendChild(row);
@@ -357,5 +373,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
     loadSongsData();
 });
-
-
