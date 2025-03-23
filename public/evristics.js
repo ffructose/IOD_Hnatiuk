@@ -271,112 +271,85 @@ document.addEventListener("DOMContentLoaded", function () {
     // 🔹 Функція застосування евристики
     function applyHeuristic(heuristicId) {
         console.log(`🔹 Виконання applyHeuristic для евристики ${heuristicId}`);
-        heuristicColumn.style.display = "table-cell"; // Показати стовпець "Застосування евристик"
     
-        appliedHeuristics[heuristicId] = []; // Масив для збереження видалених пісень
-        let newFilteredData = [];
+        const filteredTableBody = document.querySelector("#filteredTable tbody");
+        filteredTableBody.innerHTML = ""; // Очищаємо перед оновленням
+    
+        appliedHeuristics[heuristicId] = []; // Масив для збереження відфільтрованих пісень
     
         evrSongTable.querySelectorAll("tr").forEach(row => {
             const songId = row.getAttribute("data-id");
+            const songName = row.children[1].textContent;
             const firstPlace = parseInt(row.children[2].textContent) || 0;
             const secondPlace = parseInt(row.children[3].textContent) || 0;
             const thirdPlace = parseInt(row.children[4].textContent) || 0;
-            const heuristicCell = row.children[5];
     
             let remove = false;
             let highlightColor = ""; // Колір виділення клітинки
-    
+
             switch (heuristicId) {
                 case 1:
                     if (thirdPlace === 1 && firstPlace === 0 && secondPlace === 0) {
                         remove = true;
                         highlightColor = "red";
-                        heuristicCell.textContent = "🚫 Видалено через евристику 1";
                     }
                     break;
-
                 case 2:
                     if (secondPlace === 1 && firstPlace === 0 && thirdPlace === 0) {
                         remove = true;
                         highlightColor = "blue";
-                        heuristicCell.textContent = "🚫 Видалено через евристику 2";
                     }
                     break;
-
                 case 3:
                     if (firstPlace === 1 && secondPlace === 0 && thirdPlace === 0) {
                         remove = true;
                         highlightColor = "green";
-                        heuristicCell.textContent = "🚫 Видалено через евристику 3";
                     }
                     break;
-
                 case 4:
                     if (thirdPlace === 2 && firstPlace === 0 && secondPlace === 0) {
                         remove = true;
                         highlightColor = "purple";
-                        heuristicCell.textContent = "🚫 Видалено через евристику 4";
                     }
                     break;
-
                 case 5:
                     if (thirdPlace === 1 && secondPlace === 1 && firstPlace === 0) {
                         remove = true;
                         highlightColor = "orange";
-                        heuristicCell.textContent = "🚫 Видалено через евристику 5";
                     }
                     break;
-
                 case 6:
                     if (secondPlace === 2 && firstPlace === 0 && thirdPlace === 0) {
                         remove = true;
                         highlightColor = "brown";
-                        heuristicCell.textContent = "🚫 Видалено через евристику 6";
                     }
                     break;
-
                 case 7:
                     if (firstPlace === 1 && secondPlace === 1 && thirdPlace === 0) {
                         remove = true;
                         highlightColor = "pink";
-                        heuristicCell.textContent = "🚫 Видалено через евристику 7";
                     }
                     break;
             }
 
-            if (!remove) {
-                newFilteredData.push({
-                    song_id: songId,
-                    song_name: row.children[1].textContent,
-                    first_place_count: firstPlace,
-                    second_place_count: secondPlace,
-                    third_place_count: thirdPlace
-                });
-            } else {
-                appliedHeuristics[heuristicId].push({
-                    song_id: songId,
-                    song_name: row.children[1].textContent,
-                    first_place_count: firstPlace,
-                    second_place_count: secondPlace,
-                    third_place_count: thirdPlace
-                });
-
-                // 🔹 Забарвлення відповідної клітинки
+            if (remove) {
+                appliedHeuristics[heuristicId].push({ songId, songName });
+    
+                // 🔹 Додаємо запис у `filteredTable`
+                const newRow = document.createElement("tr");
+                newRow.innerHTML = `<td>${songName}</td>`;
+                filteredTableBody.appendChild(newRow);
+    
+                // 🔹 Підсвічуємо клітинки в `evrSongTable`
                 if (highlightColor) {
                     if (thirdPlace > 0) row.children[4].style.backgroundColor = highlightColor;
                     if (secondPlace > 0) row.children[3].style.backgroundColor = highlightColor;
                     if (firstPlace > 0) row.children[2].style.backgroundColor = highlightColor;
                 }
-
-                row.style.display = "hidden"; // Приховуємо рядок
             }
         });
-        
-        console.log("Нові відфільтровані дані:", newFilteredData);
-        filteredData = newFilteredData;
     
-        // 🔹 Оновлюємо DOM після змін
-        updateTable(filteredData);
+        console.log("🔹 Відфільтровані об'єкти:", appliedHeuristics[heuristicId]);
     }
 
 
