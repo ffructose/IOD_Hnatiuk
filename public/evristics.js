@@ -208,8 +208,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 <td>${evristic.place_5 || 0}</td>
                 <td>${evristic.place_6 || 0}</td>
                 <td>${evristic.place_7 || 0}</td>
-                <td><button class="apply-btn" data-id="${evristic.evristic_id}">Застосувати</button></td>
-                <td><button class="cancel-btn" data-id="${evristic.evristic_id}">Відмінити</button></td>
+                <td><button class="apply-heuristic" data-id="${evristic.evristic_id}">Застосувати</button></td>
+                <td><button class="cancel-heuristic" data-id="${evristic.evristic_id}">Відмінити</button></td>
             `;
 
             evristicTableBody.appendChild(row);
@@ -219,6 +219,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.error("❌ Помилка завантаження популярності евристик:", error);
     }
 });
+
 
 
 
@@ -272,6 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🔹 Функція застосування евристики
     function applyHeuristic(heuristicId) {
+        console.log(`🔹 Виконання applyHeuristic для евристики ${heuristicId}`);
         heuristicColumn.style.display = "table-cell"; // Показати стовпець "Застосування евристик"
         appliedHeuristics[heuristicId] = []; // Масив для збереження видалених пісень
 
@@ -373,6 +375,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🔹 Функція скасування конкретної евристики
     function cancelHeuristic(heuristicId) {
+        console.log(`🔹 Виконання cancelHeuristic для евристики ${heuristicId}`);
         if (!appliedHeuristics[heuristicId] || appliedHeuristics[heuristicId].length === 0) return;
 
         // Повертаємо тільки ті об'єкти, які були видалені конкретною евристикою
@@ -400,13 +403,16 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("apply-heuristic")) {
             const heuristicId = parseInt(event.target.getAttribute("data-id"));
+            console.log(`🔹 Натиснута кнопка "Застосувати" для евристики ${heuristicId}`);
             applyHeuristic(heuristicId);
         }
         if (event.target.classList.contains("cancel-heuristic")) {
             const heuristicId = parseInt(event.target.getAttribute("data-id"));
+            console.log(`🔹 Натиснута кнопка "Відмінити" для евристики ${heuristicId}`);
             cancelHeuristic(heuristicId);
         }
     });
+    
 
     loadSongsData();
 });
