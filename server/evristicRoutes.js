@@ -16,7 +16,7 @@ router.get("/user/:user_id", async (req, res) => {
         if (existingRecords.rows.length === 0) {
             const evristics = await client.query("SELECT * FROM evristics");
             for (const evristic of evristics.rows) {
-                await client.query("INSERT INTO evristicPlace (evristic_id, user_id, place) VALUES ($1, $2, $3)", 
+                await client.query("INSERT INTO evristicPlace (evristic_id, user_id, place) VALUES ($1, $2, $3)",
                     [evristic.evristic_id, userId, evristic.evristic_id]);
             }
         }
@@ -43,7 +43,7 @@ router.get("/user/:user_id", async (req, res) => {
 router.post("/update", async (req, res) => {
     const { user_id, places } = req.body;
 
-    if (!user_id || !places) {
+    if (!user_id || !places || !Array.isArray(places)) {
         return res.status(400).json({ error: "Неправильні дані" });
     }
 
@@ -59,17 +59,24 @@ router.post("/update", async (req, res) => {
                 "INSERT INTO evristicPlace (evristic_id, user_id, place) VALUES ($1, $2, $3)",
                 [place.evristic_id, user_id, place.place]
             );
+
+            // 🔹 Логування кожної зміни в Protocol
+            await client.query(
+                "INSERT INTO Protocol (user_id, action, time) VALUES ($1, $2, NOW())",
+                [user_id, `Користувач змінив місце евристики ID ${place.evristic_id} на ${place.place}`]
+            );
         }
 
         await client.query("COMMIT");
-
         res.json({ message: "✅ Порядок евристик оновлено" });
+
     } catch (error) {
         await client.query("ROLLBACK");
         console.error("❌ Помилка оновлення евристик:", error);
         res.status(500).json({ error: "Помилка сервера" });
     }
 });
+
 
 /**
  * 3️⃣ Логування дій користувача
