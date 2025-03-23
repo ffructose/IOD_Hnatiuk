@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Завантаження початкових даних
     async function loadSongsData() {
         try {
-            const response = await fetch("/evristics/popular");
+            const response = await fetch("/evristics/popular-songs");
             const songs = await response.json();
             originalData = songs.map(song => ({ ...song })); // Копія початкових даних
             updateTable(originalData);
