@@ -56,15 +56,15 @@ const createTable = async () => {
         description TEXT NOT NULL
       );
 
-      INSERT INTO evristics (description) VALUES
-        ('Участь в одному множинному порівнянні на 3 місці.'),
-        ('Участь в одному множинному порівнянні на 2 місці.'),
-        ('Участь в одному множинному порівнянні на 1 місці.'),
-        ('Участь в 2х множинних порівняннях на 3 місці.'),
-        ('Участь в одному множинному порівнянні на 3 місці та ще в одному – на 2 місці.'),
-        ('Участь в двох множинних порівняннях на 2 місці.'),
-        ('Участь в одному множинному порівнянні на 1 місці та ще в одному – на 2 місці.');
-      
+      CREATE TABLE IF NOT EXISTS evristicPlace (
+        evristicplace_id SERIAL PRIMARY KEY,
+        evristic_id INT NOT NULL,
+        user_id INT NOT NULL,
+        place INT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (evristic_id) REFERENCES evristics(evristic_id) ON DELETE CASCADE
+      );
+
     `;
 
   try {

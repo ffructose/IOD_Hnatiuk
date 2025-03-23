@@ -6,6 +6,7 @@ const userRoutes = require('./userRoutes');
 const songsRoutes = require('./songsRoutes');
 const mainRoutes = require('./mainRoutes');
 const adminRoutes = require('./adminRoutes');
+const evristicRoutes = require('./evristicRoutes');
 
 dotenv.config();
 const app = express();
@@ -20,7 +21,7 @@ app.use('/user', userRoutes);  // Рути роботи з користувач�
 app.use('/songs', songsRoutes);  // Рути роботи з списком пісень
 app.use('/main', mainRoutes);  // Рути роботи з головною сторінкою
 app.use('/admin', adminRoutes);  // Рути роботи з головною сторінкою
-
+app.use('/evristic', evristicRoutes);  // Рути роботи з евристиками
 
 // Запуск сервера
 const PORT = process.env.PORT || 3000;
