@@ -226,7 +226,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
 
-
 document.addEventListener("DOMContentLoaded", function () {
     const evrSongTable = document.querySelector("#evrSongTable tbody");
     const heuristicColumn = document.getElementById("heuristicColumn");
@@ -285,20 +284,62 @@ document.addEventListener("DOMContentLoaded", function () {
             let remove = false;
 
             switch (heuristicId) {
-                case 1: // Видаляємо об'єкти, які тільки на 3 місці
-                    if (thirdPlace > 0 && firstPlace === 0 && secondPlace === 0) {
+                case 1: // Видаляємо об'єкти, які тільки один раз були на 3 місці
+                    if (thirdPlace === 1 && firstPlace === 0 && secondPlace === 0) {
                         remove = true;
-                        row.children[4].style.backgroundColor = "red"; // 🔴 Виділення червоним
+                        row.children[4].style.backgroundColor = "red";
                         heuristicCell.textContent = "🚫 Видалено через евристику 1";
                     }
                     break;
 
-                case 2:
-                    // Логіка евристики 2 (заповніть самостійно)
+                case 2: // Видаляємо об'єкти, які тільки один раз були на 2 місці
+                    if (secondPlace === 1 && firstPlace === 0 && thirdPlace === 0) {
+                        remove = true;
+                        row.children[3].style.backgroundColor = "red";
+                        heuristicCell.textContent = "🚫 Видалено через евристику 2";
+                    }
                     break;
 
-                case 3:
-                    // Логіка евристики 3 (заповніть самостійно)
+                case 3: // Видаляємо об'єкти, які тільки один раз були на 1 місці
+                    if (firstPlace === 1 && secondPlace === 0 && thirdPlace === 0) {
+                        remove = true;
+                        row.children[2].style.backgroundColor = "red";
+                        heuristicCell.textContent = "🚫 Видалено через евристику 3";
+                    }
+                    break;
+
+                case 4: // Видаляємо об'єкти, які були рівно два рази на 3 місці
+                    if (thirdPlace === 2 && firstPlace === 0 && secondPlace === 0) {
+                        remove = true;
+                        row.children[4].style.backgroundColor = "red";
+                        heuristicCell.textContent = "🚫 Видалено через евристику 4";
+                    }
+                    break;
+
+                case 5: // Видаляємо об'єкти, які були по одному разу на 3 і 2 місцях
+                    if (thirdPlace === 1 && secondPlace === 1 && firstPlace === 0) {
+                        remove = true;
+                        row.children[4].style.backgroundColor = "red";
+                        row.children[3].style.backgroundColor = "red";
+                        heuristicCell.textContent = "🚫 Видалено через евристику 5";
+                    }
+                    break;
+
+                case 6: // Видаляємо об'єкти, які були рівно два рази на 2 місці
+                    if (secondPlace === 2 && firstPlace === 0 && thirdPlace === 0) {
+                        remove = true;
+                        row.children[3].style.backgroundColor = "red";
+                        heuristicCell.textContent = "🚫 Видалено через евристику 6";
+                    }
+                    break;
+
+                case 7: // Видаляємо об'єкти, які були по одному разу на 1 і 2 місцях
+                    if (firstPlace === 1 && secondPlace === 1 && thirdPlace === 0) {
+                        remove = true;
+                        row.children[2].style.backgroundColor = "red";
+                        row.children[3].style.backgroundColor = "red";
+                        heuristicCell.textContent = "🚫 Видалено через евристику 7";
+                    }
                     break;
             }
 
@@ -340,22 +381,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 🔹 Функція скасування конкретної евристики
     function cancelHeuristic(heuristicId) {
-        if (!appliedHeuristics[heuristicId]) return; // Якщо евристика не була застосована, не робимо нічого
+        if (!appliedHeuristics[heuristicId]) return;
 
-        delete appliedHeuristics[heuristicId]; // Видаляємо евристику зі списку застосованих
+        delete appliedHeuristics[heuristicId];
 
-        // Якщо після скасування немає жодної активної евристики – ховаємо стовпець
         if (Object.keys(appliedHeuristics).length === 0) {
             heuristicColumn.style.display = "none";
         }
 
-        // Відновлюємо оригінальні дані
         updateTable(originalData);
 
-        // Видаляємо червоний колір клітинок, якщо була евристика 1
         const rows = evrSongTable.querySelectorAll("tr");
         rows.forEach(row => {
-            row.children[4].style.backgroundColor = ""; // Прибираємо виділення червоним
+            row.children[2].style.backgroundColor = "";
+            row.children[3].style.backgroundColor = "";
+            row.children[4].style.backgroundColor = "";
         });
     }
 
