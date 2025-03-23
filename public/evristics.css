@@ -37,7 +37,13 @@
 }
 
 #evrSongContainer{
-    grid-column: span 2; /* Займає обидва стовпці */
+    grid-column: span 3; /* Займає обидва стовпці */
+    width: 100%;
+    min-height: 300px; /* Мінімальна висота */
+    height: max-content;
+}
+#filteredContainer{
+    grid-column: span 1; /* Займає обидва стовпці */
     width: 100%;
     min-height: 300px; /* Мінімальна висота */
     height: max-content;
@@ -47,6 +53,7 @@
 #bestSongs,
 #bestEvrBlock,
 #evrSongContainer,
+#filteredContainer,
 #evristicContainer {
     background: white;
     padding: 15px;
@@ -62,6 +69,7 @@
 #bestSongs,
 #bestEvrBlock,
 #evrSongContainer,
+#filteredContainer,
 #evristicContainer  {
     background: white;
     padding: 15px;
@@ -76,6 +84,7 @@
 #bestSongsTable,
 #bestEvrTable,
 #evrSongTable,
+#filteredTable,
 #evristicTable {
     flex-grow: 1;
     overflow-y: auto;
@@ -87,6 +96,7 @@
 #bestSongsTable::-webkit-scrollbar,
 #bestEvrTable::-webkit-scrollbar,
 #evrSongTable::-webkit-scrollbar,
+#filteredTable::-webkit-scrollbar,
 #evristicTable::-webkit-scrollbar {
     width: 8px;
 }
@@ -94,6 +104,7 @@
 #bestSongsTable::-webkit-scrollbar-thumb,
 #bestEvrTable::-webkit-scrollbar-thumb,
 #evrSongTable::-webkit-scrollbar-thumb,
+#filteredTable::-webkit-scrollbar-thumb,
 #evristicTable::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 4px;
@@ -102,6 +113,7 @@
 #bestSongsTable::-webkit-scrollbar-thumb:hover,
 #bestEvrTable::-webkit-scrollbar-thumb:hover,
 #evrSongTable::-webkit-scrollbar-thumb:hover,
+#filteredTable::-webkit-scrollbar-thumb:hover,
 #evristicTable::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
