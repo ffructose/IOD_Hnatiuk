@@ -226,11 +226,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
 
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const evrSongTable = document.querySelector("#evrSongTable tbody");
     const heuristicColumn = document.getElementById("heuristicColumn");
     let originalData = []; // Початкові дані пісень
-    let appliedHeuristics = {}; // Активні евристики
+    let filteredData = []; // Відфільтровані дані після евристик
+    let appliedHeuristics = {}; // Об'єкти пісень, видалені кожною евристикою
 
     // Завантаження початкових даних
     async function loadSongsData() {
@@ -238,13 +241,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch("/evristics/popular-songs");
             const songs = await response.json();
             originalData = songs.map(song => ({ ...song })); // Копія початкових даних
-            updateTable(originalData);
+            filteredData = [...originalData]; // На початку вони однакові
+            updateTable(filteredData);
         } catch (error) {
             console.error("Помилка завантаження пісень:", error);
         }
     }
 
-    // Оновлення таблиці з об'єктами пісень
+    // Оновлення таблиці після фільтрації
     function updateTable(songs) {
         evrSongTable.innerHTML = "";
         songs.forEach(song => addSongRow(song));
@@ -269,10 +273,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // 🔹 Функція застосування евристики
     function applyHeuristic(heuristicId) {
         heuristicColumn.style.display = "table-cell"; // Показати стовпець "Застосування евристик"
-        appliedHeuristics[heuristicId] = true; // Додаємо евристику у список застосованих
+        appliedHeuristics[heuristicId] = []; // Масив для збереження видалених пісень
 
         const rows = evrSongTable.querySelectorAll("tr");
-        let filteredSongs = [];
+        let newFilteredData = [];
 
         rows.forEach(row => {
             const songId = row.getAttribute("data-id");
@@ -284,7 +288,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let remove = false;
 
             switch (heuristicId) {
-                case 1: // Видаляємо об'єкти, які тільки один раз були на 3 місці
+                case 1:
                     if (thirdPlace === 1 && firstPlace === 0 && secondPlace === 0) {
                         remove = true;
                         row.children[4].style.backgroundColor = "red";
@@ -292,114 +296,107 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     break;
 
-                case 2: // Видаляємо об'єкти, які тільки один раз були на 2 місці
+                case 2:
                     if (secondPlace === 1 && firstPlace === 0 && thirdPlace === 0) {
                         remove = true;
-                        row.children[3].style.backgroundColor = "red";
+                        row.children[3].style.backgroundColor = "blue";
                         heuristicCell.textContent = "🚫 Видалено через евристику 2";
                     }
                     break;
 
-                case 3: // Видаляємо об'єкти, які тільки один раз були на 1 місці
+                case 3:
                     if (firstPlace === 1 && secondPlace === 0 && thirdPlace === 0) {
                         remove = true;
-                        row.children[2].style.backgroundColor = "red";
+                        row.children[2].style.backgroundColor = "green";
                         heuristicCell.textContent = "🚫 Видалено через евристику 3";
                     }
                     break;
 
-                case 4: // Видаляємо об'єкти, які були рівно два рази на 3 місці
+                case 4:
                     if (thirdPlace === 2 && firstPlace === 0 && secondPlace === 0) {
                         remove = true;
-                        row.children[4].style.backgroundColor = "red";
+                        row.children[4].style.backgroundColor = "purple";
                         heuristicCell.textContent = "🚫 Видалено через евристику 4";
                     }
                     break;
 
-                case 5: // Видаляємо об'єкти, які були по одному разу на 3 і 2 місцях
+                case 5:
                     if (thirdPlace === 1 && secondPlace === 1 && firstPlace === 0) {
                         remove = true;
-                        row.children[4].style.backgroundColor = "red";
-                        row.children[3].style.backgroundColor = "red";
+                        row.children[4].style.backgroundColor = "orange";
+                        row.children[3].style.backgroundColor = "orange";
                         heuristicCell.textContent = "🚫 Видалено через евристику 5";
                     }
                     break;
 
-                case 6: // Видаляємо об'єкти, які були рівно два рази на 2 місці
+                case 6:
                     if (secondPlace === 2 && firstPlace === 0 && thirdPlace === 0) {
                         remove = true;
-                        row.children[3].style.backgroundColor = "red";
+                        row.children[3].style.backgroundColor = "brown";
                         heuristicCell.textContent = "🚫 Видалено через евристику 6";
                     }
                     break;
 
-                case 7: // Видаляємо об'єкти, які були по одному разу на 1 і 2 місцях
+                case 7:
                     if (firstPlace === 1 && secondPlace === 1 && thirdPlace === 0) {
                         remove = true;
-                        row.children[2].style.backgroundColor = "red";
-                        row.children[3].style.backgroundColor = "red";
+                        row.children[2].style.backgroundColor = "pink";
+                        row.children[3].style.backgroundColor = "pink";
                         heuristicCell.textContent = "🚫 Видалено через евристику 7";
                     }
                     break;
             }
 
             if (!remove) {
-                filteredSongs.push({
+                newFilteredData.push({
                     song_id: songId,
                     song_name: row.children[1].textContent,
                     first_place_count: firstPlace,
                     second_place_count: secondPlace,
                     third_place_count: thirdPlace
                 });
-                heuristicCell.textContent = "✅ Пройшло евристику";
             } else {
-                row.style.display = "none"; // Видаляємо рядок
+                appliedHeuristics[heuristicId].push({
+                    song_id: songId,
+                    song_name: row.children[1].textContent,
+                    first_place_count: firstPlace,
+                    second_place_count: secondPlace,
+                    third_place_count: thirdPlace
+                });
+                row.style.display = "none"; // Приховуємо рядок
             }
         });
 
-        updateFinalTable(filteredSongs);
-    }
-
-    // 🔹 Функція оновлення фінальної таблиці (що пройшло евристику)
-    function updateFinalTable(filteredSongs) {
-        let finalTable = document.getElementById("evrSongTable").querySelector("tbody");
-        finalTable.innerHTML = "";
-
-        filteredSongs.forEach(song => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${song.song_id}</td>
-                <td>${song.song_name}</td>
-                <td>${song.first_place_count || 0}</td>
-                <td>${song.second_place_count || 0}</td>
-                <td>${song.third_place_count || 0}</td>
-                <td>✅ Пройшло евристику</td>
-            `;
-            finalTable.appendChild(row);
-        });
+        filteredData = newFilteredData;
+        updateTable(filteredData);
     }
 
     // 🔹 Функція скасування конкретної евристики
     function cancelHeuristic(heuristicId) {
-        if (!appliedHeuristics[heuristicId]) return;
+        if (!appliedHeuristics[heuristicId] || appliedHeuristics[heuristicId].length === 0) return;
 
-        delete appliedHeuristics[heuristicId];
+        // Повертаємо тільки ті об'єкти, які були видалені конкретною евристикою
+        filteredData = [...filteredData, ...appliedHeuristics[heuristicId]];
+        updateTable(filteredData);
 
-        if (Object.keys(appliedHeuristics).length === 0) {
-            heuristicColumn.style.display = "none";
-        }
-
-        updateTable(originalData);
-
+        // Видаляємо кольорові виділення
         const rows = evrSongTable.querySelectorAll("tr");
         rows.forEach(row => {
             row.children[2].style.backgroundColor = "";
             row.children[3].style.backgroundColor = "";
             row.children[4].style.backgroundColor = "";
         });
+
+        // Видаляємо евристику зі списку активних
+        delete appliedHeuristics[heuristicId];
+
+        // Якщо жодної евристики не залишилось активною – ховаємо стовпець
+        if (Object.keys(appliedHeuristics).length === 0) {
+            heuristicColumn.style.display = "none";
+        }
     }
 
-    // 🔹 Додаємо події для кнопок застосування/скасування евристик
+    // Додаємо події для кнопок застосування/скасування евристик
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("apply-heuristic")) {
             const heuristicId = parseInt(event.target.getAttribute("data-id"));
