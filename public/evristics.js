@@ -272,20 +272,20 @@ document.addEventListener("DOMContentLoaded", function () {
     function applyHeuristic(heuristicId) {
         console.log(`🔹 Виконання applyHeuristic для евристики ${heuristicId}`);
         heuristicColumn.style.display = "table-cell"; // Показати стовпець "Застосування евристик"
-
+    
         appliedHeuristics[heuristicId] = []; // Масив для збереження видалених пісень
         let newFilteredData = [];
-
+    
         evrSongTable.querySelectorAll("tr").forEach(row => {
             const songId = row.getAttribute("data-id");
             const firstPlace = parseInt(row.children[2].textContent) || 0;
             const secondPlace = parseInt(row.children[3].textContent) || 0;
             const thirdPlace = parseInt(row.children[4].textContent) || 0;
             const heuristicCell = row.children[5];
-
+    
             let remove = false;
             let highlightColor = ""; // Колір виділення клітинки
-
+    
             switch (heuristicId) {
                 case 1:
                     if (thirdPlace === 1 && firstPlace === 0 && secondPlace === 0) {
@@ -371,9 +371,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 row.style.display = "hidden"; // Приховуємо рядок
             }
         });
-
+        
         console.log("Нові відфільтровані дані:", newFilteredData);
         filteredData = newFilteredData;
+    
+        // 🔹 Оновлюємо DOM після змін
+        updateTable(filteredData);
     }
 
 
