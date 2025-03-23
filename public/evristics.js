@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", async function () {
     const evrTable = document.getElementById("sortableBestEvr");
     const userId = localStorage.getItem("user_id"); // Отримуємо ID користувача
+
     if (!userId) {
         alert("❌ Ви не авторизовані!");
         window.location.href = "login.html";
@@ -23,45 +24,95 @@ document.addEventListener("DOMContentLoaded", async function () {
         evristics.forEach(evristic => {
             const row = document.createElement("tr");
             row.setAttribute("data-id", evristic.evristic_id);
+            row.setAttribute("draggable", "true"); // Дозволяємо перетягування
             row.innerHTML = `
                 <td>${evristic.evristic_id}</td>
                 <td>${evristic.description}</td>
             `;
             evrTable.appendChild(row);
+
+            // Додаємо події для перетягування
+            row.addEventListener("dragstart", handleDragStart);
+            row.addEventListener("dragover", handleDragOver);
+            row.addEventListener("drop", handleDrop);
+            row.addEventListener("dragend", handleDragEnd);
         });
 
-        // 2️⃣ Робимо таблицю перетягуваною (Sortable.js)
-        new Sortable(evrTable, {
-            animation: 150,
-            ghostClass: "dragging",
-            onEnd: async function () {
-                updateRowStyles();
-                await saveEvristicOrder(userId);
-            }
-        });
-
-        updateRowStyles();
+        updateRowStyles(); // Оновлюємо стилі (золотий, срібний, бронзовий)
 
     } catch (error) {
         console.error("Помилка завантаження евристик:", error);
     }
 });
 
+// Змінна для збереження поточного елемента, що перетягується
+let draggedRow = null;
+
 /**
- * Змінює стиль рядків (золотий, срібний, бронзовий)
+ * Обробник початку перетягування
+ */
+function handleDragStart(event) {
+    draggedRow = event.target; // Запам'ятовуємо рядок
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/html", event.target.innerHTML);
+    event.target.style.opacity = "0.5";
+}
+
+/**
+ * Дозволяє перетягування через інші рядки
+ */
+function handleDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+}
+
+/**
+ * Обробник події `drop` — змінює порядок евристик
+ */
+function handleDrop(event) {
+    event.preventDefault();
+    if (draggedRow && event.target.closest("tr")) {
+        const targetRow = event.target.closest("tr");
+
+        if (draggedRow !== targetRow) {
+            let parent = targetRow.parentNode;
+            let rows = Array.from(parent.children);
+            let draggedIndex = rows.indexOf(draggedRow);
+            let targetIndex = rows.indexOf(targetRow);
+
+            if (draggedIndex > targetIndex) {
+                parent.insertBefore(draggedRow, targetRow);
+            } else {
+                parent.insertBefore(draggedRow, targetRow.nextSibling);
+            }
+
+            updateRowStyles(); // Оновлюємо кольори
+            saveEvristicOrder(localStorage.getItem("user_id")); // Зберігаємо в БД
+        }
+    }
+}
+
+/**
+ * Очищує стилі після завершення перетягування
+ */
+function handleDragEnd(event) {
+    event.target.style.opacity = "1";
+}
+
+/**
+ * Оновлює стилі топ-3 евристик
  */
 function updateRowStyles() {
-    let rows = document.getElementById("sortableBestEvr").getElementsByTagName("tr");
-    for (let i = 0; i < rows.length; i++) {
-        rows[i].style.backgroundColor = "";
-    }
+    let rows = document.querySelectorAll("#sortableBestEvr tr");
+    rows.forEach(row => row.style.backgroundColor = ""); // Очищаємо фон
+
     if (rows[0]) rows[0].style.backgroundColor = "gold";
     if (rows[1]) rows[1].style.backgroundColor = "silver";
     if (rows[2]) rows[2].style.backgroundColor = "#cd7f32";
 }
 
 /**
- * Зберігає порядок евристик у базі даних
+ * Зберігає новий порядок евристик у базі
  */
 async function saveEvristicOrder(userId) {
     let rows = document.querySelectorAll("#sortableBestEvr tr");
@@ -98,32 +149,3 @@ async function saveEvristicOrder(userId) {
         console.error("Помилка збереження порядку евристик:", error);
     }
 }
-document.addEventListener("DOMContentLoaded", function () {
-    const evrTable = document.getElementById("sortableBestEvr");
-
-    if (!evrTable) {
-        console.error("❌ Помилка: елемент #sortableBestEvr не знайдено!");
-        return;
-    }
-
-    console.log("✅ Знайдено контейнер для евристик:", evrTable);
-
-    new Sortable(evrTable, {
-        animation: 150, // Гладка анімація перетягування
-        ghostClass: "dragging", // Додає клас під час перетягування
-        onEnd: function () {
-            console.log("🔄 Евристика переміщена!");
-            updateRowStyles();
-        }
-    });
-
-    function updateRowStyles() {
-        let rows = evrTable.getElementsByTagName("tr");
-        for (let i = 0; i < rows.length; i++) {
-            rows[i].style.backgroundColor = ""; // Скидаємо фон для всіх
-        }
-        if (rows[0]) rows[0].style.backgroundColor = "gold";
-        if (rows[1]) rows[1].style.backgroundColor = "silver";
-        if (rows[2]) rows[2].style.backgroundColor = "#cd7f32";
-    }
-});
