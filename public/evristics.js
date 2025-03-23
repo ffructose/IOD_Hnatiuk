@@ -272,11 +272,11 @@ document.addEventListener("DOMContentLoaded", function () {
     function applyHeuristic(heuristicId) {
         console.log(`🔹 Виконання applyHeuristic для евристики ${heuristicId}`);
     
-        const filteredTableBody = document.querySelector("#filteredTable tbody");
-        filteredTableBody.innerHTML = ""; // Очищаємо перед оновленням
+        if (!appliedHeuristics[heuristicId]) {
+            appliedHeuristics[heuristicId] = [];
+        }
     
-        appliedHeuristics[heuristicId] = []; // Масив для збереження відфільтрованих пісень
-        let filteredSongs = []; // Масив для пісень без евристик
+        let newFilteredData = []; // Оновлений список без евристик
     
         evrSongTable.querySelectorAll("tr").forEach(row => {
             const songId = row.getAttribute("data-id");
@@ -286,9 +286,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const thirdPlace = parseInt(row.children[4].textContent) || 0;
     
             let applyHeuristic = false;
-            let highlightColor = ""; // Колір виділення клітинки
+            let highlightColor = "";
     
-            // 🔹 Застосовуємо евристику до пісні
             switch (heuristicId) {
                 case 1:
                     if (thirdPlace === 1 && firstPlace === 0 && secondPlace === 0) {
@@ -337,19 +336,63 @@ document.addEventListener("DOMContentLoaded", function () {
             if (applyHeuristic) {
                 appliedHeuristics[heuristicId].push({ songId, songName });
     
-                // 🔹 Підсвічуємо клітинки в `evrSongTable`
+                // 🔹 Підсвічуємо клітинки
                 if (highlightColor) {
                     if (thirdPlace > 0) row.children[4].style.backgroundColor = highlightColor;
                     if (secondPlace > 0) row.children[3].style.backgroundColor = highlightColor;
                     if (firstPlace > 0) row.children[2].style.backgroundColor = highlightColor;
                 }
-            } else {
-                // 🔹 Якщо евристика НЕ застосована – додаємо пісню у `filteredTable`
+            }
+        });
+    
+        updateFilteredTable(); // Оновлюємо список залишених пісень
+    }
+    
+    function cancelHeuristic(heuristicId) {
+        console.log(`🔹 Виконання cancelHeuristic для евристики ${heuristicId}`);
+    
+        if (!appliedHeuristics[heuristicId] || appliedHeuristics[heuristicId].length === 0) return;
+    
+        // 🔹 Видаляємо евристику з `appliedHeuristics`
+        appliedHeuristics[heuristicId].forEach(({ songId }) => {
+            const row = document.querySelector(`#evrSongTable tr[data-id="${songId}"]`);
+            if (row) {
+                row.children[2].style.backgroundColor = "";
+                row.children[3].style.backgroundColor = "";
+                row.children[4].style.backgroundColor = "";
+            }
+        });
+    
+        delete appliedHeuristics[heuristicId]; // Прибираємо збережену евристику
+        updateFilteredTable(); // Оновлюємо список залишених пісень
+    }
+    
+    /**
+     * Оновлює список об'єктів у `filteredTable` (тільки ті, до яких НЕ застосовано жодної евристики)
+     */
+    function updateFilteredTable() {
+        const filteredTableBody = document.querySelector("#filteredTable tbody");
+        filteredTableBody.innerHTML = ""; // Очищаємо перед оновленням
+    
+        let heuristicSongIds = new Set(); // Список ID пісень, до яких застосовані евристики
+    
+        // 🔹 Додаємо всі об'єкти з `appliedHeuristics` у `heuristicSongIds`
+        Object.values(appliedHeuristics).flat().forEach(({ songId }) => {
+            heuristicSongIds.add(songId);
+        });
+    
+        let filteredSongs = [];
+    
+        evrSongTable.querySelectorAll("tr").forEach(row => {
+            const songId = row.getAttribute("data-id");
+            const songName = row.children[1].textContent;
+    
+            if (!heuristicSongIds.has(songId)) {
                 filteredSongs.push({ songName });
             }
         });
     
-        // 🔹 Додаємо у `filteredTable` тільки пісні без евристик
+        // 🔹 Відображаємо у `filteredTable` тільки ті пісні, які залишились після всіх евристик
         filteredSongs.forEach(song => {
             const newRow = document.createElement("tr");
             newRow.innerHTML = `<td>${song.songName}</td>`;
@@ -359,27 +402,6 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("🔹 Об'єкти без евристик у `filteredTable`:", filteredSongs);
     }
     
-
-
-    // 🔹 Функція скасування конкретної евристики
-    function cancelHeuristic(heuristicId) {
-        console.log(`🔹 Виконання cancelHeuristic для евристики ${heuristicId}`);
-
-        if (!appliedHeuristics[heuristicId] || appliedHeuristics[heuristicId].length === 0) return;
-
-        // Повертаємо тільки ті об'єкти, які були видалені конкретною евристикою
-        filteredData = [...filteredData, ...appliedHeuristics[heuristicId]];
-        delete appliedHeuristics[heuristicId];
-
-        // 🔹 Очищення кольорів клітинок
-        evrSongTable.querySelectorAll("tr").forEach(row => {
-            row.children[2].style.backgroundColor = "";
-            row.children[3].style.backgroundColor = "";
-            row.children[4].style.backgroundColor = "";
-        });
-
-        updateTable(filteredData);
-    }
 
 
     // Додаємо події для кнопок застосування/скасування евристик
