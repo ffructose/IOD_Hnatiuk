@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Евристики</title>
+    <link rel="stylesheet" href="evristics.css">
+    <link rel="stylesheet" href="header.css">
+    <script defer src="evristics.js"></script>
+    <script defer src="header.js"></script>
+</head>
+
+<body class="evristicBody">
+    <div class="evristicCont">
+
+        <!-- Блок для відображення рейтингу пісень,-->
+        <div id="bestSongs">
+            <h3>Найпопулярніші пісні</h3>
+            <table id="bestSongsTable">
+                <thead>
+                    <tr>
+                        <th>songID </th>
+                        <th>назва</th>
+                        <th>1 місце</th>
+                        <th>2 місце</th>
+                        <th>3 місце</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Тут будуть дані -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Блок для визначення пріоритетності евристик -->
+        <div id="bestEvrBlock">
+            <h3>Оберіть три найкращі евристики (1-3, від найкращої )</h3>
+
+            <table id="bestEvrTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Опис</th>
+                    </tr>
+                </thead>
+                <tbody id="sortableBestEvr">
+                    <!-- Тут будуть дані -->
+                </tbody>
+            </table>
+
+
+        </div>
+
+        <!-- Блок для відображення популярності евристик -->
+        <div id="evristicContainer">
+            <h3>Популярність евристик</h3>
+            <table id="evristicTable">
+                <thead>
+                    <tr>
+                        <th>Номер Евристики</th>
+                        <th>Опис </th>
+                        <th>Застосувати </th>
+                        <th>Відмінити </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Тут будуть дані -->
+                </tbody>
+            </table>
+        </div>
+
+</body>
+
+</html>

@@ -51,6 +51,20 @@ const createTable = async () => {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
 
+      CREATE TABLE IF NOT EXISTS evristics (
+        evristic_id SERIAL PRIMARY KEY,
+        description TEXT NOT NULL
+      );
+
+      INSERT INTO evristics (description) VALUES
+        ('Участь в одному множинному порівнянні на 3 місці.'),
+        ('Участь в одному множинному порівнянні на 2 місці.'),
+        ('Участь в одному множинному порівнянні на 1 місці.'),
+        ('Участь в 2х множинних порівняннях на 3 місці.'),
+        ('Участь в одному множинному порівнянні на 3 місці та ще в одному – на 2 місці.'),
+        ('Участь в двох множинних порівняннях на 2 місці.'),
+        ('Участь в одному множинному порівнянні на 1 місці та ще в одному – на 2 місці.');
+      
     `;
 
   try {
