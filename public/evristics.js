@@ -149,3 +149,34 @@ async function saveEvristicOrder(userId) {
         console.error("Помилка збереження порядку евристик:", error);
     }
 }
+
+document.addEventListener("DOMContentLoaded", async function () {
+    const bestSongsTableBody = document.querySelector("#bestSongsTable tbody");
+
+    try {
+        const response = await fetch("/evristics/popular-songs");
+        let songs = await response.json();
+
+        if (!Array.isArray(songs)) {
+            throw new Error("Сервер повернув неправильний формат даних.");
+        }
+
+        bestSongsTableBody.innerHTML = ""; // Очищаємо таблицю перед оновленням
+
+        songs.forEach(song => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${song.song_id}</td>
+                <td>${song.song_name} (${song.author})</td>
+                <td>${song.first_place_count}</td>
+                <td>${song.second_place_count}</td>
+                <td>${song.third_place_count}</td>
+            `;
+            bestSongsTableBody.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error("❌ Помилка завантаження популярних пісень:", error);
+        bestSongsTableBody.innerHTML = "<tr><td colspan='5'>Не вдалося завантажити пісні.</td></tr>";
+    }
+});

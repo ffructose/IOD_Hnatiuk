@@ -100,4 +100,42 @@ router.post("/log-action", async (req, res) => {
     }
 });
 
+// Отримати найпопулярніші пісні
+router.get("/popular-songs", async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                sp.song_id,
+                e.song_name,
+                e.author,
+                e.country,
+                COUNT(CASE WHEN sp.place = 1 THEN 1 END) AS first_place_count,
+                COUNT(CASE WHEN sp.place = 2 THEN 1 END) AS second_place_count,
+                COUNT(CASE WHEN sp.place = 3 THEN 1 END) AS third_place_count
+            FROM SongPlace sp
+            JOIN EuroSongs e ON sp.song_id = e.song_id
+            GROUP BY sp.song_id, e.song_name, e.author, e.country
+        `;
+
+        const result = await client.query(query);
+
+        // Використовуємо довільну функцію сортування
+        const sortedSongs = sortPopularSongs(result.rows);
+
+        res.json(sortedSongs);
+    } catch (error) {
+        console.error("❌ Помилка отримання популярних пісень:", error);
+        res.status(500).json({ error: "Помилка сервера" });
+    }
+});
+
+// Довільна функція сортування пісень за популярністю
+function sortPopularSongs(songs) {
+    return songs.sort((a, b) => {
+        const scoreA = a.first_place_count * 3 + a.second_place_count * 2 + a.third_place_count * 1;
+        const scoreB = b.first_place_count * 3 + b.second_place_count * 2 + b.third_place_count * 1;
+        return scoreB - scoreA; // Від найпопулярніших до менш популярних
+    });
+}
+
 module.exports = router;
