@@ -180,3 +180,40 @@ document.addEventListener("DOMContentLoaded", async function () {
         bestSongsTableBody.innerHTML = "<tr><td colspan='5'>Не вдалося завантажити пісні.</td></tr>";
     }
 });
+document.addEventListener("DOMContentLoaded", async function () {
+    const evristicTableBody = document.querySelector("#evristicTable tbody");
+
+    try {
+        const response = await fetch("/evristics/popular");
+        let evristics = await response.json();
+
+        if (!Array.isArray(evristics)) {
+            throw new Error("Сервер повернув неправильний формат даних.");
+        }
+
+        evristicTableBody.innerHTML = ""; // Очищаємо таблицю перед оновленням
+
+        evristics.forEach(evristic => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${evristic.evristic_id}</td>
+                <td>${evristic.description}</td>
+                <td>${evristic.place_1 || 0}</td>
+                <td>${evristic.place_2 || 0}</td>
+                <td>${evristic.place_3 || 0}</td>
+                <td>${evristic.place_4 || 0}</td>
+                <td>${evristic.place_5 || 0}</td>
+                <td>${evristic.place_6 || 0}</td>
+                <td>${evristic.place_7 || 0}</td>
+                <td><button class="apply-btn" data-id="${evristic.evristic_id}">Застосувати</button></td>
+                <td><button class="cancel-btn" data-id="${evristic.evristic_id}">Відмінити</button></td>
+            `;
+
+            evristicTableBody.appendChild(row);
+        });
+
+    } catch (error) {
+        console.error("❌ Помилка завантаження популярності евристик:", error);
+    }
+});

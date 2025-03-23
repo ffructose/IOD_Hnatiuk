@@ -64,6 +64,9 @@ const createTable = async () => {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
         FOREIGN KEY (evristic_id) REFERENCES evristics(evristic_id) ON DELETE CASCADE
       );
+      
+      DELETE FROM evristics WHERE evristic_id BETWEEN 8 AND 14;
+
 
     `;
 

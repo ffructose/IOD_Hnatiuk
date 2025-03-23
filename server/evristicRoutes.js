@@ -145,5 +145,30 @@ function sortPopularSongs(songs) {
         return scoreB - scoreA; // Від найпопулярніших до менш популярних
     });
 }
+/**
+ * 🔹 Отримання евристик за популярністю
+ */
+router.get("/popular", async (req, res) => {
+    try {
+        const result = await client.query(`
+            SELECT e.evristic_id, e.description,
+                COUNT(CASE WHEN ep.place = 1 THEN 1 END) AS place_1,
+                COUNT(CASE WHEN ep.place = 2 THEN 1 END) AS place_2,
+                COUNT(CASE WHEN ep.place = 3 THEN 1 END) AS place_3,
+                COUNT(CASE WHEN ep.place = 4 THEN 1 END) AS place_4,
+                COUNT(CASE WHEN ep.place = 5 THEN 1 END) AS place_5,
+                COUNT(CASE WHEN ep.place = 6 THEN 1 END) AS place_6,
+                COUNT(CASE WHEN ep.place = 7 THEN 1 END) AS place_7
+            FROM evristics e
+            LEFT JOIN evristicPlace ep ON e.evristic_id = ep.evristic_id
+            GROUP BY e.evristic_id, e.description
+            ORDER BY place_1 DESC, place_2 DESC, place_3 DESC, place_4 DESC, place_5 DESC, place_6 DESC, place_7 DESC;
+        `);
 
+        res.json(result.rows);
+    } catch (error) {
+        console.error("❌ Помилка отримання популярності евристик:", error);
+        res.status(500).json({ error: "Помилка сервера" });
+    }
+});
 module.exports = router;
