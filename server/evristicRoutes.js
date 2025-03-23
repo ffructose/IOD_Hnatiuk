@@ -40,6 +40,7 @@ router.get("/user/:user_id", async (req, res) => {
 /**
  * 2️⃣ Оновлення порядку евристик
  */
+
 router.post("/update", async (req, res) => {
     const { user_id, places } = req.body;
 
@@ -50,21 +51,28 @@ router.post("/update", async (req, res) => {
     try {
         await client.query("BEGIN");
 
-        // Видаляємо старі записи користувача
-        await client.query("DELETE FROM evristicPlace WHERE user_id = $1", [user_id]);
-
-        // Додаємо оновлені позиції
         for (const place of places) {
-            await client.query(
-                "INSERT INTO evristicPlace (evristic_id, user_id, place) VALUES ($1, $2, $3)",
-                [place.evristic_id, user_id, place.place]
+            // Отримуємо поточне місце евристики
+            const currentPlaceRes = await client.query(
+                "SELECT place FROM evristicPlace WHERE user_id = $1 AND evristic_id = $2",
+                [user_id, place.evristic_id]
             );
 
-            // 🔹 Логування кожної зміни в Protocol
-            await client.query(
-                "INSERT INTO Protocol (user_id, action, time) VALUES ($1, $2, NOW())",
-                [user_id, `Користувач змінив місце евристики ID ${place.evristic_id} на ${place.place}`]
-            );
+            const currentPlace = currentPlaceRes.rows[0]?.place;
+
+            // Оновлюємо місце тільки якщо воно змінилось
+            if (currentPlace !== place.place) {
+                await client.query(
+                    "UPDATE evristicPlace SET place = $1 WHERE user_id = $2 AND evristic_id = $3",
+                    [place.place, user_id, place.evristic_id]
+                );
+
+                // 🔹 Логування зміни в Protocol
+                await client.query(
+                    "INSERT INTO Protocol (user_id, action, time) VALUES ($1, $2, NOW())",
+                    [user_id, `Користувач змінив місце евристики ID ${place.evristic_id} на ${place.place}`]
+                );
+            }
         }
 
         await client.query("COMMIT");
