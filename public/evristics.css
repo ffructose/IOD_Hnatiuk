@@ -36,12 +36,17 @@
     height: max-content;
 }
 
-
-
+#evrSongContainer{
+    grid-column: span 2; /* Займає обидва стовпці */
+    width: 100%;
+    min-height: 300px; /* Мінімальна висота */
+    height: max-content;
+}
 
 /* Спільний стиль для контейнерів */
 #bestSongs,
 #bestEvrBlock,
+#evrSongContainer,
 #evristicContainer {
     background: white;
     padding: 15px;
@@ -56,6 +61,7 @@
 /* Спільний стиль для контейнерів */
 #bestSongs,
 #bestEvrBlock,
+#evrSongContainer,
 #evristicContainer  {
     background: white;
     padding: 15px;
@@ -69,6 +75,7 @@
 /* Додаємо прокрутку для таблиць всередині контейнерів */
 #bestSongsTable,
 #bestEvrTable,
+#evrSongTable,
 #evristicTable {
     flex-grow: 1;
     overflow-y: auto;
@@ -79,12 +86,14 @@
 /* Стилізація прокрутки (для Chrome, Edge) */
 #bestSongsTable::-webkit-scrollbar,
 #bestEvrTable::-webkit-scrollbar,
+#evrSongTable::-webkit-scrollbar,
 #evristicTable::-webkit-scrollbar {
     width: 8px;
 }
 
 #bestSongsTable::-webkit-scrollbar-thumb,
 #bestEvrTable::-webkit-scrollbar-thumb,
+#evrSongTable::-webkit-scrollbar-thumb,
 #evristicTable::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 4px;
@@ -92,6 +101,7 @@
 
 #bestSongsTable::-webkit-scrollbar-thumb:hover,
 #bestEvrTable::-webkit-scrollbar-thumb:hover,
+#evrSongTable::-webkit-scrollbar-thumb:hover,
 #evristicTable::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
