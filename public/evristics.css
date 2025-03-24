@@ -171,14 +171,7 @@ th {
 /* Загальний стиль сторінки */
 @media (max-width: 768px) {
 
-    #bestSongs, #evristicContainer {
-        grid-column: 1 / -1; /* Займають весь рядок */
-        width: 100%;
-        padding: 10px;
-        font-size: 14px;
-    }
-
-    #evrSongContainer, #filteredContainer {
+    #bestSongs, #evristicContainer, #evrSongContainer, #filteredContainer , #bestEvrBlock  {
         grid-column: 1 / -1; /* Займають весь рядок */
         width: 100%;
         padding: 10px;
