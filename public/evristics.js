@@ -249,8 +249,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 <td>${evristic.place_5 || 0}</td>
                 <td>${evristic.place_6 || 0}</td>
                 <td>${evristic.place_7 || 0}</td>
-                <td><button class="apply-heuristic" data-id="${evristic.evristic_id}">Застосувати</button></td>
-                <td><button class="cancel-heuristic" data-id="${evristic.evristic_id}">Відмінити</button></td>
+                <td><button class="apply-heuristic" data-id="${evristic.evristic_id}">✅</button></td>
+                <td><button class="cancel-heuristic" data-id="${evristic.evristic_id}">❌</button></td>
             `;
 
             evristicTableBody.appendChild(row);
