@@ -285,6 +285,7 @@ document.addEventListener("DOMContentLoaded", function () {
             originalData = songs.map(song => ({ ...song })); // Копія початкових даних
             filteredData = [...originalData]; // На початку вони однакові
             updateTable(filteredData);
+            updateFilteredTable(); // ✅ ОНОВЛЮЄМО filteredTable ПІСЛЯ ЗАВАНТАЖЕННЯ
         } catch (error) {
             console.error("Помилка завантаження пісень:", error);
         }
