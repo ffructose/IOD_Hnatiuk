@@ -171,4 +171,36 @@ router.get("/popular", async (req, res) => {
         res.status(500).json({ error: "Помилка сервера" });
     }
 });
+
+// 🔁 Очищення та вставлення нових даних у EvrSongs
+router.post("/evrsongs/reset", async (req, res) => {
+    const { songs } = req.body; // масив [{ songId, songName }]
+    try {
+        await client.query("DELETE FROM EvrSongs");
+
+        for (const song of songs) {
+            await client.query(
+                "INSERT INTO EvrSongs (song_id, song_name) VALUES ($1, $2)",
+                [song.songId, song.songName]
+            );
+        }
+
+        res.status(200).json({ message: "EvrSongs оновлено" });
+    } catch (error) {
+        console.error("❌ Помилка при оновленні EvrSongs:", error);
+        res.status(500).json({ error: "Не вдалося оновити EvrSongs" });
+    }
+});
+
+// 📥 Отримати дані з EvrSongs
+router.get("/evrsongs", async (req, res) => {
+    try {
+        const result = await client.query("SELECT song_name FROM EvrSongs");
+        res.json(result.rows);
+    } catch (error) {
+        console.error("❌ Помилка при отриманні EvrSongs:", error);
+        res.status(500).json({ error: "Не вдалося отримати EvrSongs" });
+    }
+});
+
 module.exports = router;

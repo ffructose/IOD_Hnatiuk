@@ -415,13 +415,11 @@ document.addEventListener("DOMContentLoaded", function () {
     /**
      * Оновлює список об'єктів у `filteredTable` (тільки ті, до яких НЕ застосовано жодної евристики)
      */
-    function updateFilteredTable() {
+    async function updateFilteredTable() {
         const filteredTableBody = document.querySelector("#filteredTable tbody");
         filteredTableBody.innerHTML = ""; // Очищаємо перед оновленням
     
-        let heuristicSongIds = new Set(); // Список ID пісень, до яких застосовані евристики
-    
-        // 🔹 Додаємо всі об'єкти з `appliedHeuristics` у `heuristicSongIds`
+        let heuristicSongIds = new Set();
         Object.values(appliedHeuristics).flat().forEach(({ songId }) => {
             heuristicSongIds.add(songId);
         });
@@ -433,19 +431,31 @@ document.addEventListener("DOMContentLoaded", function () {
             const songName = row.children[1].textContent;
     
             if (!heuristicSongIds.has(songId)) {
-                filteredSongs.push({ songName });
+                filteredSongs.push({ songId, songName });
             }
         });
     
-        // 🔹 Відображаємо у `filteredTable` тільки ті пісні, які залишились після всіх евристик
-        filteredSongs.forEach(song => {
+        // 🔁 Надсилаємо пісні на сервер для оновлення EvrSongs
+        await fetch("/evristics/evrsongs/reset", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ songs: filteredSongs })
+        });
+    
+        // 📥 Отримуємо пісні з таблиці EvrSongs
+        const response = await fetch("/evristics/evrsongs");
+        const evrSongs = await response.json();
+    
+        // 🔄 Виводимо пісні в таблицю
+        evrSongs.forEach(song => {
             const newRow = document.createElement("tr");
-            newRow.innerHTML = `<td>${song.songName}</td>`;
+            newRow.innerHTML = `<td>${song.song_name}</td>`;
             filteredTableBody.appendChild(newRow);
         });
     
-        console.log("🔹 Об'єкти без евристик у `filteredTable`:", filteredSongs);
+        console.log("🔹 Пісні з EvrSongs:", evrSongs);
     }
+    
     
 
 
