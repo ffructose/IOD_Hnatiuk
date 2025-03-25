@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch('/lab3/song-places')
       .then(response => response.json())
       .then(data => {
-        const cont1 = document.getElementById('cont1.1');
-        const cont2 = document.getElementById('cont1.2');
+        const cont1 = document.getElementById('cont1_1');
+        const cont2 = document.getElementById('cont1_2');
   
         // Створюємо таблицю 1 — відображення пісень на місцях
         const table1 = document.createElement('table');
