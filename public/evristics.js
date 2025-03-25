@@ -295,7 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    async function updateTableFiltered() {
+    async function updateFiltered() {
         const filteredTableBody = document.querySelector("#filteredTable tbody");
         filteredTableBody.innerHTML = ""; // Очищаємо перед оновленням
 
