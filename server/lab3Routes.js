@@ -28,4 +28,17 @@ router.get('/song-places', async (req, res) => {
   }
 });
 
+// Додай новий ендпоінт для отримання song_id з evrsongs
+app.get('/lab3/evrsongs', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT song_id FROM evrsongs');
+    const songIds = result.rows.map(row => row.song_id);
+    res.json(songIds);
+  } catch (err) {
+    console.error('Помилка при отриманні пісень:', err);
+    res.status(500).send('Server error');
+  }
+});
+
+
 module.exports = router;
