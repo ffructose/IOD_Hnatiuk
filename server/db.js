@@ -49,7 +49,7 @@ const createTable = async () => {
         token TEXT NOT NULL UNIQUE,
         created_at TIMESTAMP DEFAULT NOW(),
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-      );
+      ); 
 
       CREATE TABLE IF NOT EXISTS evristics (
         evristic_id SERIAL PRIMARY KEY,
