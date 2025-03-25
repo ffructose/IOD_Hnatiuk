@@ -364,7 +364,7 @@ document.addEventListener("DOMContentLoaded", function () {
         await fetch("/evristics/reset", { method: "POST" });
 
         // Вставляємо всі пісні у таблицю evrsongs
-        await fetch("/evristics/insert", {
+        await fetch("/evristics/evrsongs/insert", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ songs: allSongs })
@@ -540,7 +540,7 @@ document.addEventListener("DOMContentLoaded", function () {
         await fetch("/evristics/reset", { method: "POST" });
 
         // 2. Вставка
-        await fetch("/evristics/insert", {
+        await fetch("/evristics/evrsongs/insert", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ songs: filtered })
