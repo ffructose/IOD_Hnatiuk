@@ -436,7 +436,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     
         // 🔁 Надсилаємо пісні на сервер для оновлення EvrSongs
-        const postResponse = await fetch("/evristics/evrsongs/reset", {
+        const postResponse = await fetch("/evristics/reset", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ songs: filteredSongs })

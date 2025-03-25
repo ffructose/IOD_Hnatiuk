@@ -66,11 +66,12 @@ const createTable = async () => {
       );
 
 
-      CREATE TABLE IF NOT EXISTS evrsongs ( 
+      CREATE TABLE IF NOT EXISTS evrsongs (
         evrsongs_id SERIAL PRIMARY KEY,
         song_id INT NOT NULL,
-        song_name  TEXT NOT NULL,
+        song_name TEXT NOT NULL
       );
+
 
 
     `;

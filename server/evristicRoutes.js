@@ -173,7 +173,7 @@ router.get("/popular", async (req, res) => {
 });
 
 // 🔁 Очищення та вставлення нових даних у EvrSongs
-router.post("/evrsongs/reset", async (req, res) => {
+router.post("/reset", async (req, res) => {
     const { songs } = req.body;
 
     console.log("📩 Отримано список пісень:", songs);
