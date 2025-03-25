@@ -191,8 +191,10 @@ router.post("/evrsongs/reset", async (req, res) => {
                 console.log("⚠️ Пропущено через відсутність полів", song);
                 continue;
             }
+            console.log("👉 Вставляю:", song.songId, song.songName, typeof song.songId);
 
             await client.query(
+                
                 "INSERT INTO evrsongs (song_id, song_name) VALUES ($1, $2)",
                 [song.songId, song.songName]
             );
@@ -200,9 +202,10 @@ router.post("/evrsongs/reset", async (req, res) => {
 
         res.status(200).json({ message: "evrsongs оновлено" });
     } catch (error) {
-        console.error("❌ Помилка при оновленні evrsongs:", error);
-        res.status(500).json({ error: "Помилка сервера" });
+        console.error("❌ Помилка при оновленні evrsongs:", error.message, error.stack);
+        res.status(500).json({ error: error.message }); // 👈 Повертаємо повідомлення помилки з PG
     }
+    
 });
 
 
