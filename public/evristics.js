@@ -288,97 +288,120 @@ document.addEventListener("DOMContentLoaded", function () {
 
             updateTable(originalData);
 
-            const response2 = await fetch("/evristics/evrsongs");
-            const filteredSongs = await response2.json();
-
-            filteredData = filteredSongs.map(song => ({
-                songId: song.song_id, // якщо є ID
-                songName: song.song_name,
-                firstPlace: 0,
-                secondPlace: 0,
-                thirdPlace: 0
-            }));
-
-            updateTableFiltered(filteredData);
+            updateFiltered();
 
         } catch (error) {
             console.error("Помилка завантаження пісень:", error);
         }
     }
 
+    async function updateTableFiltered() {
+        const filteredTableBody = document.querySelector("#filteredTable tbody");
+        filteredTableBody.innerHTML = ""; // Очищаємо перед оновленням
+
+        // 📥 Отримуємо пісні з таблиці EvrSongs
+        const response = await fetch("/evristics/evrsongs");
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("❌ Сервер повернув помилку:", errorText);
+            return;
+        }
+
+        const evrSongs = await response.json();
+        if (!Array.isArray(evrSongs)) {
+            console.error("❌ Дані з сервера не є масивом:", evrSongs);
+            return;
+        }
+
+        // 🔄 Виводимо пісні в таблицю
+        evrSongs.forEach(song => {
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `<td>${song.song_name}</td>`;
+            filteredTableBody.appendChild(newRow);
+        });
+
+        filteredData = evrSongs.map(song => ({
+            songId: song.song_id,
+            songName: song.song_name
+        }));
+
+
+        console.log("🔹 Пісні з EvrSongs:", evrSongs);
+    }
+
     document.getElementById("cancelAll").addEventListener("click", function () {
         cancelAllHeuristics();
     });
-    
+
     function cancelAllHeuristics() {
         console.log("🔁 Скасування всіх евристик");
-    
+
         // 🔹 1. Очистити підсвічування
         document.querySelectorAll("#evrSongTable tr").forEach(row => {
             row.children[2].style.backgroundColor = "";
             row.children[3].style.backgroundColor = "";
             row.children[4].style.backgroundColor = "";
         });
-    
+
         // 🔹 2. Очистити застосовані евристики
         appliedHeuristics = {};
-    
+
         // 🔹 3. Вставити всі пісні назад у filteredTable та БД
         updateFilteredFromOriginal();
     }
-    
+
     async function updateFilteredFromOriginal() {
         const filteredTableBody = document.querySelector("#filteredTable tbody");
         filteredTableBody.innerHTML = "";
-    
+
         // Беремо всі пісні з originalData
         const allSongs = originalData.map(song => ({
             songId: song.song_id,
             songName: song.song_name
         }));
-    
+
         // Очищаємо таблицю evrsongs у БД
         await fetch("/lab3/reset", { method: "POST" });
-    
+
         // Вставляємо всі пісні у таблицю evrsongs
         await fetch("/lab3/evrsongs/insert", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ songs: allSongs })
         });
-    
+
         // Виводимо у таблицю
         allSongs.forEach(song => {
             const newRow = document.createElement("tr");
             newRow.innerHTML = `<td>${song.songName}</td>`;
             filteredTableBody.appendChild(newRow);
         });
-    
+
         // Оновлюємо filteredData
         filteredData = allSongs;
-    
+
         console.log("✅ Всі пісні відновлено у filteredTable");
     }
-    
-    
+
+
 
     // Оновлення таблиці 
     function updateTable(songs) {
         evrSongTable.innerHTML = "";
         songs.forEach(song => addSongRow(song, evrSongTable));
     }
-    
+
     function updateTableFiltered(songs) {
         filteredTable.innerHTML = "";
         songs.forEach(song => addSongRow(song, filteredTable));
     }
-    
+
 
     // Додавання рядків у таблицю
     function addSongRow(song, table) {
         const row = document.createElement("tr");
         row.setAttribute("data-id", song.song_id);
-    
+
         row.innerHTML = `
             <td>${song.song_id}</td>
             <td>${song.song_name}</td>
@@ -387,7 +410,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <td class="place-cell" data-place="3">${song.third_place_count || 0}</td>
             <td class="heuristic-result" style="display: none;"></td>
         `;
-    
+
         table.appendChild(row);
     }
 
@@ -502,14 +525,14 @@ document.addEventListener("DOMContentLoaded", function () {
             heuristicSongIds.add(parseInt(songId)); // на всяк випадок
         });
 
-        let filteredSongs = [];
+        let filtered = [];
 
         evrSongTable.querySelectorAll("tr").forEach(row => {
             const songId = parseInt(row.getAttribute("data-id")); // ← ТУТ!
             const songName = row.children[1].textContent;
 
             if (!heuristicSongIds.has(songId)) {
-                filteredSongs.push({ songId, songName });
+                filtered.push({ songId, songName });
             }
         });
 
@@ -520,7 +543,7 @@ document.addEventListener("DOMContentLoaded", function () {
         await fetch("/lab3/evrsongs/insert", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ songs: filteredSongs })
+            body: JSON.stringify({ songs: filtered })
         });
 
 
