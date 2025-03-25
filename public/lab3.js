@@ -105,7 +105,72 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("matrixStats (статистика):", matrixStats);
   
         // Тепер можна використовувати matrixSongs і matrixStats для подальших обчислень
-      })
+      
+              // 🧮 Матриця ранжування
+      const cont3 = document.getElementById('cont1_3');
+      const table3 = document.createElement('table');
+      table3.border = "1";
+      table3.style.borderCollapse = 'collapse';
+
+      // 1. Зібрати всі унікальні song_id з matrixSongs
+      const allSongIdsSet = new Set();
+      matrixSongs.forEach(row => {
+        row.forEach(songId => {
+          if (songId) allSongIdsSet.add(Number(songId));
+        });
+      });
+      const allSongIds = Array.from(allSongIdsSet).sort((a, b) => a - b); // сортовані
+
+      // 2. Побудова header-рядка
+      const headerRow3 = document.createElement('tr');
+      const emptyHeader = document.createElement('th');
+      emptyHeader.textContent = 'Song ID';
+      headerRow3.appendChild(emptyHeader);
+      userIds.forEach(userId => {
+        const th = document.createElement('th');
+        th.textContent = `User ${userId}`;
+        headerRow3.appendChild(th);
+      });
+      table3.appendChild(headerRow3);
+
+      // 3. Створити матрицю ранжування
+      const matrixRanks = []; // [ [songId, ...userValues], ... ]
+
+      allSongIds.forEach(songId => {
+        const row = document.createElement('tr');
+        const labelCell = document.createElement('td');
+        labelCell.textContent = songId;
+        row.appendChild(labelCell);
+
+        const songRow = [];
+
+        userIds.forEach(userId => {
+          let value = 0;
+          for (let place = 0; place < 3; place++) {
+            if (Number(data[userId][place]) === songId) {
+              value = place + 1;
+              break;
+            }
+          }
+          const td = document.createElement('td');
+          td.textContent = value;
+          row.appendChild(td);
+          songRow.push(value);
+        });
+
+        matrixRanks.push(songRow); // тільки значення, без songId
+        table3.appendChild(row);
+      });
+
+      cont3.appendChild(table3);
+
+      // 👀 Debug
+      console.log("matrixRanks (ранги за множинними порівняннями):", matrixRanks);
+
+    
+    
+    
+    })
       .catch(error => {
         console.error('Помилка завантаження даних:', error);
       });
