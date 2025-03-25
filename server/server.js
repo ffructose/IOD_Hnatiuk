@@ -7,6 +7,7 @@ const songsRoutes = require('./songsRoutes');
 const mainRoutes = require('./mainRoutes');
 const adminRoutes = require('./adminRoutes');
 const evristicRoutes = require('./evristicRoutes');
+const lab3Routes = require('./lab3Routes');
 
 dotenv.config();
 const app = express();
@@ -22,6 +23,7 @@ app.use('/songs', songsRoutes);  // Рути роботи з списком пі
 app.use('/main', mainRoutes);  // Рути роботи з головною сторінкою
 app.use('/admin', adminRoutes);  // Рути роботи з головною сторінкою
 app.use('/evristics', evristicRoutes);  // Рути роботи з евристиками
+app.use('/lab3', lab3Routes);  // Рути роботи з евристиками
 
 // Запуск сервера
 const PORT = process.env.PORT || 3000;
