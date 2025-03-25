@@ -172,42 +172,46 @@ router.get("/popular", async (req, res) => {
     }
 });
 
-// 🔁 Очищення та вставлення нових даних у EvrSongs
 router.post("/reset", async (req, res) => {
-    const { songs } = req.body;
+    try {
+        await client.query("DELETE FROM evrsongs");
+        console.log("🧹 Таблиця evrsongs очищена");
+        res.status(200).json({ message: "Таблиця очищена" });
+    } catch (error) {
+        console.error("❌ Помилка очищення:", error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
 
-    console.log("📩 Отримано список пісень:", songs);
+
+router.post("/evrsongs/insert", async (req, res) => {
+    const { songs } = req.body;
 
     if (!Array.isArray(songs)) {
         return res.status(400).json({ error: "songs має бути масивом" });
     }
 
     try {
-        await client.query("DELETE FROM evrsongs");
-
         for (const song of songs) {
-            console.log(`🎵 Вставка пісні:`, song);
             if (!song.songId || !song.songName) {
-                console.log("⚠️ Пропущено через відсутність полів", song);
+                console.warn("⚠️ Пропущено через відсутність полів", song);
                 continue;
             }
-            console.log("👉 Вставляю:", song.songId, song.songName, typeof song.songId);
 
             await client.query(
-                
                 "INSERT INTO evrsongs (song_id, song_name) VALUES ($1, $2)",
                 [song.songId, song.songName]
             );
         }
 
-        res.status(200).json({ message: "evrsongs оновлено" });
-    } catch (error) {
-        console.error("❌ Помилка при оновленні evrsongs:", error.message, error.stack);
-        res.status(500).json({ error: error.message }); // 👈 Повертаємо повідомлення помилки з PG
-    }
-    
-});
+        console.log("✅ Вставлено пісні:", songs.length);
+        res.status(200).json({ message: "Пісні додано" });
 
+    } catch (error) {
+        console.error("❌ Помилка вставки:", error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 // 📥 Отримати дані з EvrSongs
 router.get("/evrsongs", async (req, res) => {

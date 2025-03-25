@@ -272,6 +272,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     const evrSongTable = document.querySelector("#evrSongTable tbody");
+    const filteredTable = document.querySelector("#filteredTable tbody");
+
     const heuristicColumn = document.getElementById("heuristicColumn");
     let originalData = []; // Початкові дані пісень
     let filteredData = []; // Відфільтровані дані після евристик
@@ -283,21 +285,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch("/evristics/popular-songs");
             const songs = await response.json();
             originalData = songs.map(song => ({ ...song })); // Копія початкових даних
-            restoreFilteredDataFromServer();
-        } catch (error) {
-            console.error("Помилка завантаження пісень:", error);
-        }
-    }
 
-    // 1. Завантажуємо відфільтровані пісні з БД (evrsongs)
-    async function restoreFilteredDataFromServer() {
-        try {
-            const response = await fetch("/evristics/evrsongs");
-            const filteredSongs = await response.json();
+            updateTable(originalData);
 
-            if (!Array.isArray(filteredSongs)) {
-                throw new Error("Неправильний формат відфільтрованих пісень.");
-            }
+            const response2 = await fetch("/evristics/evrsongs");
+            const filteredSongs = await response2.json();
 
             filteredData = filteredSongs.map(song => ({
                 songId: song.song_id, // якщо є ID
@@ -307,26 +299,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 thirdPlace: 0
             }));
 
-            updateTable(filteredData);
-            console.log("🔁 Відновлено filteredData з БД");
+            updateTableFiltered(filteredData);
 
         } catch (error) {
-            console.error("❌ Помилка при відновленні filteredData:", error);
+            console.error("Помилка завантаження пісень:", error);
         }
     }
 
-
-    // Оновлення таблиці після фільтрації
+    // Оновлення таблиці 
     function updateTable(songs) {
         evrSongTable.innerHTML = "";
-        songs.forEach(song => addSongRow(song));
+        songs.forEach(song => addSongRow(song, evrSongTable));
     }
+    
+    function updateTableFiltered(songs) {
+        filteredTable.innerHTML = "";
+        songs.forEach(song => addSongRow(song, filteredTable));
+    }
+    
 
     // Додавання рядків у таблицю
-    function addSongRow(song) {
+    function addSongRow(song, table) {
         const row = document.createElement("tr");
         row.setAttribute("data-id", song.song_id);
-
+    
         row.innerHTML = `
             <td>${song.song_id}</td>
             <td>${song.song_name}</td>
@@ -335,7 +331,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <td class="place-cell" data-place="3">${song.third_place_count || 0}</td>
             <td class="heuristic-result" style="display: none;"></td>
         `;
-        evrSongTable.appendChild(row);
+    
+        table.appendChild(row);
     }
 
     // 🔹 Функція застосування евристики
@@ -458,18 +455,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // 🔁 Надсилаємо пісні на сервер для оновлення EvrSongs
-        const postResponse = await fetch("/evristics/reset", {
+        // 1. Очищення
+        await fetch("/lab3/reset", { method: "POST" });
+
+        // 2. Вставка
+        await fetch("/lab3/evrsongs/insert", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ songs: filteredSongs })
         });
 
-        if (!postResponse.ok) {
-            const errorText = await postResponse.text();
-            console.error("❌ Сервер повернув помилку при вставці:", errorText);
-            return;
-        }
 
         // 📥 Отримуємо пісні з таблиці EvrSongs
         const response = await fetch("/evristics/evrsongs");
@@ -496,7 +491,7 @@ document.addEventListener("DOMContentLoaded", function () {
             songId: song.song_id,
             songName: song.song_name
         }));
-        
+
 
         console.log("🔹 Пісні з EvrSongs:", evrSongs);
     }
