@@ -193,14 +193,14 @@ router.post("/evrsongs/reset", async (req, res) => {
             }
 
             await client.query(
-                "INSERT INTO EvrSongs (song_id, song_name) VALUES ($1, $2)",
+                "INSERT INTO evrsongs (song_id, song_name) VALUES ($1, $2)",
                 [song.songId, song.songName]
             );
         }
 
         res.status(200).json({ message: "evrsongs оновлено" });
     } catch (error) {
-        console.error("❌ Помилка при оновленні EvrSongs:", error);
+        console.error("❌ Помилка при оновленні evrsongs:", error);
         res.status(500).json({ error: "Помилка сервера" });
     }
 });
