@@ -306,6 +306,28 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    document.getElementById("cancelAll").addEventListener("click", function () {
+        cancelAllHeuristics();
+    });
+    
+    function cancelAllHeuristics() {
+        console.log("🔁 Скасування всіх евристик");
+    
+        // Очищаємо підсвічування
+        document.querySelectorAll("#evrSongTable tr").forEach(row => {
+            row.children[2].style.backgroundColor = "";
+            row.children[3].style.backgroundColor = "";
+            row.children[4].style.backgroundColor = "";
+        });
+    
+        // Очищаємо об'єкт з евристиками
+        appliedHeuristics = {};
+    
+        // Оновлюємо таблицю з фільтрованими піснями
+        updateFilteredTable();
+    }
+    
+
     // Оновлення таблиці 
     function updateTable(songs) {
         evrSongTable.innerHTML = "";
@@ -334,6 +356,8 @@ document.addEventListener("DOMContentLoaded", function () {
     
         table.appendChild(row);
     }
+
+
 
     // 🔹 Функція застосування евристики
     function applyHeuristic(heuristicId) {
