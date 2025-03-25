@@ -142,6 +142,9 @@ document.addEventListener("DOMContentLoaded", () => {
         labelCell.textContent = songId;
         row.appendChild(labelCell);
 
+
+
+        
         const songRow = [];
 
         userIds.forEach(userId => {
