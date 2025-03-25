@@ -361,10 +361,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }));
 
         // Очищаємо таблицю evrsongs у БД
-        await fetch("/lab3/reset", { method: "POST" });
+        await fetch("/evristics/reset", { method: "POST" });
 
         // Вставляємо всі пісні у таблицю evrsongs
-        await fetch("/lab3/evrsongs/insert", {
+        await fetch("/evristics/insert", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ songs: allSongs })
@@ -537,10 +537,10 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         // 1. Очищення
-        await fetch("/lab3/reset", { method: "POST" });
+        await fetch("/evristics/reset", { method: "POST" });
 
         // 2. Вставка
-        await fetch("/lab3/evrsongs/insert", {
+        await fetch("/evristics/insert", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ songs: filtered })
