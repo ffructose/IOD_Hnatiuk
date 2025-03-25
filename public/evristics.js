@@ -313,19 +313,53 @@ document.addEventListener("DOMContentLoaded", function () {
     function cancelAllHeuristics() {
         console.log("🔁 Скасування всіх евристик");
     
-        // Очищаємо підсвічування
+        // 🔹 1. Очистити підсвічування
         document.querySelectorAll("#evrSongTable tr").forEach(row => {
             row.children[2].style.backgroundColor = "";
             row.children[3].style.backgroundColor = "";
             row.children[4].style.backgroundColor = "";
         });
     
-        // Очищаємо об'єкт з евристиками
+        // 🔹 2. Очистити застосовані евристики
         appliedHeuristics = {};
     
-        // Оновлюємо таблицю з фільтрованими піснями
-        updateFilteredTable();
+        // 🔹 3. Вставити всі пісні назад у filteredTable та БД
+        updateFilteredFromOriginal();
     }
+    
+    async function updateFilteredFromOriginal() {
+        const filteredTableBody = document.querySelector("#filteredTable tbody");
+        filteredTableBody.innerHTML = "";
+    
+        // Беремо всі пісні з originalData
+        const allSongs = originalData.map(song => ({
+            songId: song.song_id,
+            songName: song.song_name
+        }));
+    
+        // Очищаємо таблицю evrsongs у БД
+        await fetch("/lab3/reset", { method: "POST" });
+    
+        // Вставляємо всі пісні у таблицю evrsongs
+        await fetch("/lab3/evrsongs/insert", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ songs: allSongs })
+        });
+    
+        // Виводимо у таблицю
+        allSongs.forEach(song => {
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `<td>${song.songName}</td>`;
+            filteredTableBody.appendChild(newRow);
+        });
+    
+        // Оновлюємо filteredData
+        filteredData = allSongs;
+    
+        console.log("✅ Всі пісні відновлено у filteredTable");
+    }
+    
     
 
     // Оновлення таблиці 
