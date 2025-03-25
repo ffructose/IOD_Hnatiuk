@@ -65,8 +65,10 @@ const createTable = async () => {
         FOREIGN KEY (evristic_id) REFERENCES evristics(evristic_id) ON DELETE CASCADE
       );
 
+      DROP TABLE IF EXISTS EvrSongs;
 
-      CREATE TABLE IF NOT EXISTS EvrSongs( 
+
+      CREATE TABLE IF NOT EXISTS evrsongs( 
         evrsongs_id SERIAL PRIMARY KEY,
         song_id INT NOT NULL,
         song_name  TEXT NOT NULL,

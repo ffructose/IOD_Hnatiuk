@@ -183,7 +183,7 @@ router.post("/evrsongs/reset", async (req, res) => {
     }
 
     try {
-        await client.query("DELETE FROM EvrSongs");
+        await client.query("DELETE FROM evrsongs");
 
         for (const song of songs) {
             console.log(`🎵 Вставка пісні:`, song);
@@ -198,7 +198,7 @@ router.post("/evrsongs/reset", async (req, res) => {
             );
         }
 
-        res.status(200).json({ message: "EvrSongs оновлено" });
+        res.status(200).json({ message: "evrsongs оновлено" });
     } catch (error) {
         console.error("❌ Помилка при оновленні EvrSongs:", error);
         res.status(500).json({ error: "Помилка сервера" });
@@ -209,11 +209,11 @@ router.post("/evrsongs/reset", async (req, res) => {
 // 📥 Отримати дані з EvrSongs
 router.get("/evrsongs", async (req, res) => {
     try {
-        const result = await client.query("SELECT song_name FROM EvrSongs");
+        const result = await client.query("SELECT song_name FROM evrsongs");
         console.log("📤 Відправляю пісні з бази:", result.rows);
         res.json(result.rows);
     } catch (error) {
-        console.error("❌ Помилка при отриманні EvrSongs:", error);
+        console.error("❌ Помилка при отриманні evrsongs:", error);
         res.status(500).json({ error: "Помилка сервера" });
     }
 });
