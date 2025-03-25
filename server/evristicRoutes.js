@@ -174,11 +174,24 @@ router.get("/popular", async (req, res) => {
 
 // 🔁 Очищення та вставлення нових даних у EvrSongs
 router.post("/evrsongs/reset", async (req, res) => {
-    const { songs } = req.body; // масив [{ songId, songName }]
+    const { songs } = req.body;
+
+    console.log("📩 Отримано список пісень:", songs);
+
+    if (!Array.isArray(songs)) {
+        return res.status(400).json({ error: "songs має бути масивом" });
+    }
+
     try {
         await client.query("DELETE FROM EvrSongs");
 
         for (const song of songs) {
+            console.log(`🎵 Вставка пісні:`, song);
+            if (!song.songId || !song.songName) {
+                console.log("⚠️ Пропущено через відсутність полів", song);
+                continue;
+            }
+
             await client.query(
                 "INSERT INTO EvrSongs (song_id, song_name) VALUES ($1, $2)",
                 [song.songId, song.songName]
@@ -188,19 +201,22 @@ router.post("/evrsongs/reset", async (req, res) => {
         res.status(200).json({ message: "EvrSongs оновлено" });
     } catch (error) {
         console.error("❌ Помилка при оновленні EvrSongs:", error);
-        res.status(500).json({ error: "Не вдалося оновити EvrSongs" });
+        res.status(500).json({ error: "Помилка сервера" });
     }
 });
+
 
 // 📥 Отримати дані з EvrSongs
 router.get("/evrsongs", async (req, res) => {
     try {
         const result = await client.query("SELECT song_name FROM EvrSongs");
+        console.log("📤 Відправляю пісні з бази:", result.rows);
         res.json(result.rows);
     } catch (error) {
         console.error("❌ Помилка при отриманні EvrSongs:", error);
-        res.status(500).json({ error: "Не вдалося отримати EvrSongs" });
+        res.status(500).json({ error: "Помилка сервера" });
     }
 });
+
 
 module.exports = router;
