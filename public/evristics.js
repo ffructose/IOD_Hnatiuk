@@ -283,8 +283,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch("/evristics/popular-songs");
             const songs = await response.json();
             originalData = songs.map(song => ({ ...song })); // Копія початкових даних
-            filteredData = [...originalData]; // На початку вони однакові
-            updateTable(filteredData);
         } catch (error) {
             console.error("Помилка завантаження пісень:", error);
         }
