@@ -5,7 +5,7 @@
     
 }
 
-#cont1_1,#cont1_2,#cont1_3,#cont1_4,#cont1_5{
+#cont1_1,#cont1_2,#cont1_3,#cont1_4,#cont1_5,#cont1_6,#cont1_7{
     overflow: hidden;
     margin: 40px;
 }
@@ -35,7 +35,7 @@ table::-webkit-scrollbar-thumb:hover {
     grid-column: span 2; 
 }
 
-#cont1_3,#cont1_4, #cont1_5{
+#cont1_3,#cont1_4, #cont1_5,#cont1_6, #cont1_7{
     grid-column: span 4; 
 }
 

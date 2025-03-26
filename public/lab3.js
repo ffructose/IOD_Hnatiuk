@@ -308,6 +308,149 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+
+
+      // Збірка даних для cont1_6 і cont1_7
+      const cont6 = document.getElementById('cont1_6');
+      const cont7 = document.getElementById('cont1_7');
+
+      // 1️⃣ Пошук мінімумів у Σ та Макс
+      let minSum = Infinity;
+      let minMax = Infinity;
+
+      let minSumPerms = [];
+      let minMaxPerms = [];
+
+      const resultRows = Array.from(table4.rows).slice(1); // пропускаємо заголовок
+
+      resultRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const distances = Array.from(cells).slice(0, userIds.length).map(td => Number(td.textContent));
+        const sum = Number(cells[userIds.length].textContent);
+        const max = Number(cells[userIds.length + 1].textContent);
+
+        const songIds = Array.from(allSongIds); // щоб зберегти оригінальний порядок
+        const permutation = [...permutations[resultRows.indexOf(row)]];
+
+        // Для суми
+        if (sum < minSum) {
+          minSum = sum;
+          minSumPerms = [permutation];
+        } else if (sum === minSum) {
+          minSumPerms.push(permutation);
+        }
+
+        // Для максимуму
+        if (max < minMax) {
+          minMax = max;
+          minMaxPerms = [permutation];
+        } else if (max === minMax) {
+          minMaxPerms.push(permutation);
+        }
+      });
+
+      // 🔁 Об'єднати унікальні перестановки
+      const uniqueBestPerms = [];
+      const seen = new Set();
+      [...minSumPerms, ...minMaxPerms].forEach(perm => {
+        const key = perm.join(',');
+        if (!seen.has(key)) {
+          seen.add(key);
+          uniqueBestPerms.push(perm);
+        }
+      });
+
+      // 📊 Оновлена таблиця для cont1_6
+      const table6 = document.createElement('table');
+      table6.border = "1";
+      table6.style.borderCollapse = 'collapse';
+
+      // Заголовок
+      const headerRow6 = document.createElement('tr');
+      const thLabel = document.createElement('th');
+      thLabel.textContent = 'Сума, Макс';
+      headerRow6.appendChild(thLabel);
+      allSongIds.forEach(songId => {
+        const th = document.createElement('th');
+        th.textContent = `ID ${songId}`;
+        headerRow6.appendChild(th);
+      });
+      table6.appendChild(headerRow6);
+
+      // Рядки для мінімальної суми
+      minSumPerms.forEach(perm => {
+        const row = document.createElement('tr');
+        const tdLabel = document.createElement('td');
+        tdLabel.textContent = `Сума: ${minSum}, Макс: —`;
+        row.appendChild(tdLabel);
+
+        allSongIds.forEach(songId => {
+          const td = document.createElement('td');
+          td.textContent = perm.indexOf(songId) + 1;
+          row.appendChild(td);
+        });
+
+        table6.appendChild(row);
+      });
+
+      // Рядки для мінімального максимуму
+      minMaxPerms.forEach(perm => {
+        const row = document.createElement('tr');
+        const tdLabel = document.createElement('td');
+        tdLabel.textContent = `Сума: —, Макс: ${minMax}`;
+        row.appendChild(tdLabel);
+
+        allSongIds.forEach(songId => {
+          const td = document.createElement('td');
+          td.textContent = perm.indexOf(songId) + 1;
+          row.appendChild(td);
+        });
+
+        table6.appendChild(row);
+      });
+
+      cont6.appendChild(table6);
+
+
+
+
+
+
+
+      // 📊 Таблиця ранжувань для cont1_7
+      const table7 = document.createElement('table');
+      table7.border = "1";
+      table7.style.borderCollapse = 'collapse';
+
+      // Заголовок
+      const headerRow7 = document.createElement('tr');
+
+      allSongIds.forEach(id => {
+        const th = document.createElement('th');
+        th.textContent = `ID ${id}`;
+        headerRow7.appendChild(th);
+      });
+      table7.appendChild(headerRow7);
+
+      // Для кожної унікальної перестановки рахуємо ранги
+      uniqueBestPerms.forEach(perm => {
+        const row = document.createElement('tr');
+
+
+        allSongIds.forEach(songId => {
+          const td = document.createElement('td');
+          td.textContent = perm.indexOf(songId) + 1; // ранг — позиція +1
+          row.appendChild(td);
+        });
+
+        table7.appendChild(row);
+      });
+
+      cont7.appendChild(table7);
+
+
+
+
     })
     .catch(error => {
       console.error('Помилка завантаження даних:', error);
