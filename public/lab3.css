@@ -5,6 +5,33 @@
     
 }
 
+#cont1_1,#cont1_2,#cont1_3,#cont1_4{
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+}
+
+table{
+    flex-grow: 1;
+    overflow-y: auto;
+    display: block;
+    max-height: 330px; /* Робимо прокрутку тільки в межах контейнера */
+}
+
+table::-webkit-scrollbar {
+    width: 8px;
+}
+
+table::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+table::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+
 #cont1_1,#cont1_2 {
     grid-column: span 2; 
 }
@@ -19,5 +46,5 @@ tr{
 
 th{
     padding: 8px;
-
+    background-color: rgb(173, 218, 218);
 }
