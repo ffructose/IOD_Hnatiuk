@@ -268,27 +268,26 @@ document.addEventListener("DOMContentLoaded", () => {
         let max = 0;
 
         for (let j = 0; j < userIds.length; j++) {
-          const expertRanks = matrixRanks.map(r => r[j]); // Ранги за множинними порівняннями від експерта j
-        
+          const expertRanks = matrixRanks.map(r => r[j]); // стовпець j (експерт)
+      
           let distance = 0;
-        
-          allSongIds.forEach((songId, idx) => {
-            const rankInPermutation = perm.indexOf(songId) + 1;
-            const expertRank = expertRanks[idx];
-        
-            if (rankInPermutation > 0 && expertRank > 0) {
-              distance += Math.abs(rankInPermutation - expertRank);
+      
+          allSongIds.forEach((songId, i) => {
+            const rankInPerm = perm.indexOf(songId) + 1;
+            const expertRank = expertRanks[i];
+      
+            if (rankInPerm > 0 && expertRank > 0) {
+              distance += Math.abs(rankInPerm - expertRank);
             }
           });
-        
+      
           sum += distance;
           if (distance > max) max = distance;
-        
+      
           const td = document.createElement('td');
           td.textContent = distance;
           row.appendChild(td);
         }
-        
 
         // Додаємо підсумки
         const sumTd = document.createElement('td');
