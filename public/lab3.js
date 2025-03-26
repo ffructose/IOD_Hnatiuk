@@ -268,22 +268,25 @@ document.addEventListener("DOMContentLoaded", () => {
         let max = 0;
 
         for (let j = 0; j < userIds.length; j++) {
-          const expertRanks = matrixRanks.map(r => r[j]); // стовпець j (експерт)
-      
+          const expertRanks = matrixRanks.map(r => r[j]); // стовпець j
+
+          // Створити вектор рангів для цієї перестановки
+          const permAsRanks = [];
+          for (let k = 0; k < expertRanks.length; k++) {
+            const songId = allSongIds[k];
+            const posInPerm = perm.indexOf(songId);
+            permAsRanks.push(posInPerm + 1); // 1-based
+          }
+
+          // Відстань Кука
           let distance = 0;
-      
-          allSongIds.forEach((songId, i) => {
-            const rankInPerm = perm.indexOf(songId) + 1;
-            const expertRank = expertRanks[i];
-      
-            if (rankInPerm > 0 && expertRank > 0) {
-              distance += Math.abs(rankInPerm - expertRank);
-            }
-          });
-      
+          for (let i = 0; i < expertRanks.length; i++) {
+            distance += Math.abs(expertRanks[i] - permAsRanks[i]);
+          }
+
           sum += distance;
           if (distance > max) max = distance;
-      
+
           const td = document.createElement('td');
           td.textContent = distance;
           row.appendChild(td);
@@ -320,14 +323,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const resultRows = Array.from(table4.rows).slice(1); // пропускаємо заголовок
 
-      resultRows.forEach((row, rowIdx) => {
+      resultRows.forEach(row => {
         const cells = row.querySelectorAll('td');
         const distances = Array.from(cells).slice(0, userIds.length).map(td => Number(td.textContent));
         const sum = Number(cells[userIds.length].textContent);
         const max = Number(cells[userIds.length + 1].textContent);
 
         const songIds = Array.from(allSongIds); // щоб зберегти оригінальний порядок
-        const permutation = [...permutations[rowIdx]];
+        const permutation = [...permutations[resultRows.indexOf(row)]];
 
         // Для суми
         if (sum < minSum) {
