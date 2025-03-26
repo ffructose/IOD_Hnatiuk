@@ -412,7 +412,8 @@ document.addEventListener("DOMContentLoaded", () => {
       table7.appendChild(headerRow7);
 
       // Рядки з рангами для кожної перестановки
-      intersectPerms.forEach(({ perm }) => {
+      intersectPerms.forEach(perm => {
+
         const row = document.createElement('tr');
 
         allSongIds.forEach(songId => {
