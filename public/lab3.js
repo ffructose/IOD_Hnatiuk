@@ -428,6 +428,119 @@ document.addEventListener("DOMContentLoaded", () => {
       cont7.appendChild(table7);
 
 
+      // 📌 cont1_8 — Результуючі ранжування за евристиками E1 та E2
+      const cont8 = document.getElementById('cont1_8');
+      const table8 = document.createElement('table');
+      table8.border = "1";
+      table8.style.borderCollapse = 'collapse';
+
+      // Заголовок
+      const headerRow8 = document.createElement('tr');
+      const thLabel1 = document.createElement('th');
+      thLabel1.textContent = 'Метод';
+      headerRow8.appendChild(thLabel1);
+      allSongIds.forEach(songId => {
+        const th = document.createElement('th');
+        th.textContent = `ID ${songId}`;
+        headerRow8.appendChild(th);
+      });
+      const thSum = document.createElement('th');
+      thSum.textContent = 'Σ відстаней';
+      headerRow8.appendChild(thSum);
+      const thMax = document.createElement('th');
+      thMax.textContent = 'Макс відстань';
+      headerRow8.appendChild(thMax);
+
+      table8.appendChild(headerRow8);
+
+      // Функція для обчислення відстаней Кука
+      function calculateCookDistances(perm) {
+        let sum = 0;
+        let max = 0;
+
+        for (let j = 0; j < userIds.length; j++) {
+          const expertRanks = matrixRanks.map(r => r[j]); // ранги експерта j
+          const permAsRanks = allSongIds.map(songId => perm.indexOf(songId) + 1);
+
+          let distance = 0;
+          for (let i = 0; i < expertRanks.length; i++) {
+            distance += Math.abs(expertRanks[i] - permAsRanks[i]);
+          }
+
+          sum += distance;
+          if (distance > max) max = distance;
+        }
+
+        return { sum, max };
+      }
+
+      // 🔍 Пошук найкращих перестановок за E1 і E2
+      let bestE1 = null, bestE2 = null;
+      let bestE1Value = Infinity, bestE2Value = Infinity;
+
+      intersectPerms.forEach(perm => {
+        const { sum, max } = calculateCookDistances(perm);
+
+        if (sum < bestE1Value) {
+          bestE1Value = sum;
+          bestE1 = { perm, sum, max };
+        }
+
+        if (max < bestE2Value) {
+          bestE2Value = max;
+          bestE2 = { perm, sum, max };
+        }
+      });
+
+      // 🖊️ Додаємо рядок для E1
+      if (bestE1) {
+        const row = document.createElement('tr');
+        const label = document.createElement('td');
+        label.textContent = 'Евристика E1 (мін. сума)';
+        row.appendChild(label);
+
+        allSongIds.forEach(songId => {
+          const td = document.createElement('td');
+          td.textContent = bestE1.perm.indexOf(songId) + 1;
+          row.appendChild(td);
+        });
+
+        const tdSum = document.createElement('td');
+        tdSum.textContent = bestE1.sum;
+        row.appendChild(tdSum);
+
+        const tdMax = document.createElement('td');
+        tdMax.textContent = bestE1.max;
+        row.appendChild(tdMax);
+
+        table8.appendChild(row);
+      }
+
+      // 🖊️ Додаємо рядок для E2
+      if (bestE2) {
+        const row = document.createElement('tr');
+        const label = document.createElement('td');
+        label.textContent = 'Евристика E2 (мін. макс)';
+        row.appendChild(label);
+
+        allSongIds.forEach(songId => {
+          const td = document.createElement('td');
+          td.textContent = bestE2.perm.indexOf(songId) + 1;
+          row.appendChild(td);
+        });
+
+        const tdSum = document.createElement('td');
+        tdSum.textContent = bestE2.sum;
+        row.appendChild(tdSum);
+
+        const tdMax = document.createElement('td');
+        tdMax.textContent = bestE2.max;
+        row.appendChild(tdMax);
+
+        table8.appendChild(row);
+      }
+
+      cont8.appendChild(table8);
 
 
     })
