@@ -357,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
 
-      // 📊 Таблиця для cont1_6 — ТІЛЬКИ ПЕРЕТИН по мінімуму суми та максимуму
+      // 📊 Оновлена таблиця для cont1_6 — об'єднання minSumPerms + minMaxPerms без повторів
       const table6 = document.createElement('table');
       table6.border = "1";
       table6.style.borderCollapse = 'collapse';
@@ -365,7 +365,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Заголовок
       const headerRow6 = document.createElement('tr');
       const thLabel = document.createElement('th');
-      thLabel.textContent = 'Сума, Макс';
+      thLabel.textContent = 'Категорія';
       headerRow6.appendChild(thLabel);
       allSongIds.forEach(songId => {
         const th = document.createElement('th');
@@ -374,30 +374,52 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       table6.appendChild(headerRow6);
 
-      // Створюємо Set для порівняння
-      const minMaxSet = new Set(minMaxPerms.map(perm => perm.join(',')));
+      // Зберігаємо, що вже додали
+      const seenPerms = new Set();
 
-      // Фільтруємо перестановки, які входять і в minSumPerms, і в minMaxPerms
-      const intersectPerms = minSumPerms.filter(perm => minMaxSet.has(perm.join(',')));
+      // Додаємо унікальні з minSumPerms
+      minSumPerms.forEach(perm => {
+        const key = perm.join(',');
+        if (!seenPerms.has(key)) {
+          seenPerms.add(key);
 
-      // Виводимо лише ті перестановки, які одночасно мінімізують і Суму, і Макс
-      intersectPerms.forEach(perm => {
-        const row = document.createElement('tr');
-        const tdLabel = document.createElement('td');
-        tdLabel.textContent = `Сума: ${minSum}, Макс: ${minMax}`;
-        row.appendChild(tdLabel);
+          const row = document.createElement('tr');
+          const tdLabel = document.createElement('td');
+          tdLabel.textContent = `Сума: ${minSum}`;
+          row.appendChild(tdLabel);
 
-        allSongIds.forEach(songId => {
-          const td = document.createElement('td');
-          td.textContent = perm.indexOf(songId) + 1;
-          row.appendChild(td);
-        });
+          allSongIds.forEach(songId => {
+            const td = document.createElement('td');
+            td.textContent = perm.indexOf(songId) + 1;
+            row.appendChild(td);
+          });
 
-        table6.appendChild(row);
+          table6.appendChild(row);
+        }
+      });
+
+      // Додаємо унікальні з minMaxPerms
+      minMaxPerms.forEach(perm => {
+        const key = perm.join(',');
+        if (!seenPerms.has(key)) {
+          seenPerms.add(key);
+
+          const row = document.createElement('tr');
+          const tdLabel = document.createElement('td');
+          tdLabel.textContent = `Макс: ${minMax}`;
+          row.appendChild(tdLabel);
+
+          allSongIds.forEach(songId => {
+            const td = document.createElement('td');
+            td.textContent = perm.indexOf(songId) + 1;
+            row.appendChild(td);
+          });
+
+          table6.appendChild(row);
+        }
       });
 
       cont6.appendChild(table6);
-
 
 
 
