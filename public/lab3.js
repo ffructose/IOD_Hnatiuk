@@ -49,18 +49,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 🧮 Статистика: скільки разів кожна пісня на тому ж місці
       const placeMaps = [{}, {}, {}]; // для місць 1, 2, 3
+
       userIds.forEach(userId => {
         for (let i = 0; i < 3; i++) {
           const songId = data[userId][i];
-          if (allowedSongIds.includes(Number(songId))) {
+          if (songId) { // ❗️ Прибираємо перевірку на allowedSongIds
             if (!placeMaps[i][songId]) {
               placeMaps[i][songId] = 0;
             }
             placeMaps[i][songId]++;
           }
-          
         }
       });
+
 
       // 🧩 Матриця статистики: 4 рядки, стовпці — користувачі
       const matrixStats = [[], [], [], []];
@@ -131,9 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       });
       const allSongIds = Array.from(allSongIdsSet)
-      .filter(songId => allowedSongIds.includes(songId))
-      .sort((a, b) => a - b);
-    
+        .filter(songId => allowedSongIds.includes(songId))
+        .sort((a, b) => a - b);
+
       // 2. Побудова header-рядка
       const headerRow3 = document.createElement('tr');
       const emptyHeader = document.createElement('th');
