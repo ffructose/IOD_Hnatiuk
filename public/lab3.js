@@ -424,22 +424,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Заголовок
       const headerRow7 = document.createElement('tr');
-
-      allSongIds.forEach(id => {
+      const thLabel7 = document.createElement('th');
+      thLabel7.textContent = 'Перестановка';
+      headerRow7.appendChild(thLabel7);
+      allSongIds.forEach(songId => {
         const th = document.createElement('th');
-        th.textContent = `ID ${id}`;
+        th.textContent = `ID ${songId}`;
         headerRow7.appendChild(th);
       });
       table7.appendChild(headerRow7);
 
-      // Для кожної унікальної перестановки рахуємо ранги
-      uniqueBestPerms.forEach(perm => {
+      // Рядки з рангами для кожної перестановки
+      seenPermutations.forEach(({ perm }) => {
         const row = document.createElement('tr');
 
+        const labelTd = document.createElement('td');
+        labelTd.textContent = perm.join(', ');
+        row.appendChild(labelTd);
 
         allSongIds.forEach(songId => {
           const td = document.createElement('td');
-          td.textContent = perm.indexOf(songId) + 1; // ранг — позиція +1
+          td.textContent = perm.indexOf(songId) + 1; // позиція + 1 = ранг
           row.appendChild(td);
         });
 
