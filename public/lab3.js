@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const headerRow1 = document.createElement('tr');
       userIds.forEach(userId => {
         const th = document.createElement('th');
-        th.textContent = `User ${userId}`;
+        th.textContent = userId;
         headerRow1.appendChild(th);
       });
       table1.appendChild(headerRow1);
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const headerRow2 = document.createElement('tr');
       userIds.forEach(userId => {
         const th = document.createElement('th');
-        th.textContent = `User ${userId}`;
+        th.textContent = userId;
         headerRow2.appendChild(th);
       });
       table2.appendChild(headerRow2);
@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
       headerRow3.appendChild(emptyHeader);
       userIds.forEach(userId => {
         const th = document.createElement('th');
-        th.textContent = `User ${userId}`;
+        th.textContent = userId;
         headerRow3.appendChild(th);
       });
       table3.appendChild(headerRow3);
