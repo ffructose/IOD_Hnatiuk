@@ -236,6 +236,85 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
+      // 🧮 Обчислення відстаней Кука + сума та максимум
+      const cont4 = document.getElementById('cont1_4');
+      const table4 = document.createElement('table');
+      table4.border = "1";
+      table4.style.borderCollapse = 'collapse';
+
+      // Заголовок
+      const headerRow4 = document.createElement('tr');
+      const firstTh = document.createElement('th');
+      firstTh.textContent = 'Permutation';
+      headerRow4.appendChild(firstTh);
+      userIds.forEach(userId => {
+        const th = document.createElement('th');
+        th.textContent = `User ${userId}`;
+        headerRow4.appendChild(th);
+      });
+      // Додаткові стовпці
+      const sumTh = document.createElement('th');
+      sumTh.textContent = 'Σ Відстаней';
+      headerRow4.appendChild(sumTh);
+
+      const maxTh = document.createElement('th');
+      maxTh.textContent = 'Макс Відстань';
+      headerRow4.appendChild(maxTh);
+
+      table4.appendChild(headerRow4);
+
+      // Кожна перестановка — як ранг-вектор (0, 1, 2, ...)
+      permutations.forEach((perm, idx) => {
+        const row = document.createElement('tr');
+
+        const label = document.createElement('td');
+        label.textContent = perm.join(', ');
+        row.appendChild(label);
+
+        let sum = 0;
+        let max = 0;
+
+        for (let j = 0; j < userIds.length; j++) {
+          const expertRanks = matrixRanks.map(r => r[j]); // стовпець j
+
+          // Створити вектор рангів для цієї перестановки
+          const permAsRanks = [];
+          for (let k = 0; k < expertRanks.length; k++) {
+            const songId = allSongIds[k];
+            const posInPerm = perm.indexOf(songId);
+            permAsRanks.push(posInPerm + 1); // 1-based
+          }
+
+          // Відстань Кука
+          let distance = 0;
+          for (let i = 0; i < expertRanks.length; i++) {
+            distance += Math.abs(expertRanks[i] - permAsRanks[i]);
+          }
+
+          sum += distance;
+          if (distance > max) max = distance;
+
+          const td = document.createElement('td');
+          td.textContent = distance;
+          row.appendChild(td);
+        }
+
+        // Додаємо підсумки
+        const sumTd = document.createElement('td');
+        sumTd.textContent = sum;
+        row.appendChild(sumTd);
+
+        const maxTd = document.createElement('td');
+        maxTd.textContent = max;
+        row.appendChild(maxTd);
+
+        table4.appendChild(row);
+      });
+
+      cont4.appendChild(table4);
+
+
+
     })
     .catch(error => {
       console.error('Помилка завантаження даних:', error);

@@ -35,7 +35,7 @@ table::-webkit-scrollbar-thumb:hover {
     grid-column: span 2; 
 }
 
-#cont1_3,#cont1_4 {
+#cont1_3,#cont1_4, #cont1_5{
     grid-column: span 4; 
 }
 
