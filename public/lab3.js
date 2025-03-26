@@ -244,21 +244,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Заголовок
       const headerRow4 = document.createElement('tr');
-      const firstTh = document.createElement('th');
-      firstTh.textContent = 'Permutation';
-      headerRow4.appendChild(firstTh);
       userIds.forEach(userId => {
         const th = document.createElement('th');
-        th.textContent = `User ${userId}`;
+        th.textContent = userId;
         headerRow4.appendChild(th);
       });
       // Додаткові стовпці
       const sumTh = document.createElement('th');
-      sumTh.textContent = 'Σ Відстаней';
+      sumTh.textContent = 'Сума';
       headerRow4.appendChild(sumTh);
 
       const maxTh = document.createElement('th');
-      maxTh.textContent = 'Макс Відстань';
+      maxTh.textContent = 'Макс';
       headerRow4.appendChild(maxTh);
 
       table4.appendChild(headerRow4);
