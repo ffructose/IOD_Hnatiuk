@@ -6,9 +6,8 @@
 }
 
 #cont1_1,#cont1_2,#cont1_3,#cont1_4{
-    width: 100%;
-    height: 400px;
     overflow: hidden;
+    margin: 40px;
 }
 
 table{
