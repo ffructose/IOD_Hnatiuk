@@ -422,6 +422,17 @@ document.addEventListener("DOMContentLoaded", () => {
       cont6.appendChild(table6);
 
 
+      // 🧩 Зібрати унікальні перестановки з minSumPerms і minMaxPerms для table7 та table8
+      const mergedPermsMap = new Map();
+
+      minSumPerms.forEach(perm => {
+        mergedPermsMap.set(perm.join(','), perm);
+      });
+      minMaxPerms.forEach(perm => {
+        mergedPermsMap.set(perm.join(','), perm);
+      });
+
+      const mergedPerms = Array.from(mergedPermsMap.values());
 
 
 
@@ -441,7 +452,7 @@ document.addEventListener("DOMContentLoaded", () => {
       table7.appendChild(headerRow7);
 
       // Рядки з рангами для кожної перестановки
-      intersectPerms.forEach(perm => {
+      mergedPerms.forEach(perm => {
 
         const row = document.createElement('tr');
 
@@ -507,7 +518,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let bestE1 = null, bestE2 = null;
       let bestE1Value = Infinity, bestE2Value = Infinity;
 
-      intersectPerms.forEach(perm => {
+      mergedPerms.forEach(perm => {
         const { sum, max } = calculateCookDistances(perm);
 
         if (sum < bestE1Value) {
