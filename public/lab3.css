@@ -47,3 +47,34 @@ th{
     padding: 8px;
     background-color: rgb(173, 218, 218);
 }
+
+/* Загальний стиль сторінки */
+@media (max-width: 768px) {
+
+    #cont1_1,#cont1_2,#cont1_3,#cont1_4,#cont1_5,#cont1_6,#cont1_7, #cont1_8{
+        grid-column: 1 / -1; /* Займають весь рядок */
+        width: 100%;
+        margin: 5px;
+        font-size: 14px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    h3 {
+        font-size: 18px;
+        margin-bottom: 5px;
+    }
+
+    th, td {
+        padding: 6px;
+        font-size: 13px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+}
