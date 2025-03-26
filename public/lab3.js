@@ -264,10 +264,6 @@ document.addEventListener("DOMContentLoaded", () => {
       permutations.forEach((perm, idx) => {
         const row = document.createElement('tr');
 
-        const label = document.createElement('td');
-        label.textContent = perm.join(', ');
-        row.appendChild(label);
-
         let sum = 0;
         let max = 0;
 
