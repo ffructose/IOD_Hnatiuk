@@ -185,6 +185,55 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("matrixRanks (ранги за множинними порівняннями):", matrixRanks);
 
 
+      // 🧩 4. Побудова таблиці перестановок пісень
+      const cont5 = document.getElementById('cont1_5');
+      const table5 = document.createElement('table');
+      table5.border = "1";
+      table5.style.borderCollapse = 'collapse';
+
+      // Функція генерації перестановок (рекурсивна)
+      function generatePermutations(arr) {
+        const results = [];
+        function permute(temp, remaining) {
+          if (remaining.length === 0) {
+            results.push(temp);
+          } else {
+            for (let i = 0; i < remaining.length; i++) {
+              const next = remaining.slice();
+              const curr = next.splice(i, 1);
+              permute(temp.concat(curr), next);
+            }
+          }
+        }
+        permute([], arr);
+        return results;
+      }
+
+      // Створити всі перестановки дозволених song_id
+      const permutations = generatePermutations(allSongIds);
+
+      // Побудувати заголовок
+      const headerRow5 = document.createElement('tr');
+      allSongIds.forEach((_, idx) => {
+        const th = document.createElement('th');
+        th.textContent = `Pos ${idx + 1}`;
+        headerRow5.appendChild(th);
+      });
+      table5.appendChild(headerRow5);
+
+      // Додати перестановки як рядки таблиці
+      permutations.forEach(permutation => {
+        const row = document.createElement('tr');
+        permutation.forEach(songId => {
+          const td = document.createElement('td');
+          td.textContent = songId;
+          row.appendChild(td);
+        });
+        table5.appendChild(row);
+      });
+
+      cont5.appendChild(table5);
+
 
 
     })
