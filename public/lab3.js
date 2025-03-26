@@ -349,16 +349,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // 🔁 Об'єднати унікальні перестановки
-      const uniqueBestPerms = [];
-      const seen = new Set();
-      [...minSumPerms, ...minMaxPerms].forEach(perm => {
-        const key = perm.join(',');
-        if (!seen.has(key)) {
-          seen.add(key);
-          uniqueBestPerms.push(perm);
-        }
-      });
 
       // 📊 Таблиця для cont1_6 — ТІЛЬКИ ПЕРЕТИН по мінімуму суми та максимуму
       const table6 = document.createElement('table');
