@@ -320,14 +320,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const resultRows = Array.from(table4.rows).slice(1); // пропускаємо заголовок
 
-      resultRows.forEach(row => {
+      resultRows.forEach((row, rowIdx) => {
         const cells = row.querySelectorAll('td');
         const distances = Array.from(cells).slice(0, userIds.length).map(td => Number(td.textContent));
         const sum = Number(cells[userIds.length].textContent);
         const max = Number(cells[userIds.length + 1].textContent);
 
         const songIds = Array.from(allSongIds); // щоб зберегти оригінальний порядок
-        const permutation = [...permutations[resultRows.indexOf(row)]];
+        const permutation = [...permutations[rowIdx]];
 
         // Для суми
         if (sum < minSum) {
