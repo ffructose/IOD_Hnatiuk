@@ -361,6 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       // 📊 Оновлена таблиця для cont1_6
+      // 📊 Оновлена таблиця для cont1_6 з правильною обробкою сум і максимумів
       const table6 = document.createElement('table');
       table6.border = "1";
       table6.style.borderCollapse = 'collapse';
@@ -377,27 +378,28 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       table6.appendChild(headerRow6);
 
-      // Рядки для мінімальної суми
+      // 💡 Комбінуємо перестановки з info: key → {perm, sum, max}
+      const seenPermutations = new Map();
+
       minSumPerms.forEach(perm => {
-        const row = document.createElement('tr');
-        const tdLabel = document.createElement('td');
-        tdLabel.textContent = `Сума: ${minSum}, Макс: —`;
-        row.appendChild(tdLabel);
-
-        allSongIds.forEach(songId => {
-          const td = document.createElement('td');
-          td.textContent = perm.indexOf(songId) + 1;
-          row.appendChild(td);
-        });
-
-        table6.appendChild(row);
+        const key = perm.join(',');
+        seenPermutations.set(key, { perm, sum: minSum, max: null });
       });
 
-      // Рядки для мінімального максимуму
       minMaxPerms.forEach(perm => {
+        const key = perm.join(',');
+        if (seenPermutations.has(key)) {
+          seenPermutations.get(key).max = minMax;
+        } else {
+          seenPermutations.set(key, { perm, sum: null, max: minMax });
+        }
+      });
+
+      // 🔁 Вивід усіх унікальних перестановок у таблицю
+      seenPermutations.forEach(({ perm, sum, max }) => {
         const row = document.createElement('tr');
         const tdLabel = document.createElement('td');
-        tdLabel.textContent = `Сума: —, Макс: ${minMax}`;
+        tdLabel.textContent = `Сума: ${sum ?? '—'}, Макс: ${max ?? '—'}`;
         row.appendChild(tdLabel);
 
         allSongIds.forEach(songId => {
@@ -410,8 +412,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       cont6.appendChild(table6);
-
-
 
 
 
