@@ -278,18 +278,11 @@ document.addEventListener("DOMContentLoaded", () => {
             permAsRanks.push(posInPerm + 1); // 1-based
           }
 
-          // Відстань Кука — як у Excel
+          // Відстань Кука
           let distance = 0;
           for (let i = 0; i < expertRanks.length; i++) {
-            const expertRank = expertRanks[i];        // з matrixRanks
-            const songId = allSongIds[i];             // пісня на цій позиції
-            const permRank = perm.indexOf(songId) + 1; // ранг у перестановці
-
-            if (expertRank > 0 && permRank > 0) {
-              distance += Math.abs(expertRank - permRank);
-            }
+            distance += Math.abs(expertRanks[i] - permAsRanks[i]);
           }
-
 
           sum += distance;
           if (distance > max) max = distance;
