@@ -1,0 +1,19 @@
+.lab3Cont{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr; /* Два стовпці по 50% */
+    grid-template-rows: auto 1fr; /* Два рядки: перший автоматичний, другий заповнює доступне місце */
+    
+}
+
+#cont1_1,#cont1_2 {
+    grid-column: span 2; 
+}
+
+#cont1_3,#cont1_4 {
+    grid-column: span 4; 
+}
+
+tr{
+    text-align: center;
+    padding: 8px;
+}
