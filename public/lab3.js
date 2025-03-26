@@ -268,29 +268,27 @@ document.addEventListener("DOMContentLoaded", () => {
         let max = 0;
 
         for (let j = 0; j < userIds.length; j++) {
-          const expertRanks = matrixRanks.map(r => r[j]); // стовпець j
-
-          // Створити вектор рангів для цієї перестановки
-          const permAsRanks = [];
-          for (let k = 0; k < expertRanks.length; k++) {
-            const songId = allSongIds[k];
-            const posInPerm = perm.indexOf(songId);
-            permAsRanks.push(posInPerm + 1); // 1-based
-          }
-
-          // Відстань Кука
+          const expertRanks = matrixRanks.map(r => r[j]); // Ранги за множинними порівняннями від експерта j
+        
           let distance = 0;
-          for (let i = 0; i < expertRanks.length; i++) {
-            distance += Math.abs(expertRanks[i] - permAsRanks[i]);
-          }
-
+        
+          allSongIds.forEach((songId, idx) => {
+            const rankInPermutation = perm.indexOf(songId) + 1;
+            const expertRank = expertRanks[idx];
+        
+            if (rankInPermutation > 0 && expertRank > 0) {
+              distance += Math.abs(rankInPermutation - expertRank);
+            }
+          });
+        
           sum += distance;
           if (distance > max) max = distance;
-
+        
           const td = document.createElement('td');
           td.textContent = distance;
           row.appendChild(td);
         }
+        
 
         // Додаємо підсумки
         const sumTd = document.createElement('td');
