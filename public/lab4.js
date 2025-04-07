@@ -206,15 +206,38 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return entry?.position ?? "-";
             });
 
-            // 📤 Вивід A*
-            const pA = document.createElement("p");
-            pA.innerHTML = `<strong>A*:</strong> (${A_star.join(", ")})`;
-            cont4.appendChild(pA);
+            // 🧮 Таблиця для A* і R*
+            const table = document.createElement("table");
+            table.border = "1";
+            table.style.borderCollapse = "collapse";
 
-            // 📤 Вивід R*
-            const pR = document.createElement("p");
-            pR.innerHTML = `<strong>R*:</strong> (${R_star.join(", ")})`;
-            cont4.appendChild(pR);
+            // 🔠 A* — перший рядок
+            const rowA = document.createElement("tr");
+            const thA = document.createElement("th");
+            thA.textContent = "A* (song_id)";
+            rowA.appendChild(thA);
+            A_star.forEach(songId => {
+                const td = document.createElement("td");
+                td.textContent = songId;
+                rowA.appendChild(td);
+            });
+            table.appendChild(rowA);
+
+            // 🔢 R* — другий рядок
+            const rowR = document.createElement("tr");
+            const thR = document.createElement("th");
+            thR.textContent = "R* (rank)";
+            rowR.appendChild(thR);
+            R_star.forEach(rank => {
+                const td = document.createElement("td");
+                td.textContent = rank;
+                rowR.appendChild(td);
+            });
+            table.appendChild(rowR);
+
+            // ➕ Додаємо таблицю в контейнер
+            cont4.appendChild(table);
+
         }
 
     } catch (error) {
