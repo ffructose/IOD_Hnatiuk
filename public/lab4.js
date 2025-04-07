@@ -38,39 +38,39 @@ document.addEventListener("DOMContentLoaded", async () => {
         table1.appendChild(headerRow1);
 
         // 3 рядки (місця)
-      for (let i = 0; i < 3; i++) {
-        const row = document.createElement('tr');
-        userIds.forEach(userId => {
-          const songId = data[userId][i] || '';
-          if (allowedSongIds.includes(Number(songId))) {
-            matrixSongs[i].push(songId);
-          } else {
-            matrixSongs[i].push('');
-          }
-
-          const td = document.createElement('td');
-          td.textContent = songId;
-          row.appendChild(td);
-        });
-        table1.appendChild(row);
-      }
-
-      cont1.appendChild(table1);
-
-      // 🧮 Статистика: скільки разів кожна пісня на тому ж місці
-      const placeMaps = [{}, {}, {}]; // для місць 1, 2, 3
-
-      userIds.forEach(userId => {
         for (let i = 0; i < 3; i++) {
-          const songId = data[userId][i];
-          if (songId) { // ❗️ Прибираємо перевірку на allowedSongIds
-            if (!placeMaps[i][songId]) {
-              placeMaps[i][songId] = 0;
-            }
-            placeMaps[i][songId]++;
-          }
+            const row = document.createElement('tr');
+            userIds.forEach(userId => {
+                const songId = data[userId][i] || '';
+                if (allowedSongIds.includes(Number(songId))) {
+                    matrixSongs[i].push(songId);
+                } else {
+                    matrixSongs[i].push('');
+                }
+
+                const td = document.createElement('td');
+                td.textContent = songId;
+                row.appendChild(td);
+            });
+            table1.appendChild(row);
         }
-      });
+
+        cont1.appendChild(table1);
+
+        // 🧮 Статистика: скільки разів кожна пісня на тому ж місці
+        const placeMaps = [{}, {}, {}]; // для місць 1, 2, 3
+
+        userIds.forEach(userId => {
+            for (let i = 0; i < 3; i++) {
+                const songId = data[userId][i];
+                if (songId) { // ❗️ Прибираємо перевірку на allowedSongIds
+                    if (!placeMaps[i][songId]) {
+                        placeMaps[i][songId] = 0;
+                    }
+                    placeMaps[i][songId]++;
+                }
+            }
+        });
 
         console.log("📊 Частота появи пісень:", placeMaps);
 
@@ -103,4 +103,102 @@ document.addEventListener("DOMContentLoaded", async () => {
         const filteredTableBody = document.querySelector("#filteredTable tbody");
         filteredTableBody.innerHTML = `<tr><td colspan="1">Помилка при завантаженні</td></tr>`;
     }
+
+    // --- 📊 Завантаження компромісних ранжувань (E1 та E2) ---
+    try {
+        const response = await fetch("/lab4/compromise-rankings", {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error("Не вдалося отримати компроміси");
+
+        const compromiseData = await response.json(); // { E1: [...], E2: [...] }
+
+        const cont3 = document.getElementById('cont1_3');
+        const table = document.createElement('table');
+        table.border = "1";
+        table.style.borderCollapse = "collapse";
+
+        // 🔠 Заголовок
+        const headerRow = document.createElement("tr");
+        const thMethod = document.createElement("th");
+        thMethod.textContent = "Метод";
+        headerRow.appendChild(thMethod);
+
+        // Витягуємо унікальні song_id
+        const allSongIds = [...new Set([...compromiseData.E1, ...compromiseData.E2].map(row => row.song_id))].sort((a, b) => a - b);
+
+        allSongIds.forEach(songId => {
+            const th = document.createElement("th");
+            th.textContent = `ID ${songId}`;
+            headerRow.appendChild(th);
+        });
+
+        const thSum = document.createElement("th");
+        thSum.textContent = "Σ відстаней";
+        headerRow.appendChild(thSum);
+
+        const thMax = document.createElement("th");
+        thMax.textContent = "Макс відстань";
+        headerRow.appendChild(thMax);
+
+        table.appendChild(headerRow);
+
+        // 📌 Додаємо рядок для E1
+        if (compromiseData.E1?.length) {
+            const row = document.createElement("tr");
+            const tdLabel = document.createElement("td");
+            tdLabel.textContent = "Евристика E1 (мін. сума)";
+            row.appendChild(tdLabel);
+
+            allSongIds.forEach(songId => {
+                const entry = compromiseData.E1.find(r => r.song_id === songId);
+                const td = document.createElement("td");
+                td.textContent = entry ? entry.position : "-";
+                row.appendChild(td);
+            });
+
+            const tdSum = document.createElement("td");
+            tdSum.textContent = compromiseData.E1[0]?.sum_distance ?? "-";
+            row.appendChild(tdSum);
+
+            const tdMax = document.createElement("td");
+            tdMax.textContent = compromiseData.E1[0]?.max_distance ?? "-";
+            row.appendChild(tdMax);
+
+            table.appendChild(row);
+        }
+
+        // 📌 Додаємо рядок для E2
+        if (compromiseData.E2?.length) {
+            const row = document.createElement("tr");
+            const tdLabel = document.createElement("td");
+            tdLabel.textContent = "Евристика E2 (мін. макс)";
+            row.appendChild(tdLabel);
+
+            allSongIds.forEach(songId => {
+                const entry = compromiseData.E2.find(r => r.song_id === songId);
+                const td = document.createElement("td");
+                td.textContent = entry ? entry.position : "-";
+                row.appendChild(td);
+            });
+
+            const tdSum = document.createElement("td");
+            tdSum.textContent = compromiseData.E2[0]?.sum_distance ?? "-";
+            row.appendChild(tdSum);
+
+            const tdMax = document.createElement("td");
+            tdMax.textContent = compromiseData.E2[0]?.max_distance ?? "-";
+            row.appendChild(tdMax);
+
+            table.appendChild(row);
+        }
+
+        cont3.appendChild(table);
+
+    } catch (error) {
+        console.error("❌ Помилка при завантаженні компромісів:", error);
+        document.getElementById("cont1_3").innerHTML += `<p style="color:red;">Не вдалося завантажити компромісні ранжування</p>`;
+    }
+
 });
