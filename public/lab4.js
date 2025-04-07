@@ -6,84 +6,98 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-
-
-    // --- Побудова таблиці в cont1_1 з назвами пісень ---
+    // --- Побудова таблиці в cont1_1 з song_id ---
     try {
-        const [songPlacesRes, songsRes] = await Promise.all([
+        const [songPlacesRes, evrsongsRes] = await Promise.all([
             fetch("/lab4/song-places", { headers: { Authorization: `Bearer ${token}` } }),
             fetch("/lab4/evrsongs", { headers: { Authorization: `Bearer ${token}` } })
         ]);
 
-        if (!songPlacesRes.ok || !songsRes.ok) {
+        if (!songPlacesRes.ok || !evrsongsRes.ok) {
             throw new Error("Не вдалося отримати дані");
         }
 
-        const data = await songPlacesRes.json();  // { user_id: [songId1, songId2, songId3] }
-        const songs = await songsRes.json();      // [{ song_id: 1, song_name: 'ABC' }, ...]
+        const data = await songPlacesRes.json();         // { user_id: [song_id, song_id, song_id] }
+        const allowedSongIds = await evrsongsRes.json(); // [1, 2, 3, ...]
 
-        const songIdToName = {};
-        songs.forEach(song => {
-            songIdToName[song.song_id] = song.song_name;
-        });
-
-        const cont1 = document.getElementById("cont1_1");
-
+        const cont1 = document.getElementById('cont1_1');
         const userIds = Object.keys(data);
-        const table = document.createElement("table");
-        table.border = "1";
-        table.style.borderCollapse = "collapse";
+        const matrixSongs = [[], [], []];
+
+        const table1 = document.createElement('table');
+        table1.border = "1";
+        table1.style.borderCollapse = 'collapse';
 
         // Заголовок
-        const headerRow = document.createElement("tr");
-        const firstTh = document.createElement("th");
-        firstTh.textContent = "Місце / Користувач";
-        headerRow.appendChild(firstTh);
+        const headerRow1 = document.createElement('tr');
+        const firstHeader = document.createElement('th');
+        firstHeader.textContent = "Місце \\ Користувач";
+        headerRow1.appendChild(firstHeader);
 
         userIds.forEach(userId => {
-            const th = document.createElement("th");
+            const th = document.createElement('th');
             th.textContent = userId;
-            headerRow.appendChild(th);
+            headerRow1.appendChild(th);
         });
+        table1.appendChild(headerRow1);
 
-        table.appendChild(headerRow);
-
-        // Рядки для 1-3 місць
-        const placeNames = ["1 місце", "2 місце", "3 місце"];
+        // 3 рядки (місця)
+        const placeLabels = ["1 місце", "2 місце", "3 місце"];
         for (let i = 0; i < 3; i++) {
-            const row = document.createElement("tr");
-            const placeCell = document.createElement("td");
-            placeCell.textContent = placeNames[i];
-            row.appendChild(placeCell);
+            const row = document.createElement('tr');
+            const placeTh = document.createElement('td');
+            placeTh.textContent = placeLabels[i];
+            row.appendChild(placeTh);
 
             userIds.forEach(userId => {
-                const td = document.createElement("td");
-                const songId = data[userId]?.[i];
-                td.textContent = songIdToName[songId] || "-";
+                const songId = data[userId][i] || '';
+                const td = document.createElement('td');
+
+                if (allowedSongIds.includes(Number(songId))) {
+                    td.textContent = songId;
+                    matrixSongs[i].push(songId);
+                } else {
+                    td.textContent = "-";
+                    matrixSongs[i].push('');
+                }
+
                 row.appendChild(td);
             });
 
-            table.appendChild(row);
+            table1.appendChild(row);
         }
 
-        cont1.appendChild(table);
+        cont1.appendChild(table1);
+
+        // 🧮 Статистика: скільки разів кожна пісня на певному місці
+        const placeMaps = [{}, {}, {}];
+        userIds.forEach(userId => {
+            for (let i = 0; i < 3; i++) {
+                const songId = data[userId][i];
+                if (songId) {
+                    placeMaps[i][songId] = (placeMaps[i][songId] || 0) + 1;
+                }
+            }
+        });
+
+        console.log("📊 Частота появи пісень:", placeMaps);
+
     } catch (err) {
         console.error("❌ Помилка при побудові таблиці:", err);
         document.getElementById("cont1_1").innerHTML += `<p style="color:red;">Помилка при завантаженні таблиці</p>`;
     }
 
-
-    // --- Завантаження filteredTable ---
+    // --- Завантаження filteredTable з назвами пісень ---
     try {
         const filteredTableBody = document.querySelector("#filteredTable tbody");
 
-        const response = await fetch("/lab4/evrsongs", {
+        const response = await fetch("/lab4/songnames", {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
         if (!response.ok) throw new Error("Не вдалося отримати список пісень");
 
-        const songNames = await response.json();
+        const songNames = await response.json(); // ['Пісня 1', 'Пісня 2', ...]
 
         filteredTableBody.innerHTML = "";
         songNames.forEach(name => {
