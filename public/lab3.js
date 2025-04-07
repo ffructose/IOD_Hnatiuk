@@ -585,7 +585,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ⏺️ Збереження компромісних ранжувань
     async function saveCompromise(method, data) {
       try {
-        const response = await fetch("/lab4/compromise-rankings", {
+        const response = await fetch("/lab3/compromise-rankings", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
