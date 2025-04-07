@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
   
+    // --- Завантаження голосування користувачів ---
     try {
       const response = await fetch("/lab4/songs-poll", {
         headers: { "Authorization": `Bearer ${token}` }
@@ -31,6 +32,31 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("❌ Помилка під час завантаження таблиці:", error);
       const tableBody = document.querySelector("#songsPollTable tbody");
       tableBody.innerHTML = `<tr><td colspan="5">Помилка при завантаженні даних</td></tr>`;
+    }
+  
+    // --- Завантаження filteredTable ---
+    try {
+      const filteredTableBody = document.querySelector("#filteredTable tbody");
+  
+      const response = await fetch("/lab4/evrsongs", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+  
+      if (!response.ok) throw new Error("Не вдалося отримати список пісень");
+  
+      const songNames = await response.json();
+  
+      filteredTableBody.innerHTML = "";
+      songNames.forEach(name => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${name}</td>`;
+        filteredTableBody.appendChild(row);
+      });
+  
+    } catch (error) {
+      console.error("❌ Помилка при завантаженні filteredTable:", error);
+      const filteredTableBody = document.querySelector("#filteredTable tbody");
+      filteredTableBody.innerHTML = `<tr><td colspan="1">Помилка при завантаженні</td></tr>`;
     }
   });
   
