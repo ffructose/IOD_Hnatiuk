@@ -6,79 +6,71 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            alert("❌ Ви не авторизовані! Перенаправлення на вхід...");
-            window.location.href = "login.html";
-            return;
+
+
+    // --- Побудова таблиці в cont1_1 з назвами пісень ---
+    try {
+        const [songPlacesRes, songsRes] = await Promise.all([
+            fetch("/lab4/song-places", { headers: { Authorization: `Bearer ${token}` } }),
+            fetch("/lab4/evrsongs", { headers: { Authorization: `Bearer ${token}` } })
+        ]);
+
+        if (!songPlacesRes.ok || !songsRes.ok) {
+            throw new Error("Не вдалося отримати дані");
         }
 
-        // --- Побудова таблиці в cont1_1 з назвами пісень ---
-        try {
-            const [songPlacesRes, songsRes] = await Promise.all([
-                fetch("/lab4/song-places", { headers: { Authorization: `Bearer ${token}` } }),
-                fetch("/lab4/evrsongs", { headers: { Authorization: `Bearer ${token}` } })
-            ]);
+        const data = await songPlacesRes.json();  // { user_id: [songId1, songId2, songId3] }
+        const songs = await songsRes.json();      // [{ song_id: 1, song_name: 'ABC' }, ...]
 
-            if (!songPlacesRes.ok || !songsRes.ok) {
-                throw new Error("Не вдалося отримати дані");
-            }
+        const songIdToName = {};
+        songs.forEach(song => {
+            songIdToName[song.song_id] = song.song_name;
+        });
 
-            const data = await songPlacesRes.json();  // { user_id: [songId1, songId2, songId3] }
-            const songs = await songsRes.json();      // [{ song_id: 1, song_name: 'ABC' }, ...]
+        const cont1 = document.getElementById("cont1_1");
 
-            const songIdToName = {};
-            songs.forEach(song => {
-                songIdToName[song.song_id] = song.song_name;
-            });
+        const userIds = Object.keys(data);
+        const table = document.createElement("table");
+        table.border = "1";
+        table.style.borderCollapse = "collapse";
 
-            const cont1 = document.getElementById("cont1_1");
+        // Заголовок
+        const headerRow = document.createElement("tr");
+        const firstTh = document.createElement("th");
+        firstTh.textContent = "Місце / Користувач";
+        headerRow.appendChild(firstTh);
 
-            const userIds = Object.keys(data);
-            const table = document.createElement("table");
-            table.border = "1";
-            table.style.borderCollapse = "collapse";
+        userIds.forEach(userId => {
+            const th = document.createElement("th");
+            th.textContent = userId;
+            headerRow.appendChild(th);
+        });
 
-            // Заголовок
-            const headerRow = document.createElement("tr");
-            const firstTh = document.createElement("th");
-            firstTh.textContent = "Місце / Користувач";
-            headerRow.appendChild(firstTh);
+        table.appendChild(headerRow);
+
+        // Рядки для 1-3 місць
+        const placeNames = ["1 місце", "2 місце", "3 місце"];
+        for (let i = 0; i < 3; i++) {
+            const row = document.createElement("tr");
+            const placeCell = document.createElement("td");
+            placeCell.textContent = placeNames[i];
+            row.appendChild(placeCell);
 
             userIds.forEach(userId => {
-                const th = document.createElement("th");
-                th.textContent = userId;
-                headerRow.appendChild(th);
+                const td = document.createElement("td");
+                const songId = data[userId]?.[i];
+                td.textContent = songIdToName[songId] || "-";
+                row.appendChild(td);
             });
 
-            table.appendChild(headerRow);
-
-            // Рядки для 1-3 місць
-            const placeNames = ["1 місце", "2 місце", "3 місце"];
-            for (let i = 0; i < 3; i++) {
-                const row = document.createElement("tr");
-                const placeCell = document.createElement("td");
-                placeCell.textContent = placeNames[i];
-                row.appendChild(placeCell);
-
-                userIds.forEach(userId => {
-                    const td = document.createElement("td");
-                    const songId = data[userId]?.[i];
-                    td.textContent = songIdToName[songId] || "-";
-                    row.appendChild(td);
-                });
-
-                table.appendChild(row);
-            }
-
-            cont1.appendChild(table);
-        } catch (err) {
-            console.error("❌ Помилка при побудові таблиці:", err);
-            document.getElementById("cont1_1").innerHTML += `<p style="color:red;">Помилка при завантаженні таблиці</p>`;
+            table.appendChild(row);
         }
-    });
 
+        cont1.appendChild(table);
+    } catch (err) {
+        console.error("❌ Помилка при побудові таблиці:", err);
+        document.getElementById("cont1_1").innerHTML += `<p style="color:red;">Помилка при завантаженні таблиці</p>`;
+    }
 
 
     // --- Завантаження filteredTable ---
