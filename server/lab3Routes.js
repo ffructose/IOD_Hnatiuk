@@ -57,6 +57,7 @@ router.post('/compromise-rankings', async (req, res) => {
       INSERT INTO compromise_rankings (method, song_id, position, sum_distance, max_distance)
       VALUES ($1, $2, $3, $4, $5)
     `;
+    await client.query('DELETE FROM compromise_rankings WHERE method = $1', [method]);
 
     for (const row of rankings) {
       const { song_id, position, sum_distance = null, max_distance = null } = row;
