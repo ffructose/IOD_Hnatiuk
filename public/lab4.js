@@ -192,35 +192,37 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         cont3.appendChild(table);
 
+        // 🧮 Побудова векторів A* та R* (для методу E1)
+        if (compromiseData.E1?.length) {
+            const cont4 = document.getElementById("cont1_4");
+
+            // 🔠 A* — вектор об’єктів (song_id), відсортованих за position
+            const sortedE1 = [...compromiseData.E1].sort((a, b) => a.position - b.position);
+            const A_star = sortedE1.map(r => r.song_id);
+
+            // 🔢 R* — вектор рангів: кожному song_id відповідає position
+            const R_star = allSongIds.map(songId => {
+                const entry = compromiseData.E1.find(r => r.song_id === songId);
+                return entry?.position ?? "-";
+            });
+
+            // 📤 Вивід A*
+            const pA = document.createElement("p");
+            pA.innerHTML = `<strong>A*:</strong> (${A_star.join(", ")})`;
+            cont4.appendChild(pA);
+
+            // 📤 Вивід R*
+            const pR = document.createElement("p");
+            pR.innerHTML = `<strong>R*:</strong> (${R_star.join(", ")})`;
+            cont4.appendChild(pR);
+        }
+
     } catch (error) {
         console.error("❌ Помилка при завантаженні компромісів:", error);
         document.getElementById("cont1_3").innerHTML += `<p style="color:red;">Не вдалося завантажити компромісні ранжування</p>`;
     }
 
-    // 🧮 Побудова векторів A* та R* (для методу E1)
-    if (compromiseData.E1?.length) {
-        const cont4 = document.getElementById("cont1_4");
 
-        // 🔠 A* — вектор об’єктів (song_id), відсортованих за position
-        const sortedE1 = [...compromiseData.E1].sort((a, b) => a.position - b.position);
-        const A_star = sortedE1.map(r => r.song_id);
-
-        // 🔢 R* — вектор рангів: кожному song_id відповідає position
-        const R_star = allSongIds.map(songId => {
-            const entry = compromiseData.E1.find(r => r.song_id === songId);
-            return entry?.position ?? "-";
-        });
-
-        // 📤 Вивід A*
-        const pA = document.createElement("p");
-        pA.innerHTML = `<strong>A*:</strong> (${A_star.join(", ")})`;
-        cont4.appendChild(pA);
-
-        // 📤 Вивід R*
-        const pR = document.createElement("p");
-        pR.innerHTML = `<strong>R*:</strong> (${R_star.join(", ")})`;
-        cont4.appendChild(pR);
-    }
 
 
 });
