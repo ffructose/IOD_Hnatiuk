@@ -40,5 +40,42 @@ router.get('/evrsongs', async (req, res) => {
   }
 });
 
+// Зберегти компромісні ранжування
+router.post('/compromise-rankings', async (req, res) => {
+  const { method, rankings } = req.body;
+
+  if (!method || !Array.isArray(rankings)) {
+    return res.status(400).json({ error: 'Невірний формат запиту' });
+  }
+
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const insertQuery = `
+      INSERT INTO compromise_rankings (method, song_id, position, sum_distance, max_distance)
+      VALUES ($1, $2, $3, $4, $5)
+    `;
+
+    for (const row of rankings) {
+      const { song_id, position, sum_distance = null, max_distance = null } = row;
+
+      await client.query(insertQuery, [method, song_id, position, sum_distance, max_distance]);
+    }
+
+    await client.query('COMMIT');
+    res.status(201).json({ message: 'Компромісне ранжування збережено' });
+
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error("❌ Помилка збереження компромісних ранжувань:", err);
+    res.status(500).json({ error: 'Помилка сервера' });
+
+  } finally {
+    client.release();
+  }
+});
+
 
 module.exports = router;

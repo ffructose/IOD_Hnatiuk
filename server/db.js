@@ -72,6 +72,16 @@ const createTable = async () => {
         song_name TEXT NOT NULL
       );
 
+      CREATE TABLE IF NOT EXISTS compromise_rankings (
+          ranking_id SERIAL PRIMARY KEY,
+          method VARCHAR(50) NOT NULL,         -- 'E1' або 'E2'
+          song_id INT NOT NULL,                -- ID пісні
+          position INT NOT NULL,               -- ранг (1, 2, 3...)
+          sum_distance INT,                    -- Σ відстаней (опціонально)
+          max_distance INT,                    -- Макс відстань (опціонально)
+          created_at TIMESTAMP DEFAULT NOW(),  -- дата створення
+          FOREIGN KEY (song_id) REFERENCES EuroSongs(song_id) ON DELETE CASCADE
+      );
 
 
     `;
