@@ -44,16 +44,16 @@ router.get('/evrsongs', async (req, res) => {
 // Отримати всі записи з таблиці `SongPlace` разом із іменами користувачів та назвами пісень
 router.get("/songs-poll", async (req, res) => {
     try {
-        const result = await client.query(`
+        const result = await pool.query(`
             SELECT 
                 users.id AS user_id,
                 users.username,
-                MAX(CASE WHEN songplace.place = 1 THEN eurosongs.song_name ELSE NULL END) AS first_place,
-                MAX(CASE WHEN songplace.place = 2 THEN eurosongs.song_name ELSE NULL END) AS second_place,
-                MAX(CASE WHEN songplace.place = 3 THEN eurosongs.song_name ELSE NULL END) AS third_place
+                MAX(CASE WHEN songplace.place = 1 THEN evrsongs.song_name ELSE NULL END) AS first_place,
+                MAX(CASE WHEN songplace.place = 2 THEN evrsongs.song_name ELSE NULL END) AS second_place,
+                MAX(CASE WHEN songplace.place = 3 THEN evrsongs.song_name ELSE NULL END) AS third_place
             FROM songplace
             JOIN users ON songplace.user_id = users.id
-            JOIN eurosongs ON songplace.song_id = eurosongs.song_id
+            JOIN evrsongs ON songplace.song_id = evrsongs.song_id
             GROUP BY users.id, users.username
             ORDER BY users.id;
         `);
@@ -63,6 +63,7 @@ router.get("/songs-poll", async (req, res) => {
         res.status(500).json({ error: "❌ Помилка сервера" });
     }
 });
+
 
 
 module.exports = router;
