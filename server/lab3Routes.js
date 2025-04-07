@@ -41,6 +41,7 @@ router.get('/evrsongs', async (req, res) => {
 });
 
 // Зберегти компромісні ранжування
+// Зберегти компромісні ранжування
 router.post('/compromise-rankings', async (req, res) => {
   const { method, rankings } = req.body;
 
@@ -48,35 +49,29 @@ router.post('/compromise-rankings', async (req, res) => {
     return res.status(400).json({ error: 'Невірний формат запиту' });
   }
 
-  const client = await pool.connect();
-
   try {
-    await client.query('BEGIN');
+    // Спочатку видалити попередні записи для методу
+    await pool.query('DELETE FROM compromise_rankings WHERE method = $1', [method]);
 
+    // Потім вставити нові ранжування
     const insertQuery = `
       INSERT INTO compromise_rankings (method, song_id, position, sum_distance, max_distance)
       VALUES ($1, $2, $3, $4, $5)
     `;
-    await client.query('DELETE FROM compromise_rankings WHERE method = $1', [method]);
 
     for (const row of rankings) {
       const { song_id, position, sum_distance = null, max_distance = null } = row;
-
-      await client.query(insertQuery, [method, song_id, position, sum_distance, max_distance]);
+      await pool.query(insertQuery, [method, song_id, position, sum_distance, max_distance]);
     }
 
-    await client.query('COMMIT');
     res.status(201).json({ message: 'Компромісне ранжування збережено' });
 
   } catch (err) {
-    await client.query('ROLLBACK');
-    console.error("❌ Помилка збереження компромісних ранжувань:", err);
-    res.status(500).json({ error: 'Помилка сервера' });
-
-  } finally {
-    client.release();
+    console.error("❌ Помилка збереження компромісних ранжувань:", err.message, err.stack);
+    res.status(500).json({ error: 'Помилка сервера', details: err.message });
   }
 });
+
 
 
 module.exports = router;
