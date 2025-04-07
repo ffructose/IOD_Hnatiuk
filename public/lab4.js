@@ -106,13 +106,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- 📊 Завантаження компромісних ранжувань (E1 та E2) ---
     try {
-        const response = await fetch("/lab4/compromise-rankings", {
-            headers: { "Authorization": `Bearer ${token}` }
-        });
-
-        if (!response.ok) throw new Error("Не вдалося отримати компроміси");
-
-        const compromiseData = await response.json(); // { E1: [...], E2: [...] }
+        const compromiseData = await fetch("/lab4/compromise-rankings", {
+            headers: { Authorization: `Bearer ${token}` }
+        }).then(r => r.json());
 
         const cont3 = document.getElementById('cont1_3');
         const table = document.createElement('table');

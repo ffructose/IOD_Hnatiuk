@@ -55,22 +55,31 @@ router.get('/evrsongs', async (req, res) => {
 
 // Отримати компромісні ранжування (усі або за методом)
 router.get('/compromise-rankings', async (req, res) => {
-    const method = req.query.method; // 'E1' або 'E2', необов'язковий параметр
-  
     try {
-      const query = method
-        ? 'SELECT * FROM compromise_rankings WHERE method = $1 ORDER BY method, position'
-        : 'SELECT * FROM compromise_rankings ORDER BY method, position';
+      const result = await pool.query(`
+        SELECT method, song_id, position, sum_distance, max_distance
+        FROM compromise_rankings
+        ORDER BY method, position
+      `);
   
-      const values = method ? [method] : [];
+      const data = { E1: [], E2: [] };
   
-      const result = await pool.query(query, values);
-      res.json(result.rows);
+      result.rows.forEach(row => {
+        if (row.method === 'E1') {
+          data.E1.push(row);
+        } else if (row.method === 'E2') {
+          data.E2.push(row);
+        }
+      });
+  
+      res.json(data); // ⚠️ не res.json(result.rows), а саме data!
     } catch (err) {
-      console.error("❌ Помилка при отриманні компромісних ранжувань:", err);
-      res.status(500).json({ error: 'Помилка сервера при читанні compromise_rankings' });
+      console.error('❌ Помилка при отриманні компромісних ранжувань:', err);
+      res.status(500).json({ error: 'Server error' });
     }
   });
+  
+  
   
 
 
