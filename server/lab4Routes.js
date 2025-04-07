@@ -28,17 +28,17 @@ router.get('/song-places', async (req, res) => {
     }
 });
 
-// Додай новий ендпоінт для отримання song_id з evrsongs
+// Повертає всі пісні: song_id + song_name
 router.get('/evrsongs', async (req, res) => {
     try {
-        const result = await pool.query('SELECT song_name FROM evrsongs');
-        const songNames = result.rows.map(row => row.song_name);
-        res.json(songNames);
+        const result = await pool.query('SELECT song_id, song_name FROM evrsongs');
+        res.json(result.rows); // тепер [{ song_id: 1, song_name: 'Song A' }, ...]
     } catch (err) {
         console.error('Помилка при отриманні пісень:', err);
         res.status(500).send('Server error');
     }
 });
+
 
 
 // Отримати всі записи з таблиці `SongPlace` разом із іменами користувачів та назвами пісень
