@@ -30,10 +30,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // Заголовок
         const headerRow1 = document.createElement('tr');
-        const firstHeader = document.createElement('th');
-        firstHeader.textContent = "Місце \\ Користувач";
-        headerRow1.appendChild(firstHeader);
-
         userIds.forEach(userId => {
             const th = document.createElement('th');
             th.textContent = userId;
@@ -42,43 +38,39 @@ document.addEventListener("DOMContentLoaded", async () => {
         table1.appendChild(headerRow1);
 
         // 3 рядки (місця)
-        const placeLabels = ["1 місце", "2 місце", "3 місце"];
-        for (let i = 0; i < 3; i++) {
-            const row = document.createElement('tr');
-            const placeTh = document.createElement('td');
-            placeTh.textContent = placeLabels[i];
-            row.appendChild(placeTh);
-
-            userIds.forEach(userId => {
-                const songId = data[userId][i] || '';
-                const td = document.createElement('td');
-
-                if (allowedSongIds.includes(Number(songId))) {
-                    td.textContent = songId;
-                    matrixSongs[i].push(songId);
-                } else {
-                    td.textContent = "-";
-                    matrixSongs[i].push('');
-                }
-
-                row.appendChild(td);
-            });
-
-            table1.appendChild(row);
-        }
-
-        cont1.appendChild(table1);
-
-        // 🧮 Статистика: скільки разів кожна пісня на певному місці
-        const placeMaps = [{}, {}, {}];
+      for (let i = 0; i < 3; i++) {
+        const row = document.createElement('tr');
         userIds.forEach(userId => {
-            for (let i = 0; i < 3; i++) {
-                const songId = data[userId][i];
-                if (songId) {
-                    placeMaps[i][songId] = (placeMaps[i][songId] || 0) + 1;
-                }
-            }
+          const songId = data[userId][i] || '';
+          if (allowedSongIds.includes(Number(songId))) {
+            matrixSongs[i].push(songId);
+          } else {
+            matrixSongs[i].push('');
+          }
+
+          const td = document.createElement('td');
+          td.textContent = songId;
+          row.appendChild(td);
         });
+        table1.appendChild(row);
+      }
+
+      cont1.appendChild(table1);
+
+      // 🧮 Статистика: скільки разів кожна пісня на тому ж місці
+      const placeMaps = [{}, {}, {}]; // для місць 1, 2, 3
+
+      userIds.forEach(userId => {
+        for (let i = 0; i < 3; i++) {
+          const songId = data[userId][i];
+          if (songId) { // ❗️ Прибираємо перевірку на allowedSongIds
+            if (!placeMaps[i][songId]) {
+              placeMaps[i][songId] = 0;
+            }
+            placeMaps[i][songId]++;
+          }
+        }
+      });
 
         console.log("📊 Частота появи пісень:", placeMaps);
 
