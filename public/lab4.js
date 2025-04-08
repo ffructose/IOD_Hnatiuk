@@ -225,17 +225,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (compromiseData.E1?.length) {
             const cont7 = document.getElementById("cont2_7");
-        
+
             const A_star = allCompromiseSongIds; // 🧠 просто копіюємо порядок із заголовку
             R_star = allCompromiseSongIds.map(songId => {
                 const entry = compromiseData.E1.find(r => r.song_id === songId);
                 return entry?.position ?? "-";
             });
-        
+
             const table = document.createElement("table");
             table.border = "1";
             table.style.borderCollapse = "collapse";
-        
+
             // 🔠 A* — перший рядок
             const rowA = document.createElement("tr");
             const thA = document.createElement("th");
@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 rowA.appendChild(td);
             });
             table.appendChild(rowA);
-        
+
             // 🔢 R* — другий рядок
             const rowR = document.createElement("tr");
             const thR = document.createElement("th");
@@ -259,11 +259,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 rowR.appendChild(td);
             });
             table.appendChild(rowR);
-        
+
             cont7.appendChild(table);
         }
 
-        // 🧮 Побудова векторів A* та R* (для методу E1)
         // 🧮 Матриця ранжування
         if (compromiseData.E1?.length) {
             const cont4 = document.getElementById('cont2_4');
@@ -333,109 +332,100 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
 
-        if (compromiseData.E1?.length) {
-            const cont5 = document.getElementById("cont2_5");
+        // --- 📏 Відстані d^j ---
+        const cont5 = document.getElementById("cont2_5");
+        const table5 = document.createElement("table");
+        table5.border = "1";
+        table5.style.borderCollapse = "collapse";
 
-            R_star = allCompromiseSongIds.map(songId => {
-                const entry = compromiseData.E1.find(r => r.song_id === songId);
-                return entry?.position ?? 0;
-            });
+        // Заголовок
+        const headerRow5 = document.createElement("tr");
+        const thUser5 = document.createElement("th");
+        thUser5.textContent = "Експерт";
+        const thDist5 = document.createElement("th");
+        thDist5.textContent = "Відстань d^j";
+        headerRow5.appendChild(thUser5);
+        headerRow5.appendChild(thDist5);
+        table5.appendChild(headerRow5);
 
-            const table = document.createElement("table");
-            table.border = "1";
-            table.style.borderCollapse = "collapse";
+        userIds.forEach((userId, j) => {
+            const Rj = matrixRanks.map(row => row[j]); // Ранжування j-го експерта
+            let dj = 0;
 
-            // Заголовок
-            const headerRow = document.createElement("tr");
-            const thUser = document.createElement("th");
-            thUser.textContent = "Експерт";
-            headerRow.appendChild(thUser);
-
-            const thDist = document.createElement("th");
-            thDist.textContent = "Відстань d^j";
-            headerRow.appendChild(thDist);
-
-            table.appendChild(headerRow);
-
-            userIds.forEach((userId, j) => {
-                const Rj = matrixRanks.map(row => row[j]); // ранги експерта j
-                let dj = 0;
-
-                for (let i = 0; i < R_star.length; i++) {
-                    if (Rj[i] !== 0) {
-                        dj += Math.abs(Rj[i] - R_star[i]);
-                    }
+            for (let i = 0; i < R_star.length; i++) {
+                if (Rj[i] !== 0) {
+                    dj += Math.abs(Rj[i] - R_star[i]);
                 }
+            }
 
-                // 📌 Якщо експерт має видалені елементи (тобто є 0), застосовуємо поправку з пункту 7
-                const missingCount = Rj.filter(v => v === 0).length;
-                if (missingCount > 0) {
-                    dj += allCompromiseSongIds.length - 3; // поправка: n - 3
+            // Якщо були видалені елементи — поправка (пункт 7)
+            const missingCount = Rj.filter(v => v === 0).length;
+            if (missingCount > 0) {
+                dj += R_star.length - 3;
+            }
+
+            const row = document.createElement("tr");
+            const tdUser = document.createElement("td");
+            tdUser.textContent = userId;
+            const tdDist = document.createElement("td");
+            tdDist.textContent = dj;
+            row.appendChild(tdUser);
+            row.appendChild(tdDist);
+            table5.appendChild(row);
+        });
+
+        cont5.appendChild(table5);
+
+
+
+        // --- 😌 Індекси задоволеності s^j ---
+        const cont6 = document.getElementById("cont2_6");
+        const table6 = document.createElement("table");
+        table6.border = "1";
+        table6.style.borderCollapse = "collapse";
+
+        // Заголовок
+        const headerRow6 = document.createElement("tr");
+        const thUser6 = document.createElement("th");
+        thUser6.textContent = "Експерт";
+        const thSat6 = document.createElement("th");
+        thSat6.textContent = "Індекс задоволеності s^j (%)";
+        headerRow6.appendChild(thUser6);
+        headerRow6.appendChild(thSat6);
+        table6.appendChild(headerRow6);
+
+        // n — кількість об’єктів у компромісному ранжуванні
+        const n = R_star.length;
+        const maxDistance = (n - 3) / 3;
+
+        userIds.forEach((userId, j) => {
+            const Rj = matrixRanks.map(row => row[j]);
+            let dj = 0;
+
+            for (let i = 0; i < R_star.length; i++) {
+                if (Rj[i] !== 0) {
+                    dj += Math.abs(Rj[i] - R_star[i]);
                 }
+            }
 
-                const row = document.createElement("tr");
-                const tdUser = document.createElement("td");
-                tdUser.textContent = userId;
-                const tdDist = document.createElement("td");
-                tdDist.textContent = dj;
+            const missingCount = Rj.filter(v => v === 0).length;
+            if (missingCount > 0) {
+                dj += n - 3;
+            }
 
-                row.appendChild(tdUser);
-                row.appendChild(tdDist);
-                table.appendChild(row);
-            });
+            const sj = (1 - (dj / maxDistance)) * 100;
 
-            cont5.appendChild(table);
-        }
+            const row = document.createElement("tr");
+            const tdUser = document.createElement("td");
+            tdUser.textContent = userId;
+            const tdSj = document.createElement("td");
+            tdSj.textContent = sj.toFixed(2);
+            row.appendChild(tdUser);
+            row.appendChild(tdSj);
+            table6.appendChild(row);
+        });
 
-        if (compromiseData.E1?.length) {
-            const cont6 = document.getElementById("cont2_6");
-            const table = document.createElement("table");
-            table.border = "1";
-            table.style.borderCollapse = "collapse";
-
-            const headerRow = document.createElement("tr");
-            const thUser = document.createElement("th");
-            thUser.textContent = "Експерт";
-            const thSatisfaction = document.createElement("th");
-            thSatisfaction.textContent = "Індекс задоволеності s^j (%)";
-            headerRow.appendChild(thUser);
-            headerRow.appendChild(thSatisfaction);
-            table.appendChild(headerRow);
-
-            const n = allCompromiseSongIds.length;
-            const maxPossibleDistance = (n - 3) / 3;
-
-            userIds.forEach((userId, j) => {
-                const Rj = matrixRanks.map(row => row[j]);
-                let dj = 0;
-
-                for (let i = 0; i < R_star.length; i++) {
-                    if (Rj[i] !== 0) {
-                        dj += Math.abs(Rj[i] - R_star[i]);
-                    }
-                }
-
-                const missingCount = Rj.filter(v => v === 0).length;
-                if (missingCount > 0) {
-                    dj += n - 3;
-                }
-
-                const sj = (1 - (dj / maxPossibleDistance)) * 100;
-
-                const row = document.createElement("tr");
-                const tdUser = document.createElement("td");
-                tdUser.textContent = userId;
-                const tdSj = document.createElement("td");
-                tdSj.textContent = sj.toFixed(2);
-                row.appendChild(tdUser);
-                row.appendChild(tdSj);
-                table.appendChild(row);
-            });
-
-            cont6.appendChild(table);
-        }
-
-
+        cont6.appendChild(table6);
 
 
 
