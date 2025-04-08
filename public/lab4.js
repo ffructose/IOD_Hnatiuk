@@ -22,6 +22,30 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const cont1 = document.getElementById('cont2_1');
         const userIds = Object.keys(data);
+
+        // 🔁 Побудова allSongIds і matrixRanks (так само, як у lab3.js)
+        const allSongIdsSet = new Set();
+        userIds.forEach(userId => {
+            const places = data[userId];
+            places.forEach(songId => {
+                if (allowedSongIds.includes(Number(songId))) {
+                    allSongIdsSet.add(Number(songId));
+                }
+            });
+        });
+        const allSongIds = Array.from(allSongIdsSet).sort((a, b) => a - b);
+
+        const matrixRanks = allSongIds.map(songId => {
+            return userIds.map(userId => {
+                const places = data[userId];
+                const idx = places.indexOf(songId);
+                return idx === -1 ? 0 : idx + 1;
+            });
+        });
+        console.log("✅ matrixRanks:", matrixRanks);
+        console.log("✅ allSongIds:", allSongIds);
+
+
         const matrixSongs = [[], [], []];
 
         const table1 = document.createElement('table');

@@ -1,4 +1,3 @@
-import { computeMatrixRanks } from './lab3rankingUtils.js';
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -634,7 +633,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error('Помилка завантаження даних:', error);
   }
 
-  const { matrixRanks, allSongIds } = computeMatrixRanks(data, userIds, allowedSongIds);
 });
 
 
