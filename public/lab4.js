@@ -6,6 +6,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
+    let userIds = [];
+    let matrixRanks = [];
+    let allExpertSongIds = [];
+    let allCompromiseSongIds = [];
+    
+
     // --- Побудова таблиці в cont2_1 з song_id ---
     try {
         const [songPlacesRes, evrsongsRes] = await Promise.all([
@@ -21,9 +27,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const allowedSongIds = await evrsongsRes.json(); // [1, 2, 3, ...]
 
         const cont1 = document.getElementById('cont2_1');
-        const userIds = Object.keys(data);
+        userIds = Object.keys(data);
 
-        // 🔁 Побудова allSongIds і matrixRanks (так само, як у lab3.js)
+        // 🔁 Побудова allExpertSongIds і matrixRanks (так само, як у lab3.js)
         const allSongIdsSet = new Set();
         userIds.forEach(userId => {
             const places = data[userId];
@@ -33,9 +39,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             });
         });
-        const allSongIds = Array.from(allSongIdsSet).sort((a, b) => a - b);
+        allExpertSongIds  = Array.from(allSongIdsSet).sort((a, b) => a - b);
 
-        const matrixRanks = allSongIds.map(songId => {
+        matrixRanks = allExpertSongIds .map(songId => {
             return userIds.map(userId => {
                 const places = data[userId];
                 const idx = places.indexOf(songId);
@@ -43,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
         console.log("✅ matrixRanks:", matrixRanks);
-        console.log("✅ allSongIds:", allSongIds);
+        console.log("✅ allExpertSongIds :", allExpertSongIds );
 
 
         const matrixSongs = [[], [], []];
@@ -146,9 +152,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         headerRow.appendChild(thMethod);
 
         // Витягуємо унікальні song_id
-        const allSongIds = [...new Set([...compromiseData.E1, ...compromiseData.E2].map(row => row.song_id))].sort((a, b) => a - b);
+        allCompromiseSongIds  = [...new Set([...compromiseData.E1, ...compromiseData.E2].map(row => row.song_id))].sort((a, b) => a - b);
 
-        allSongIds.forEach(songId => {
+        allCompromiseSongIds .forEach(songId => {
             const th = document.createElement("th");
             th.textContent = `ID ${songId}`;
             headerRow.appendChild(th);
@@ -171,7 +177,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             tdLabel.textContent = "Евристика E1 (мін. сума)";
             row.appendChild(tdLabel);
 
-            allSongIds.forEach(songId => {
+            allCompromiseSongIds .forEach(songId => {
                 const entry = compromiseData.E1.find(r => r.song_id === songId);
                 const td = document.createElement("td");
                 td.textContent = entry ? entry.position : "-";
@@ -196,7 +202,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             tdLabel.textContent = "Евристика E2 (мін. макс)";
             row.appendChild(tdLabel);
 
-            allSongIds.forEach(songId => {
+            allCompromiseSongIds .forEach(songId => {
                 const entry = compromiseData.E2.find(r => r.song_id === songId);
                 const td = document.createElement("td");
                 td.textContent = entry ? entry.position : "-";
@@ -225,7 +231,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const A_star = sortedE1.map(r => r.song_id);
 
             // 🔢 R* — вектор рангів: кожному song_id відповідає position
-            const R_star = allSongIds.map(songId => {
+            const R_star = allCompromiseSongIds .map(songId => {
                 const entry = compromiseData.E1.find(r => r.song_id === songId);
                 return entry?.position ?? "-";
             });
@@ -267,7 +273,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (compromiseData.E1?.length) {
             const cont5 = document.getElementById("cont2_5");
         
-            const R_star = allSongIds.map(songId => {
+            const R_star = allCompromiseSongIds .map(songId => {
                 const entry = compromiseData.E1.find(r => r.song_id === songId);
                 return entry?.position ?? 0;
             });
@@ -301,7 +307,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // 📌 Якщо експерт має видалені елементи (тобто є 0), застосовуємо поправку з пункту 7
                 const missingCount = Rj.filter(v => v === 0).length;
                 if (missingCount > 0) {
-                    dj += allSongIds.length - 3; // поправка: n - 3
+                    dj += allCompromiseSongIds .length - 3; // поправка: n - 3
                 }
         
                 const row = document.createElement("tr");
@@ -333,7 +339,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             headerRow.appendChild(thSatisfaction);
             table.appendChild(headerRow);
         
-            const n = allSongIds.length;
+            const n = allCompromiseSongIds .length;
             const maxPossibleDistance = (n - 3) / 3;
         
             userIds.forEach((userId, j) => {
