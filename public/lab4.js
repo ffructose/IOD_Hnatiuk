@@ -398,15 +398,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (compromiseData.E1?.length) {
             const cont7 = document.getElementById("cont2_7");
 
-            // 🔠 A* — вектор об’єктів (song_id), відсортованих за position
-            const sortedE1 = [...compromiseData.E1].sort((a, b) => a.position - b.position);
-            const A_star = sortedE1.map(r => r.song_id);
-
-            // 🔢 R* — вектор рангів: кожному song_id відповідає position
-            R_star = allCompromiseSongIds .map(songId => {
-                const entry = compromiseData.E1.find(r => r.song_id === songId);
-                return entry?.position ?? "-";
+            const A_star = [];
+            R_star = [];
+            
+            compromiseData.E1.forEach(entry => {
+                A_star.push(entry.song_id);
+                R_star.push(entry.position);
             });
+            
 
             // 🧮 Таблиця для A* і R*
             const table = document.createElement("table");
