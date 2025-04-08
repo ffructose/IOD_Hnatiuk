@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
+
+
     let userIds = [];
     let matrixRanks = [];
     let allExpertSongIds = [];
@@ -13,6 +15,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     let R_star = [];
     let matrixSongs = [[], [], []]; // 🔥 глобальна змінна
     let data = {};
+    let user_id = null;
+
+    try {
+        const meRes = await fetch("/lab4/info", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (!meRes.ok) throw new Error("Не вдалося отримати user_id");
+
+        const meData = await meRes.json();
+        user_id = meData.id; // 👈 саме тут твій user_id
+        console.log("👤 user_id:", user_id);
+    } catch (err) {
+        alert("❌ Проблема з авторизацією користувача. Повторіть вхід.");
+        window.location.href = "login.html";
+        return;
+    }
+
+
+
+    // Додаємо функцію для логування дій у Protocol
+    async function logAction(userId, action) {
+        try {
+            await fetch("/lab4/log-action", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ user_id: userId, action })
+            });
+        } catch (error) {
+            console.error("❌ Помилка при логуванні дії:", error);
+        }
+    }
+
 
     // --- Побудова таблиці в cont2_1 з song_id ---
     try {
@@ -475,6 +512,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         cont6.appendChild(satisfactionTable);
 
+        console.log(`  ✅ Пісня ID ${songId} → експерт: ${rankExp}, R*: ${rankStar}, |${rankExp} - ${rankStar}| = ${diff}`);
+        logAction(user_id, `Пісня ID ${songId} → експерт: ${rankExp}, R*: ${rankStar}, |${rankExp} - ${rankStar}| = ${diff}`);
+
+        console.log(`🧮 Обчислення d': ${dPrimeExplanation} = ${dPrime}`);
+        logAction(user_id, `🧮 d': ${dPrimeExplanation} = ${dPrime}`);
+
+        console.log(`📐 d^j = ${dPrime} + ${n} - 3 = ${dFinal}`);
+        logAction(user_id, `📐 d^j = ${dPrime} + ${n} - 3 = ${dFinal}`);
+
+        console.log(`📊 Індекс задоволеності для ${userId}: s^j = (1 - (${dFinal} / ${n}) / 3) * 100 = ${satisfaction.toFixed(2)}%`);
+        logAction(user_id, `s^j для ${userId}: ${(satisfaction.toFixed(2))}%`);
 
 
 
