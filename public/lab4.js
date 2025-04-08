@@ -331,116 +331,60 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
 
-
-        // --- 📏 Відстані d^j ---
-        const cont5 = document.getElementById("cont2_5");
-        const table5 = document.createElement("table");
-        table5.border = "1";
-        table5.style.borderCollapse = "collapse";
-
-        // Заголовок
-        const headerRow5 = document.createElement("tr");
-        const thUser5 = document.createElement("th");
-        thUser5.textContent = "Експерт";
-        const thDist5 = document.createElement("th");
-        thDist5.textContent = "Відстань d^j";
-        headerRow5.appendChild(thUser5);
-        headerRow5.appendChild(thDist5);
-        table5.appendChild(headerRow5);
-
         userIds.forEach((userId, j) => {
-            const Aj = data[userId].map(id => Number(id)); // 3 пісні, які вибрав експерт
-            const Rj = Aj.map(songId => {
-                const rowIndex = allCompromiseSongIds.indexOf(songId);
-                return rowIndex !== -1 ? matrixRanks[rowIndex][j] : 0;
-            });
-        
-            const RstarLocal = Aj.map(songId => {
-                const entry = compromiseData.E1.find(r => r.song_id === songId);
-                return entry?.position ?? 0;
-            });
-        
-            // Перевірка: скільки об'єктів не знайдено
-            const missingCount = Rj.filter((val, idx) => val === 0 || RstarLocal[idx] === 0).length;
-        
-            let dj = 0;
-            for (let i = 0; i < Aj.length; i++) {
-                if (Rj[i] !== 0 && RstarLocal[i] !== 0) {
-                    dj += Math.abs(Rj[i] - RstarLocal[i]);
+            let dPrime = 0;
+            let commonCount = 0;
+            const ranksExpert = [];
+            const ranksCompromise = [];
+
+            console.log(`\n🔍 Експерт ${userId}:`);
+
+            for (let i = 0; i < allCompromiseSongIds.length; i++) {
+                const songId = allCompromiseSongIds[i];
+                const rankStar = R_star[i];
+
+                const places = data[userId];
+                const indexInExpert = places.findIndex(id => Number(id) === songId);
+
+                if (indexInExpert === -1) {
+                    console.log(`  ❌ Пісня ID ${songId} не оцінена експертом`);
+                    ranksExpert.push("-");
+                    ranksCompromise.push(rankStar);
+                    continue;
                 }
+
+                const rankExpert = indexInExpert + 1;
+                const absDiff = Math.abs(rankExpert - rankStar);
+                dPrime += absDiff;
+                commonCount++;
+
+                console.log(`  ✅ Пісня ID ${songId} → ранг експерта: ${rankExpert}, ранг R*: ${rankStar}, |${rankExpert} - ${rankStar}| = ${absDiff}`);
+
+                ranksExpert.push(rankExpert);
+                ranksCompromise.push(rankStar);
             }
-        
-            if (missingCount > 0) {
-                dj = dj + allCompromiseSongIds.length - 3;
-            }
-        
-            console.log(`🧑 Експерт ${userId}`);
-            console.log("  Aj (обрані пісні):", Aj);
-            console.log("  Rj (ранги експерта):", Rj);
-            console.log("  R* (ранги у компромісі):", RstarLocal);
-            console.log("  dj:", dj);
-        
+
+            const n = allCompromiseSongIds.length;
+            const removedCount = n - commonCount;
+            const dFinal = dPrime + removedCount;
+
+            console.log(`🔹 Ранги експерта:      [${ranksExpert.join(", ")}]`);
+            console.log(`🔹 Ранги компромісні:  [${ranksCompromise.join(", ")}]`);
+            console.log(`🔸 Часткова відстань d': ${dPrime}`);
+            console.log(`🔸 Кількість видалених об'єктів: ${removedCount}`);
+            console.log(`🔸 Підсумкова відстань d: ${dFinal}`);
+
+            // Вивід у таблицю
             const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${userId}</td>
-                <td>${dj}</td>
-            `;
-            table5.appendChild(row);
-        });
-        
-
-        cont5.appendChild(table5);
-
-
-
-        // --- 😌 Індекси задоволеності s^j ---
-        const cont6 = document.getElementById("cont2_6");
-        const table6 = document.createElement("table");
-        table6.border = "1";
-        table6.style.borderCollapse = "collapse";
-
-        // Заголовок
-        const headerRow6 = document.createElement("tr");
-        const thUser6 = document.createElement("th");
-        thUser6.textContent = "Експерт";
-        const thSat6 = document.createElement("th");
-        thSat6.textContent = "Індекс задоволеності s^j (%)";
-        headerRow6.appendChild(thUser6);
-        headerRow6.appendChild(thSat6);
-        table6.appendChild(headerRow6);
-
-        // n — кількість об’єктів у компромісному ранжуванні
-        const n = R_star.length;
-        const maxDistance = (n - 3) / 3;
-
-        userIds.forEach((userId, j) => {
-            const Rj = matrixRanks.map(row => row[j]);
-            let dj = 0;
-
-            for (let i = 0; i < R_star.length; i++) {
-                if (Rj[i] !== 0) {
-                    dj += Math.abs(Rj[i] - R_star[i]);
-                }
-            }
-
-            const missingCount = Rj.filter(v => v === 0).length;
-            if (missingCount > 0) {
-                dj += n - 3;
-            }
-
-            const sj = (1 - (dj / maxDistance)) * 100;
-
-            const row = document.createElement("tr");
-            const tdUser = document.createElement("td");
-            tdUser.textContent = userId;
-            const tdSj = document.createElement("td");
-            tdSj.textContent = sj.toFixed(2);
-            row.appendChild(tdUser);
-            row.appendChild(tdSj);
-            table6.appendChild(row);
+            const td1 = document.createElement("td");
+            td1.textContent = userId;
+            const td2 = document.createElement("td");
+            td2.textContent = dFinal;
+            row.appendChild(td1);
+            row.appendChild(td2);
+            table.appendChild(row);
         });
 
-        cont6.appendChild(table6);
 
 
 
