@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    // --- Побудова таблиці в cont1_1 з song_id ---
+    // --- Побудова таблиці в cont2_1 з song_id ---
     try {
         const [songPlacesRes, evrsongsRes] = await Promise.all([
             fetch("/lab4/song-places", { headers: { Authorization: `Bearer ${token}` } }),
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const data = await songPlacesRes.json();         // { user_id: [song_id, song_id, song_id] }
         const allowedSongIds = await evrsongsRes.json(); // [1, 2, 3, ...]
 
-        const cont1 = document.getElementById('cont1_1');
+        const cont1 = document.getElementById('cont2_1');
         const userIds = Object.keys(data);
         const matrixSongs = [[], [], []];
 
@@ -76,12 +76,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (err) {
         console.error("❌ Помилка при побудові таблиці:", err);
-        document.getElementById("cont1_1").innerHTML += `<p style="color:red;">Помилка при завантаженні таблиці</p>`;
+        document.getElementById("cont2_1").innerHTML += `<p style="color:red;">Помилка при завантаженні таблиці</p>`;
     }
 
-    // --- Завантаження filteredTable з назвами пісень ---
+    // --- Завантаження TWOfilteredTable з назвами пісень ---
     try {
-        const filteredTableBody = document.querySelector("#filteredTable tbody");
+        const TWOfilteredTableBody = document.querySelector("#TWOfilteredTable tbody");
 
         const response = await fetch("/lab4/songnames", {
             headers: { "Authorization": `Bearer ${token}` }
@@ -91,17 +91,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const songNames = await response.json(); // ['Пісня 1', 'Пісня 2', ...]
 
-        filteredTableBody.innerHTML = "";
+        TWOfilteredTableBody.innerHTML = "";
         songNames.forEach(name => {
             const row = document.createElement("tr");
             row.innerHTML = `<td>${name}</td>`;
-            filteredTableBody.appendChild(row);
+            TWOfilteredTableBody.appendChild(row);
         });
 
     } catch (error) {
-        console.error("❌ Помилка при завантаженні filteredTable:", error);
-        const filteredTableBody = document.querySelector("#filteredTable tbody");
-        filteredTableBody.innerHTML = `<tr><td colspan="1">Помилка при завантаженні</td></tr>`;
+        console.error("❌ Помилка при завантаженні TWOfilteredTable:", error);
+        const TWOfilteredTableBody = document.querySelector("#TWOfilteredTable tbody");
+        TWOfilteredTableBody.innerHTML = `<tr><td colspan="1">Помилка при завантаженні</td></tr>`;
     }
 
     // --- 📊 Завантаження компромісних ранжувань (E1 та E2) ---
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             headers: { Authorization: `Bearer ${token}` }
         }).then(r => r.json());
 
-        const cont3 = document.getElementById('cont1_3');
+        const cont3 = document.getElementById('cont2_3');
         const table = document.createElement('table');
         table.border = "1";
         table.style.borderCollapse = "collapse";
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // 🧮 Побудова векторів A* та R* (для методу E1)
         if (compromiseData.E1?.length) {
-            const cont4 = document.getElementById("cont1_4");
+            const cont4 = document.getElementById("cont2_4");
 
             // 🔠 A* — вектор об’єктів (song_id), відсортованих за position
             const sortedE1 = [...compromiseData.E1].sort((a, b) => a.position - b.position);
@@ -242,7 +242,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
         console.error("❌ Помилка при завантаженні компромісів:", error);
-        document.getElementById("cont1_3").innerHTML += `<p style="color:red;">Не вдалося завантажити компромісні ранжування</p>`;
+        document.getElementById("cont2_3").innerHTML += `<p style="color:red;">Не вдалося завантажити компромісні ранжування</p>`;
     }
 
 
