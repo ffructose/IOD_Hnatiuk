@@ -331,6 +331,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
 
+        const cont5 = document.getElementById("cont2_5");
+
+
         userIds.forEach((userId, j) => {
             let dPrime = 0;
             let commonCount = 0;
@@ -384,6 +387,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             row.appendChild(td2);
             table.appendChild(row);
         });
+
+
+
+        cont5.appendChild(table);
 
 
 
