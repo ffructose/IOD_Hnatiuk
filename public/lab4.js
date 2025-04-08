@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let allCompromiseSongIds = [];
     let R_star = [];
     let matrixSongs = [[], [], []]; // 🔥 глобальна змінна
+    let data = {};
 
     // --- Побудова таблиці в cont2_1 з song_id ---
     try {
@@ -24,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             throw new Error("Не вдалося отримати дані");
         }
 
-        const data = await songPlacesRes.json();         // { user_id: [song_id, song_id, song_id] }
+        data = await songPlacesRes.json();
         const allowedSongIds = await evrsongsRes.json(); // [1, 2, 3, ...]
 
         const cont1 = document.getElementById('cont2_1');
