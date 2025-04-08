@@ -395,6 +395,53 @@ document.addEventListener("DOMContentLoaded", async () => {
             cont6.appendChild(table);
         }
 
+        if (compromiseData.E1?.length) {
+            const cont7 = document.getElementById("cont2_7");
+
+            // 🔠 A* — вектор об’єктів (song_id), відсортованих за position
+            const sortedE1 = [...compromiseData.E1].sort((a, b) => a.position - b.position);
+            const A_star = sortedE1.map(r => r.song_id);
+
+            // 🔢 R* — вектор рангів: кожному song_id відповідає position
+            R_star = allCompromiseSongIds .map(songId => {
+                const entry = compromiseData.E1.find(r => r.song_id === songId);
+                return entry?.position ?? "-";
+            });
+
+            // 🧮 Таблиця для A* і R*
+            const table = document.createElement("table");
+            table.border = "1";
+            table.style.borderCollapse = "collapse";
+
+            // 🔠 A* — перший рядок
+            const rowA = document.createElement("tr");
+            const thA = document.createElement("th");
+            thA.textContent = "A* (song_id)";
+            rowA.appendChild(thA);
+            A_star.forEach(songId => {
+                const td = document.createElement("td");
+                td.textContent = songId;
+                rowA.appendChild(td);
+            });
+            table.appendChild(rowA);
+
+            // 🔢 R* — другий рядок
+            const rowR = document.createElement("tr");
+            const thR = document.createElement("th");
+            thR.textContent = "R* (rank)";
+            rowR.appendChild(thR);
+            R_star.forEach(rank => {
+                const td = document.createElement("td");
+                td.textContent = rank;
+                rowR.appendChild(td);
+            });
+            table.appendChild(rowR);
+
+            // ➕ Додаємо таблицю в контейнер
+            cont7.appendChild(table);
+
+        }
+
 
 
     } catch (error) {
