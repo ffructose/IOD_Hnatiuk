@@ -418,6 +418,69 @@ document.addEventListener("DOMContentLoaded", async () => {
         cont5.appendChild(distanceTable);
 
 
+        // 📈 Обчислення індексів задоволеності
+        const cont6 = document.getElementById("cont2_6");
+
+        // Створюємо таблицю
+        const satisfactionTable = document.createElement("table");
+        satisfactionTable.border = "1";
+        satisfactionTable.style.borderCollapse = "collapse";
+
+        // Заголовок
+        const headerS = document.createElement("tr");
+        ["Експерт", "s^j (%)"].forEach(text => {
+            const th = document.createElement("th");
+            th.textContent = text;
+            headerS.appendChild(th);
+        });
+        satisfactionTable.appendChild(headerS);
+
+        // Повторно проходимо userIds, обчислюємо s^j на основі d^j
+        userIds.forEach((userId, j) => {
+            let dPrime = 0;
+            let commonCount = 0;
+
+            allCompromiseSongIds.forEach((songId, i) => {
+                const rankStar = R_star[i];
+                const places = data[userId];
+                const index = places.findIndex(id => Number(id) === songId);
+                if (index !== -1) {
+                    const rankExp = index + 1;
+                    dPrime += Math.abs(rankExp - rankStar);
+                    commonCount++;
+                }
+            });
+
+            const n = allCompromiseSongIds.length;
+            const expertSongs = data[userId].map(Number).filter(Boolean);
+            const missingInCompromise = expertSongs.some(songId => !allCompromiseSongIds.includes(songId));
+
+            let dFinal = dPrime;
+            if (missingInCompromise) {
+                dFinal = dPrime + (n - 3);
+            }
+
+            const maxPossible = (n - 3) / 3;
+            let satisfaction = (1 - dFinal / maxPossible) * 100;
+            satisfaction = Math.max(0, Math.min(satisfaction, 100)); // обмеження в межах [0, 100]
+
+            console.log(`📊 Індекс задоволеності для ${userId}: s^j = (1 - ${dFinal} / ${maxPossible.toFixed(2)}) * 100 = ${satisfaction.toFixed(2)}%`);
+
+            // Рядок таблиці
+            const row = document.createElement("tr");
+            const tdUser = document.createElement("td");
+            tdUser.textContent = userId;
+            const tdSat = document.createElement("td");
+            tdSat.textContent = satisfaction.toFixed(2);
+            row.appendChild(tdUser);
+            row.appendChild(tdSat);
+            satisfactionTable.appendChild(row);
+        });
+
+        cont6.appendChild(satisfactionTable);
+
+
+
 
     } catch (error) {
         console.error("❌ Помилка при завантаженні компромісів:", error);
