@@ -317,6 +317,55 @@ document.addEventListener("DOMContentLoaded", async () => {
         
             cont5.appendChild(table);
         }
+
+        if (compromiseData.E1?.length) {
+            const cont6 = document.getElementById("cont2_6");
+            const table = document.createElement("table");
+            table.border = "1";
+            table.style.borderCollapse = "collapse";
+        
+            const headerRow = document.createElement("tr");
+            const thUser = document.createElement("th");
+            thUser.textContent = "Експерт";
+            const thSatisfaction = document.createElement("th");
+            thSatisfaction.textContent = "Індекс задоволеності s^j (%)";
+            headerRow.appendChild(thUser);
+            headerRow.appendChild(thSatisfaction);
+            table.appendChild(headerRow);
+        
+            const n = allSongIds.length;
+            const maxPossibleDistance = (n - 3) / 3;
+        
+            userIds.forEach((userId, j) => {
+                const Rj = matrixRanks.map(row => row[j]);
+                let dj = 0;
+        
+                for (let i = 0; i < R_star.length; i++) {
+                    if (Rj[i] !== 0) {
+                        dj += Math.abs(Rj[i] - R_star[i]);
+                    }
+                }
+        
+                const missingCount = Rj.filter(v => v === 0).length;
+                if (missingCount > 0) {
+                    dj += n - 3;
+                }
+        
+                const sj = (1 - (dj / maxPossibleDistance)) * 100;
+        
+                const row = document.createElement("tr");
+                const tdUser = document.createElement("td");
+                tdUser.textContent = userId;
+                const tdSj = document.createElement("td");
+                tdSj.textContent = sj.toFixed(2);
+                row.appendChild(tdUser);
+                row.appendChild(tdSj);
+                table.appendChild(row);
+            });
+        
+            cont6.appendChild(table);
+        }
+        
         
 
     } catch (error) {
