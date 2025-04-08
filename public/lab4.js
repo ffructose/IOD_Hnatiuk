@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let matrixRanks = [];
     let allExpertSongIds = [];
     let allCompromiseSongIds = [];
-    
+    let R_star = [];
+
 
     // --- Побудова таблиці в cont2_1 з song_id ---
     try {
@@ -231,7 +232,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const A_star = sortedE1.map(r => r.song_id);
 
             // 🔢 R* — вектор рангів: кожному song_id відповідає position
-            const R_star = allCompromiseSongIds .map(songId => {
+            R_star = allCompromiseSongIds .map(songId => {
                 const entry = compromiseData.E1.find(r => r.song_id === songId);
                 return entry?.position ?? "-";
             });
@@ -273,7 +274,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (compromiseData.E1?.length) {
             const cont5 = document.getElementById("cont2_5");
         
-            const R_star = allCompromiseSongIds .map(songId => {
+            R_star = allCompromiseSongIds .map(songId => {
                 const entry = compromiseData.E1.find(r => r.song_id === songId);
                 return entry?.position ?? 0;
             });
