@@ -31,14 +31,12 @@ table::-webkit-scrollbar-thumb:hover {
 }
 
 
-#cont2_1 {
-    grid-column: span 2; 
-}
-#cont2_2 {
+#cont2_1, #cont2_2, #cont2_5,#cont2_6 {
     grid-column: span 2; 
 }
 
-#cont2_3,#cont2_4, #cont2_5,#cont2_6, #cont2_7, #cont2_8{
+
+#cont2_3,#cont2_4, #cont2_7, #cont2_8{
     grid-column: span 4; 
 }
 
