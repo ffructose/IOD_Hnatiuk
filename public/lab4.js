@@ -332,7 +332,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
 
-        // 📏 Обчислення відстаней d^j для кожного експерта
+        // 📏 Обчислення відстаней d^j для кожного експерта (з урахуванням n-3)
         const cont5 = document.getElementById("cont2_5");
 
         // Створюємо таблицю
@@ -380,12 +380,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             });
 
-            const removed = allCompromiseSongIds.length - commonCount;
-            const dFinal = dPrime + removed;
+            // ⛔ Перевірка: чи є в експертному ранжуванні пісні, яких немає у компромісі
+            const expertSongs = data[userId].map(Number).filter(Boolean);
+            const missingInCompromise = expertSongs.some(songId => !allCompromiseSongIds.includes(songId));
+
+            const n = allCompromiseSongIds.length;
+            let dFinal = dPrime;
+            if (missingInCompromise) {
+                dFinal = dPrime + (n - 3);
+                console.log(`⚠️ Застосовано формулу d^j = d' + n - 3 => ${dPrime} + ${n} - 3 = ${dFinal}`);
+            }
 
             console.log(`🔹 Ранги експерта:     [${ranksExpert.join(", ")}]`);
             console.log(`🔹 Ранги компромісні: [${ranksCompromise.join(", ")}]`);
-            console.log(`🔸 d' = ${dPrime}, видалено = ${removed}, d = ${dFinal}`);
+            console.log(`🔸 d' = ${dPrime}, d = ${dFinal}`);
 
             // Рядок таблиці
             const row = document.createElement("tr");
@@ -398,7 +406,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             distanceTable.appendChild(row);
         });
 
-        // Вставка в DOM
+        // Вивід у DOM
         cont5.appendChild(distanceTable);
 
 
