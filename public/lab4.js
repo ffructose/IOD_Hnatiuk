@@ -349,34 +349,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         table5.appendChild(headerRow5);
 
         userIds.forEach((userId, j) => {
-            const Rj = matrixRanks.map(row => row[j]); // Ранжування j-го експерта
-            const Aj = []; // множинне порівняння j-го експерта
-            let dj = 0;
+            const Aj = data[userId].map(id => Number(id)); // 3 пісні, які вибрав експерт
+            const Rj = Aj.map(songId => {
+                const rowIndex = allCompromiseSongIds.indexOf(songId);
+                return rowIndex !== -1 ? matrixRanks[rowIndex][j] : 0;
+            });
         
-            for (let i = 0; i < R_star.length; i++) {
-                if (Rj[i] !== 0) {
-                    Aj.push(allCompromiseSongIds[i]); // додаємо song_id з компромісу, який є в Rj
-                    dj += Math.abs(Rj[i] - R_star[i]);
+            const RstarLocal = Aj.map(songId => {
+                const entry = compromiseData.E1.find(r => r.song_id === songId);
+                return entry?.position ?? 0;
+            });
+        
+            // Перевірка: скільки об'єктів не знайдено
+            const missingCount = Rj.filter((val, idx) => val === 0 || RstarLocal[idx] === 0).length;
+        
+            let dj = 0;
+            for (let i = 0; i < Aj.length; i++) {
+                if (Rj[i] !== 0 && RstarLocal[i] !== 0) {
+                    dj += Math.abs(Rj[i] - RstarLocal[i]);
                 }
             }
         
-            const missingCount = Rj.filter(v => v === 0).length;
             if (missingCount > 0) {
-                dj += R_star.length - 3;
+                dj = dj + allCompromiseSongIds.length - 3;
             }
         
             console.log(`🧑 Експерт ${userId}`);
-            console.log("  Aj (song_ids):", Aj);
-            console.log("  Rj (ranks):   ", Rj);
-            console.log("  dj (відстань):", dj);
+            console.log("  Aj (обрані пісні):", Aj);
+            console.log("  Rj (ранги експерта):", Rj);
+            console.log("  R* (ранги у компромісі):", RstarLocal);
+            console.log("  dj:", dj);
         
             const row = document.createElement("tr");
-            const tdUser = document.createElement("td");
-            tdUser.textContent = userId;
-            const tdDist = document.createElement("td");
-            tdDist.textContent = dj;
-            row.appendChild(tdUser);
-            row.appendChild(tdDist);
+            row.innerHTML = `
+                <td>${userId}</td>
+                <td>${dj}</td>
+            `;
             table5.appendChild(row);
         });
         
