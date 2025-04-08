@@ -418,10 +418,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         cont5.appendChild(distanceTable);
 
 
-        // 📈 Обчислення індексів задоволеності
+        // 📈 Обчислення індексів задоволеності з правильною формулою
         const cont6 = document.getElementById("cont2_6");
 
-        // Створюємо таблицю
         const satisfactionTable = document.createElement("table");
         satisfactionTable.border = "1";
         satisfactionTable.style.borderCollapse = "collapse";
@@ -435,7 +434,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         satisfactionTable.appendChild(headerS);
 
-        // Повторно проходимо userIds, обчислюємо s^j на основі d^j
         userIds.forEach((userId, j) => {
             let dPrime = 0;
             let commonCount = 0;
@@ -460,13 +458,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 dFinal = dPrime + (n - 3);
             }
 
-            const maxPossible = (n - 3) / 3;
-            let satisfaction = (1 - dFinal / maxPossible) * 100;
-            satisfaction = Math.max(0, Math.min(satisfaction, 100)); // обмеження в межах [0, 100]
+            const satisfactionRaw = 1 - (dFinal / n) / 3;
+            const satisfaction = Math.max(0, Math.min(satisfactionRaw * 100, 100));
 
-            console.log(`📊 Індекс задоволеності для ${userId}: s^j = (1 - ${dFinal} / ${maxPossible.toFixed(2)}) * 100 = ${satisfaction.toFixed(2)}%`);
+            console.log(`📊 Індекс задоволеності для ${userId}: s^j = (1 - (${dFinal} / ${n}) / 3) * 100 = ${satisfaction.toFixed(2)}%`);
 
-            // Рядок таблиці
             const row = document.createElement("tr");
             const tdUser = document.createElement("td");
             tdUser.textContent = userId;
