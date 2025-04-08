@@ -7,7 +7,7 @@
 
 #cont2_1,#cont2_2,#cont2_3,#cont2_4,#cont2_5,#cont2_6,#cont2_7, #cont2_8{
     overflow: hidden;
-    margin: 40px;
+    margin: 15px;
 }
 
 table{
@@ -49,6 +49,10 @@ tr{
 th{
     padding: 8px;
     background-color: rgb(173, 218, 218);
+}
+
+td{
+    padding: 5px;
 }
 
 /* Загальний стиль сторінки */
