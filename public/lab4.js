@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let allExpertSongIds = [];
     let allCompromiseSongIds = [];
     let R_star = [];
-
+    let matrixSongs = [[], [], []]; // 🔥 глобальна змінна
 
     // --- Побудова таблиці в cont2_1 з song_id ---
     try {
@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("✅ allExpertSongIds :", allExpertSongIds);
 
 
-        const matrixSongs = [[], [], []];
 
         const table1 = document.createElement('table');
         table1.border = "1";
