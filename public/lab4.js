@@ -331,9 +331,25 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
 
+
+        // 📏 Обчислення відстаней d^j для кожного експерта
         const cont5 = document.getElementById("cont2_5");
 
+        // Створюємо таблицю
+        const distanceTable = document.createElement("table");
+        distanceTable.border = "1";
+        distanceTable.style.borderCollapse = "collapse";
 
+        // Заголовок таблиці
+        const header = document.createElement("tr");
+        ["Експерт", "Відстань до R*"].forEach(text => {
+            const th = document.createElement("th");
+            th.textContent = text;
+            header.appendChild(th);
+        });
+        distanceTable.appendChild(header);
+
+        // Обчислення відстаней
         userIds.forEach((userId, j) => {
             let dPrime = 0;
             let commonCount = 0;
@@ -342,55 +358,48 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             console.log(`\n🔍 Експерт ${userId}:`);
 
-            for (let i = 0; i < allCompromiseSongIds.length; i++) {
-                const songId = allCompromiseSongIds[i];
+            allCompromiseSongIds.forEach((songId, i) => {
                 const rankStar = R_star[i];
-
                 const places = data[userId];
-                const indexInExpert = places.findIndex(id => Number(id) === songId);
+                const index = places.findIndex(id => Number(id) === songId);
 
-                if (indexInExpert === -1) {
+                if (index === -1) {
                     console.log(`  ❌ Пісня ID ${songId} не оцінена експертом`);
                     ranksExpert.push("-");
                     ranksCompromise.push(rankStar);
-                    continue;
+                } else {
+                    const rankExp = index + 1;
+                    const diff = Math.abs(rankExp - rankStar);
+                    dPrime += diff;
+                    commonCount++;
+
+                    console.log(`  ✅ Пісня ID ${songId} → експерт: ${rankExp}, R*: ${rankStar}, різниця = ${diff}`);
+
+                    ranksExpert.push(rankExp);
+                    ranksCompromise.push(rankStar);
                 }
+            });
 
-                const rankExpert = indexInExpert + 1;
-                const absDiff = Math.abs(rankExpert - rankStar);
-                dPrime += absDiff;
-                commonCount++;
+            const removed = allCompromiseSongIds.length - commonCount;
+            const dFinal = dPrime + removed;
 
-                console.log(`  ✅ Пісня ID ${songId} → ранг експерта: ${rankExpert}, ранг R*: ${rankStar}, |${rankExpert} - ${rankStar}| = ${absDiff}`);
+            console.log(`🔹 Ранги експерта:     [${ranksExpert.join(", ")}]`);
+            console.log(`🔹 Ранги компромісні: [${ranksCompromise.join(", ")}]`);
+            console.log(`🔸 d' = ${dPrime}, видалено = ${removed}, d = ${dFinal}`);
 
-                ranksExpert.push(rankExpert);
-                ranksCompromise.push(rankStar);
-            }
-
-            const n = allCompromiseSongIds.length;
-            const removedCount = n - commonCount;
-            const dFinal = dPrime + removedCount;
-
-            console.log(`🔹 Ранги експерта:      [${ranksExpert.join(", ")}]`);
-            console.log(`🔹 Ранги компромісні:  [${ranksCompromise.join(", ")}]`);
-            console.log(`🔸 Часткова відстань d': ${dPrime}`);
-            console.log(`🔸 Кількість видалених об'єктів: ${removedCount}`);
-            console.log(`🔸 Підсумкова відстань d: ${dFinal}`);
-
-            // Вивід у таблицю
+            // Рядок таблиці
             const row = document.createElement("tr");
-            const td1 = document.createElement("td");
-            td1.textContent = userId;
-            const td2 = document.createElement("td");
-            td2.textContent = dFinal;
-            row.appendChild(td1);
-            row.appendChild(td2);
-            table.appendChild(row);
+            const tdUser = document.createElement("td");
+            tdUser.textContent = userId;
+            const tdDist = document.createElement("td");
+            tdDist.textContent = dFinal;
+            row.appendChild(tdUser);
+            row.appendChild(tdDist);
+            distanceTable.appendChild(row);
         });
 
-
-
-        cont5.appendChild(table);
+        // Вставка в DOM
+        cont5.appendChild(distanceTable);
 
 
 
@@ -399,10 +408,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("❌ Помилка при завантаженні компромісів:", error);
         document.getElementById("cont2_3").innerHTML += `<p style="color:red;">шось десь якась помилка</p>`;
     }
-
-
-
-
-
-
 });
