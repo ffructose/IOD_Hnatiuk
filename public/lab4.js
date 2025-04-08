@@ -264,10 +264,67 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         }
 
+        if (compromiseData.E1?.length) {
+            const cont5 = document.getElementById("cont2_5");
+        
+            const R_star = allSongIds.map(songId => {
+                const entry = compromiseData.E1.find(r => r.song_id === songId);
+                return entry?.position ?? 0;
+            });
+        
+            const table = document.createElement("table");
+            table.border = "1";
+            table.style.borderCollapse = "collapse";
+        
+            // Заголовок
+            const headerRow = document.createElement("tr");
+            const thUser = document.createElement("th");
+            thUser.textContent = "Експерт";
+            headerRow.appendChild(thUser);
+        
+            const thDist = document.createElement("th");
+            thDist.textContent = "Відстань d^j";
+            headerRow.appendChild(thDist);
+        
+            table.appendChild(headerRow);
+        
+            userIds.forEach((userId, j) => {
+                const Rj = matrixRanks.map(row => row[j]); // ранги експерта j
+                let dj = 0;
+        
+                for (let i = 0; i < R_star.length; i++) {
+                    if (Rj[i] !== 0) {
+                        dj += Math.abs(Rj[i] - R_star[i]);
+                    }
+                }
+        
+                // 📌 Якщо експерт має видалені елементи (тобто є 0), застосовуємо поправку з пункту 7
+                const missingCount = Rj.filter(v => v === 0).length;
+                if (missingCount > 0) {
+                    dj += allSongIds.length - 3; // поправка: n - 3
+                }
+        
+                const row = document.createElement("tr");
+                const tdUser = document.createElement("td");
+                tdUser.textContent = userId;
+                const tdDist = document.createElement("td");
+                tdDist.textContent = dj;
+        
+                row.appendChild(tdUser);
+                row.appendChild(tdDist);
+                table.appendChild(row);
+            });
+        
+            cont5.appendChild(table);
+        }
+        
+
     } catch (error) {
         console.error("❌ Помилка при завантаженні компромісів:", error);
         document.getElementById("cont2_3").innerHTML += `<p style="color:red;">Не вдалося завантажити компромісні ранжування</p>`;
     }
+
+
 
 
 
