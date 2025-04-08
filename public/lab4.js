@@ -397,21 +397,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (compromiseData.E1?.length) {
             const cont7 = document.getElementById("cont2_7");
-
-            const A_star = [];
-            R_star = [];
-            
-            compromiseData.E1.forEach(entry => {
-                A_star.push(entry.song_id);
-                R_star.push(entry.position);
+        
+            const A_star = allCompromiseSongIds; // 🧠 просто копіюємо порядок із заголовку
+            R_star = allCompromiseSongIds.map(songId => {
+                const entry = compromiseData.E1.find(r => r.song_id === songId);
+                return entry?.position ?? "-";
             });
-            
-
-            // 🧮 Таблиця для A* і R*
+        
             const table = document.createElement("table");
             table.border = "1";
             table.style.borderCollapse = "collapse";
-
+        
             // 🔠 A* — перший рядок
             const rowA = document.createElement("tr");
             const thA = document.createElement("th");
@@ -423,7 +419,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 rowA.appendChild(td);
             });
             table.appendChild(rowA);
-
+        
             // 🔢 R* — другий рядок
             const rowR = document.createElement("tr");
             const thR = document.createElement("th");
@@ -435,10 +431,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 rowR.appendChild(td);
             });
             table.appendChild(rowR);
-
-            // ➕ Додаємо таблицю в контейнер
+        
             cont7.appendChild(table);
-
         }
 
 
