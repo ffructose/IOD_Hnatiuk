@@ -406,7 +406,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 if (index === -1) {
                     console.log(`  ❌ Пісня ID ${songId} не оцінена експертом`);
-                    logAction(user_id, `❌ Пісня ID ${songId} не оцінена експертом`);
                     ranksExpert.push("-");
                     ranksCompromise.push(rankStar);
                 } else {
@@ -434,8 +433,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log(`🔹 Ранги компромісні: [${ranksCompromise.join(", ")}]`);
             console.log(`🧮 Обчислення d': ${dPrimeExplanation} = ${dPrime}`);
 
-            logAction(user_id, `🔹 Ранги експерта:     [${ranksExpert.join(", ")}]`);
-            logAction(user_id, `🔹 Ранги компромісні: [${ranksCompromise.join(", ")}]`);
             logAction(user_id, ` 🧮 Обчислення d': ${dPrimeExplanation} = ${dPrime}`);
 
             if (missingInCompromise) {
@@ -443,8 +440,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 dFinal = dPrime + delta;
                 console.log(`⚠️ Є втрачений об'єкт — застосовується d^j = d' + n - 3`);
                 console.log(`📐 d^j = ${dPrime} + ${n} - 3 = ${dFinal}`);
-                logAction(user_id, `⚠️ Є втрачений об'єкт — застосовується d^j = d' + n - 3`);
-                logAction(user_id, `📐 d^j = ${dPrime} + ${n} - 3 = ${dFinal}`);
+                logAction(user_id, `⚠️ Є втрачений об'єкт — застосовується d^j = d' + n - 3, d^j = ${dPrime} + ${n} - 3 = ${dFinal}`);
             } else {
                 console.log(`📐 d^j = ${dPrime} (без додавання, всі об'єкти присутні)`);
                 logAction(user_id, `📐 d^j = ${dPrime} (без додавання, всі об'єкти присутні)`);
@@ -505,11 +501,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 dFinal = dPrime + (n - 3);
             }
 
-            const satisfactionRaw = 1 - (dFinal / n) / 3;
+            const satisfactionRaw = 1 - (dFinal / (n - 3)) / 3;
             const satisfaction = Math.max(0, Math.min(satisfactionRaw * 100, 100));
 
-            console.log(`📊 Індекс задоволеності для ${userId}: s^j = (1 - (${dFinal} / ${n}) / 3) * 100 = ${satisfaction.toFixed(2)}%`);
-            logAction(user_id, `📊 Індекс задоволеності для ${userId}: s^j = (1 - (${dFinal} / ${n}) / 3) * 100 = ${satisfaction.toFixed(2)}%`);
+            console.log(`📊 Індекс задоволеності для ${userId}: s^j = (1 - (${dFinal} /(${n} - 3)) / 3) * 100 = ${satisfaction.toFixed(2)}%`);
+            logAction(user_id, `📊 Індекс задоволеності для ${userId}: s^j = (1 - (${dFinal} /(${n} - 3)) / 3) * 100 = ${satisfaction.toFixed(2)}%`);
 
             const row = document.createElement("tr");
             const tdUser = document.createElement("td");
