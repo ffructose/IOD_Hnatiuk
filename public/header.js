@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             evrBtn.style.display = "inline-block"; // Приховуємо "кабінет"
             lab3Btn.style.display = "inline-block"; // Приховуємо "кабінет"
             lab4Btn.style.display = "inline-block"; // Приховуємо "кабінет"
+            lab5Btn.style.display = "inline-block"; // Приховуємо "кабінет"
         } else {
             // Якщо користувач не залогований, показуємо кнопки "Увійти" і "Реєстрація"
             loginBtn.style.display = "inline-block";
@@ -32,6 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             evrBtn.style.display = "none"; // Приховуємо "кабінет"
             lab3Btn.style.display = "none"; // Приховуємо "кабінет"
             lab4Btn.style.display = "none"; // Приховуємо "кабінет"
+            lab5Btn.style.display = "none"; // Приховуємо "кабінет"
 
         }
 
