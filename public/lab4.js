@@ -396,6 +396,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             const absTerms = []; // для логування кожного |ri - r*i|
 
             console.log(`\n🔍 Експерт ${userId}:`);
+            logAction(user_id, `🔍 Експерт ${userId}:`);
+
 
             allCompromiseSongIds.forEach((songId, i) => {
                 const rankStar = R_star[i];
@@ -404,6 +406,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 if (index === -1) {
                     console.log(`  ❌ Пісня ID ${songId} не оцінена експертом`);
+                    logAction(user_id, `❌ Пісня ID ${songId} не оцінена експертом`);
                     ranksExpert.push("-");
                     ranksCompromise.push(rankStar);
                 } else {
@@ -414,7 +417,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     absTerms.push(`|${rankExp} - ${rankStar}| = ${diff}`);
 
                     console.log(`  ✅ Пісня ID ${songId} → експерт: ${rankExp}, R*: ${rankStar}, |${rankExp} - ${rankStar}| = ${diff}`);
-
+                    logAction(user_id, `✅ Пісня ID ${songId} → експерт: ${rankExp}, R*: ${rankStar}, |${rankExp} - ${rankStar}| = ${diff}`);
                     ranksExpert.push(rankExp);
                     ranksCompromise.push(rankStar);
                 }
@@ -431,13 +434,20 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log(`🔹 Ранги компромісні: [${ranksCompromise.join(", ")}]`);
             console.log(`🧮 Обчислення d': ${dPrimeExplanation} = ${dPrime}`);
 
+            logAction(user_id, `🔹 Ранги експерта:     [${ranksExpert.join(", ")}]`);
+            logAction(user_id, `🔹 Ранги компромісні: [${ranksCompromise.join(", ")}]`);
+            logAction(user_id, ` 🧮 Обчислення d': ${dPrimeExplanation} = ${dPrime}`);
+
             if (missingInCompromise) {
                 const delta = n - 3;
                 dFinal = dPrime + delta;
                 console.log(`⚠️ Є втрачений об'єкт — застосовується d^j = d' + n - 3`);
                 console.log(`📐 d^j = ${dPrime} + ${n} - 3 = ${dFinal}`);
+                logAction(user_id, `⚠️ Є втрачений об'єкт — застосовується d^j = d' + n - 3`);
+                logAction(user_id, `📐 d^j = ${dPrime} + ${n} - 3 = ${dFinal}`);
             } else {
                 console.log(`📐 d^j = ${dPrime} (без додавання, всі об'єкти присутні)`);
+                logAction(user_id, `📐 d^j = ${dPrime} (без додавання, всі об'єкти присутні)`);
             }
 
             // Рядок таблиці
@@ -499,6 +509,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const satisfaction = Math.max(0, Math.min(satisfactionRaw * 100, 100));
 
             console.log(`📊 Індекс задоволеності для ${userId}: s^j = (1 - (${dFinal} / ${n}) / 3) * 100 = ${satisfaction.toFixed(2)}%`);
+            logAction(user_id, `📊 Індекс задоволеності для ${userId}: s^j = (1 - (${dFinal} / ${n}) / 3) * 100 = ${satisfaction.toFixed(2)}%`);
 
             const row = document.createElement("tr");
             const tdUser = document.createElement("td");
@@ -511,18 +522,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         cont6.appendChild(satisfactionTable);
-
-        console.log(`  ✅ Пісня ID ${songId} → експерт: ${rankExp}, R*: ${rankStar}, |${rankExp} - ${rankStar}| = ${diff}`);
-        logAction(user_id, `Пісня ID ${songId} → експерт: ${rankExp}, R*: ${rankStar}, |${rankExp} - ${rankStar}| = ${diff}`);
-
-        console.log(`🧮 Обчислення d': ${dPrimeExplanation} = ${dPrime}`);
-        logAction(user_id, `🧮 d': ${dPrimeExplanation} = ${dPrime}`);
-
-        console.log(`📐 d^j = ${dPrime} + ${n} - 3 = ${dFinal}`);
-        logAction(user_id, `📐 d^j = ${dPrime} + ${n} - 3 = ${dFinal}`);
-
-        console.log(`📊 Індекс задоволеності для ${userId}: s^j = (1 - (${dFinal} / ${n}) / 3) * 100 = ${satisfaction.toFixed(2)}%`);
-        logAction(user_id, `s^j для ${userId}: ${(satisfaction.toFixed(2))}%`);
 
 
 
