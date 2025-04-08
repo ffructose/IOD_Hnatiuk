@@ -350,20 +350,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         userIds.forEach((userId, j) => {
             const Rj = matrixRanks.map(row => row[j]); // Ранжування j-го експерта
+            const Aj = []; // множинне порівняння j-го експерта
             let dj = 0;
-
+        
             for (let i = 0; i < R_star.length; i++) {
                 if (Rj[i] !== 0) {
+                    Aj.push(allCompromiseSongIds[i]); // додаємо song_id з компромісу, який є в Rj
                     dj += Math.abs(Rj[i] - R_star[i]);
                 }
             }
-
-            // Якщо були видалені елементи — поправка (пункт 7)
+        
             const missingCount = Rj.filter(v => v === 0).length;
             if (missingCount > 0) {
                 dj += R_star.length - 3;
             }
-
+        
+            console.log(`🧑 Експерт ${userId}`);
+            console.log("  Aj (song_ids):", Aj);
+            console.log("  Rj (ranks):   ", Rj);
+            console.log("  dj (відстань):", dj);
+        
             const row = document.createElement("tr");
             const tdUser = document.createElement("td");
             tdUser.textContent = userId;
@@ -373,6 +379,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             row.appendChild(tdDist);
             table5.appendChild(row);
         });
+        
 
         cont5.appendChild(table5);
 
