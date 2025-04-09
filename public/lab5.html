@@ -1,18 +1,86 @@
 <!DOCTYPE html>
 <html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <title>Лабораторна 5 — ІОД</title>
-  <link rel="stylesheet" href="lab5.css">
-  <script defer src="lab5.js"></script>
-</head>
-<body>
-  <div class="container">
-    <h1>Лабораторна робота №5</h1>
-    <h2>Визначення характеристик систем функціональних пристроїв</h2>
-    <p><strong>Варіант:</strong> №7 | <strong>Граф:</strong> ФП = 0</p>
 
-    <div id="results"></div>
-  </div>
+<head>
+    <meta charset="UTF-8">
+    <title>Лабораторна 5 — ІОД</title>
+    <link rel="stylesheet" href="lab5.css">
+    <script defer src="lab5.js"></script>
+    <link rel="stylesheet" href="header.css">
+    <script defer src="header.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Лабораторна робота №5</h1>
+
+        <!-- Таблиця продуктивностей -->
+        <!-- Таблиця продуктивностей -->
+        <h3 class="section-title">Продуктивності пристроїв (πᵢ для різних варіантів)</h3>
+        <div id="piTableContainer"></div>
+        <button id="resetPi">Повернути значення за замовчуванням</button>
+        
+
+
+
+        <!-- Граф системи -->
+        <h3 class="section-title">Граф системи функціональних пристроїв (ФП = 0)</h3>
+        <img src="graph_fp0.png" alt="Граф системи функціональних пристроїв" class="image">
+
+        <!-- Динамічні результати -->
+        <div id="cont1">
+            <h3>1. Нехай πᵢ - реальні продуктивності, з якими працюють усi
+                функціональні пристрої кожної i-ї підсистеми,
+                i = 1, 2, 3.</h3>
+
+            <h4>ТОДІ:</h4>
+            <div class="dynamic"></div>
+        </div>
+
+
+        <div id="cont2" class="meowk">
+            <h4>Визначення завантаженості pᵢ, i = 1, ..., 5, i пристроїв першої підсистеми</h4>
+            <div class="dynamic"></div>
+        </div>
+
+        <div id="cont3" class="meowk">
+            <h4>Визначення завантаженості pᵢ, i = 6, ..., 9, i пристроїв другої підсистеми</h4>
+            <div class="dynamic"></div>
+        </div>
+
+        <div id="cont4" class="meowk">
+            <h4>Визначення завантаженості pᵢ, i = 10, ..., 13, i пристроїв третьої підсистеми</h4>
+            <div class="dynamic"></div>
+        </div>
+
+
+        <div id="cont5">
+
+            <h3>2. Визначення значення суми реальних продуктивностей підсистем:</h3>
+
+            <p class="texty">r = r(1) + r(2) + r(3),</p>
+
+            <p class="texty">де r(i) — реальна продуктивність i-ї підсистеми, i = 1, 2, 3.</p>
+
+            <p class="texty">За першим законом Амдала, реальні продуктивності підсистем визначаються за формулою:
+
+                r(i) = lᵢ * π(i),
+
+                де lᵢ — кількість пристроїв i-ї підсистеми, i = 1, 2, 3.
+            </p>
+
+            <h4> Тому для системи, представленої на рисунку 1, маємо:</h4>
+            <div class="dynamic"></div>
+        </div>
+
+        <div id="cont6">
+            <h4>Отже, реальна продуктивнісь системи:</h4>
+
+            <div class="dynamic"></div>
+        </div>
+
+
+    </div>
 </body>
+
 </html>

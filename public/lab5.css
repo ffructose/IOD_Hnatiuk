@@ -1,55 +1,143 @@
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f7f7f7;
-    color: #333;
-    padding: 20px;
-  }
-  
-  .container {
-    max-width: 900px;
-    margin: auto;
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  }
-  
-  h1 {
-    color: #0a4e9a;
-    text-align: center;
-  }
-  
-  h2 {
-    color: #145ca8;
-    margin-top: 0;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  table, th, td {
-    border: 1px solid #ccc;
-  }
-  
-  th, td {
-    padding: 10px;
-    text-align: center;
-  }
-  
-  th {
-    background-color: #e1efff;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .section-title {
-    margin-top: 30px;
-    font-size: 1.2em;
-    color: #055e8a;
-  }
-  
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f7f7f7;
+  color: #333;
+  padding: 20px;
+}
+
+
+.image {
+  display: block;
+  max-width: 100%;
+  margin: 15px auto;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+.texty {
+  text-decoration: none;
+  font-style: normal;
+  font-weight: none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table,
+th,
+td {
+  border: 1px solid #ccc;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #e1efff;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.section-title {
+  margin-top: 30px;
+  font-size: 1.2em;
+}
+
+.meowk {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.meowk .p-row {
+  padding-top: 15px;
+  display: flex;
+  gap: 10px;
+  /* відстань між p */
+  flex-wrap: wrap;
+  /* дозволяє переноситись, якщо не вміститься */
+}
+
+.meowk p {
+  margin: 0;
+}
+
+/* Таблиця π */
+#piTableContainer table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 14px;
+  text-align: center;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+#piTableContainer th {
+  background-color: #e8f0fe;
+  font-weight: bold;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+#piTableContainer td {
+  border: 1px solid #ccc;
+  padding: 8px;
+}
+
+#piTableContainer input.pi-input {
+  width: 25px;
+  padding: 4px;
+  text-align: center;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+}
+
+/* Кнопка Reset */
+#resetPi {
+  display: inline-block;
+  background-color: #4285f4;
+  color: white;
+  padding: 8px 16px;
+  margin-top: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#resetPi:hover {
+  background-color: #3367d6;
+}
+
+/* Прибрати стрілочки з input[type=number] для всіх браузерів */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+  /* Firefox */
+}
