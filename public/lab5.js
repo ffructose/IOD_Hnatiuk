@@ -4,13 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function renderPiVectorTable() {
         const container = document.getElementById("piTableContainer");
-        let html = `<table><thead><tr><th>Індекс</th>`;
+        let html = `<table><thead><tr>`;
 
         for (let i = 0; i < pi.length; i++) {
             html += `<th>π<sub>${i}</sub></th>`;
         }
 
-        html += `</tr></thead><tbody><tr><td>Значення</td>`;
+        html += `</tr></thead><tbody><tr>`;
 
         for (let i = 0; i < pi.length; i++) {
             html += `<td><input type="number" value="${pi[i]}" data-index="${i}" class="pi-input" /></td>`;

@@ -1,9 +1,12 @@
 body {
   font-family: 'Segoe UI', sans-serif;
+  font-size: 16px;
+  /* <- ДОДАТИ */
   background-color: #f7f7f7;
   color: #333;
   padding: 20px;
 }
+
 
 
 .image {
@@ -58,14 +61,14 @@ tr:nth-child(even) {
 
 .section-title {
   margin-top: 30px;
-  font-size: 1.2em;
 }
 
 .meowk {
   display: flex;
   flex-direction: column;
+  font-size: 16px;
+  /* Додаємо явно */
 }
-
 
 
 .meowk .p-row {
@@ -75,6 +78,7 @@ tr:nth-child(even) {
   /* відстань між p */
   flex-wrap: wrap;
   /* дозволяє переноситись, якщо не вміститься */
+
 }
 
 .meowk p {
@@ -140,4 +144,111 @@ input[type=number]::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
   /* Firefox */
+}
+
+
+/* Додаємо медіазапити для мобільної адаптації */
+@media only screen and (max-width: 768px) {
+
+  body {
+    font-size: 14px;
+    padding: 5px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h3.section-title,
+  h4 {
+    font-size: 16px;
+    margin-top: 20px;
+  }
+
+  .container {
+    width: 100%;
+    padding: 0;
+    margin: 0 auto;
+  }
+
+  table,
+  #piTableContainer table {
+    font-size: 12px;
+  }
+
+  th,
+  td,
+  #piTableContainer th,
+  #piTableContainer td {
+    padding: 6px;
+  }
+
+  #piTableContainer input.pi-input {
+    width: 100%;
+    padding: 6px;
+  }
+
+  #resetPi {
+    padding: 8px;
+    font-size: 12px;
+    width: 100%;
+  }
+
+  .meowk .p-row {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .image {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+
+  .texty {
+    font-size: 13px;
+  }
+
+  /* Таблиця з горизонтальною прокруткою для зручності перегляду */
+  #piTableContainer {
+    overflow-x: auto;
+  }
+
+  /* Таблиця π */
+  #piTableContainer table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 11px;
+    text-align: center;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  }
+
+  #piTableContainer th {
+    background-color: #e8f0fe;
+    font-weight: bold;
+    padding: 3px;
+    border: 1px solid #ccc;
+  }
+
+  #piTableContainer td {
+    border: 1px solid #ccc;
+    padding: 0px;
+  }
+
+  #piTableContainer input.pi-input {
+    width: 20px;
+    height: 18px;
+    padding: 0px;
+    text-align: center;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+  }
+
+  /* Виправлення тексту, щоб не виходив за межі екрану */
+  .dynamic p,
+  .meowk p {
+    word-wrap: break-word;
+  }
 }
