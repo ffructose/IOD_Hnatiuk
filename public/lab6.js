@@ -90,6 +90,29 @@ document.addEventListener("DOMContentLoaded", () => {
         const cont6 = document.getElementById("cont6");
         const total = r1 + r2 + r3;
         document.querySelector("#cont6 .dynamic").innerHTML += `<p>r = ${r1} + ${r2} + ${r3} = <strong>${total}</strong></p>`;
+
+
+
+        // cont7 — обчислення завантаженості системи
+        const cont7 = document.getElementById("cont7");
+        const piSum = pi.slice(1, 14).reduce((sum, val) => sum + val, 0); // π₁ + ... + π₁₃
+        const rho = (total / piSum).toFixed(2);
+        document.querySelector("#cont7 .dynamic").innerHTML += `
+                    <p>π = ${pi.slice(1, 14).join(" + ")} = ${piSum}</p>
+                    <p>ρ = r / π = ${total} / ${piSum} ≈ <strong>${rho}</strong></p>
+                `;
+
+        // cont8 — обчислення прискорення системи
+        const cont8 = document.getElementById("cont8");
+        const maxPi = Math.max(...pi.slice(1, 14));
+        const S = (total / maxPi).toFixed(2);
+        document.querySelector("#cont8 .dynamic").innerHTML += `
+                    <p>max π<sub>i</sub> = ${maxPi}</p>
+                    <p>S = r / max π<sub>i</sub> = ${total} / ${maxPi} ≈ <strong>${S}</strong></p>
+                `;
+
+
+
     }
 
     function updateAll() {
@@ -99,7 +122,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#cont4 .dynamic").innerHTML = "";
         document.querySelector("#cont5 .dynamic").innerHTML = "";
         document.querySelector("#cont6 .dynamic").innerHTML = "";
-        
+        document.querySelector("#cont7 .dynamic").innerHTML = "";
+        document.querySelector("#cont8 .dynamic").innerHTML = "";
+
+
         renderPiVectorTable();
         updateCalculations();
     }
