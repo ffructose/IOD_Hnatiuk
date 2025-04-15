@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const subsystems = {
             1: [0, 1, 2, 3, 4, 5],
             2: [6, 7, 8, 9],
-            3: [10, 11, 12, 13]
+            3: [10, 11, 12, 13, 14]
         };
 
         const pi_min = {
@@ -95,16 +95,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // cont7 — обчислення завантаженості системи
         const cont7 = document.getElementById("cont7");
-        const piSum = pi.slice(0, 14).reduce((sum, val) => sum + val, 0); // π₁ + ... + π₁₃
+        const piSum = pi.slice(0, 15).reduce((sum, val) => sum + val, 0);
+
         const rho = (total / piSum).toFixed(2);
         document.querySelector("#cont7 .dynamic").innerHTML += `
-                    <p>π = ${pi.slice(1, 14).join(" + ")} = ${piSum}</p>
+                    <p>π = ${pi.slice(0, 15).join(" + ")} = ${piSum}</p>
                     <p>ρ = r / π = ${total} / ${piSum} ≈ <strong>${rho}</strong></p>
                 `;
 
         // cont8 — обчислення прискорення системи
         const cont8 = document.getElementById("cont8");
-        const maxPi = Math.max(...pi.slice(1, 14));
+        const maxPi = Math.max(...pi.slice(0, 15));
         const S = (total / maxPi).toFixed(2);
         document.querySelector("#cont8 .dynamic").innerHTML += `
                     <p>max π<sub>i</sub> = ${maxPi}</p>
