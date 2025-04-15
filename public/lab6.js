@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // cont7 — обчислення завантаженості системи
         const cont7 = document.getElementById("cont7");
-        const piSum = pi.slice(1, 14).reduce((sum, val) => sum + val, 0); // π₁ + ... + π₁₃
+        const piSum = pi.slice(0, 14).reduce((sum, val) => sum + val, 0); // π₁ + ... + π₁₃
         const rho = (total / piSum).toFixed(2);
         document.querySelector("#cont7 .dynamic").innerHTML += `
                     <p>π = ${pi.slice(1, 14).join(" + ")} = ${piSum}</p>
