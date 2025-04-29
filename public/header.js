@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             lab4Btn.style.display = "inline-block"; // Приховуємо "кабінет"
             lab5Btn.style.display = "inline-block"; // Приховуємо "кабінет"
             lab6Btn.style.display = "inline-block"; // Приховуємо "кабінет"
+            lab7Btn.style.display = "inline-block"; // Приховуємо "кабінет"
         } else {
             // Якщо користувач не залогований, показуємо кнопки "Увійти" і "Реєстрація"
             loginBtn.style.display = "inline-block";
@@ -36,7 +37,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             lab4Btn.style.display = "none"; // Приховуємо "кабінет"
             lab5Btn.style.display = "none"; // Приховуємо "кабінет"
             lab6Btn.style.display = "none"; // Приховуємо "кабінет"
-
+            lab7Btn.style.display = "none"; // Приховуємо "кабінет"
         }
 
         // Функція виходу з акаунта
